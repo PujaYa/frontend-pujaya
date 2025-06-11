@@ -206,7 +206,9 @@ const ProfileComponent = () => {
               key={idx}
               className="flex flex-col items-center bg-gray-50 rounded-xl px-8 py-4 shadow text-center min-w-[120px]"
             >
-              <span className={`text-2xl font-bold ${stat.color || 'text-blue-700'}`}>{stat.value}</span>
+              <span className={`text-2xl font-bold ${stat.color || 'text-blue-700'}`}>
+                {stat.value}
+              </span>
               <span className="text-sm text-gray-500 font-semibold mt-1">{stat.label}</span>
             </div>
           ))}
