@@ -8,9 +8,10 @@ import { login, loginWithGoogle } from "@/app/utils/auth.helper";
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
+import Image from "next/image";
 
 const LoginComponent = () => {
-  const { setUserData, user, userData } = useAuth();
+  const { setUserData } = useAuth();
   const router = useRouter();
 
   // Ejemplo de llamada al login de Google
@@ -57,7 +58,8 @@ const LoginComponent = () => {
                 setUserData({ token, user: userValidated });
                 router.push("/");
               }
-            } catch (error) {
+            } catch (error: unknown) {
+              console.error(error);
               toast.error('Login has failed, verify your data')
             }
 
@@ -104,10 +106,12 @@ const LoginComponent = () => {
                 type="button"
                 onClick={handleGoogleLogin} // Llama a la función que maneja la autenticación
                 className="w-full bg-white text-gray-800 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transition flex items-center justify-center gap-2">
-                <img
+                <Image
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1024px-Google_%22G%22_logo.svg.png"
                   alt="Google Logo"
                   className="h-5"
+                  width={20}
+                  height={50}
                 />
                 <span className="text-sm font-medium">Sign in with Google</span>
               </button>

@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateProduct, uploadImages } from "@/app/products/actions";
 import { useAuth } from "@/app/context/AuthContext";
+import Image from "next/image";
+import { IAuction } from "@/app/types/index";
 
 interface Category {
   id: string;
@@ -148,7 +150,7 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
       await updateProduct((initialData as { id: string }).id, formData);
       // Redirect to auction detail page instead of product detail
       const auctionId =
-        (initialData as any).auctionId || (initialData as any).auction?.id;
+        (initialData as IAuction).id || (initialData as IAuction)?.id;
       if (auctionId) {
         router.push(`/auctions/${auctionId}`);
       } else {
@@ -329,10 +331,12 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
           <div className="grid grid-cols-3 gap-4">
             {uploadedImages.map((url, index) => (
               <div key={index} className="relative">
-                <img
+                <Image
                   src={url}
                   alt={`Uploaded image ${index + 1}`}
                   className="w-full h-32 object-cover rounded-lg"
+                  width={100}
+                  height={100}
                 />
                 <button
                   type="button"

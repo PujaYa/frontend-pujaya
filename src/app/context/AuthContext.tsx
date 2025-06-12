@@ -81,6 +81,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             }
             setUserData(parsed);
             restored = true;
+
+            console.log(restored)
           }
         } catch {
           localStorage.removeItem("userSession");
@@ -110,18 +112,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.removeItem("userSession");
       setUserData(null);
       Cookies.remove("userSession");
-    } catch (error) {
+    } catch (error: unknown) {  
+        console.error("Error al cerrar sesión: ", error);
       // console.error("Error al cerrar sesión: ", error); // Quitado
     }
   };
 
-  const getFreshToken = async () => {
-    const auth = getAuth();
-    if (auth.currentUser) {
-      return await auth.currentUser.getIdToken();
-    }
-    return null;
-  };
+  // const getFreshToken = async () => {
+  //   const auth = getAuth();
+  //   if (auth.currentUser) {
+  //     return await auth.currentUser.getIdToken();
+  //   }
+  //   return null;
+  // };
 
   return (
     <AuthContext.Provider value={{ userData, user, setUserData, setUser, logout }}>

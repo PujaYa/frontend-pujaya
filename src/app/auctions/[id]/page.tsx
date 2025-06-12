@@ -43,7 +43,9 @@ export default function AuctionDetailPage() {
         ...auction.product,
         initialPrice: Number(auction.product.initialPrice),
         finalPrice: Number(auction.product.finalPrice),
-        category: auction.product.category, // <-- Añadido
+        category: auction.product.category,
+        startDate: auction.endDate,
+        endDate: auction.endDate,
       }}
       auctionData={{
         name: auction.name,

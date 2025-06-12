@@ -2,9 +2,9 @@ import EditAuctionForm from "@/components/Forms/auction/EditAuctionForm";
 import { getAuctionById } from "@/app/auctions/actions";
 import { notFound } from "next/navigation";
 
-export default async function EditAuctionPage(props: any) {
-  const params = await props.params;
-  const auction = await getAuctionById(params.id);
+export default async function EditAuctionPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const auction = await getAuctionById(id);
   if (!auction) return notFound();
 
   return (

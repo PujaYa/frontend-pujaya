@@ -1,4 +1,4 @@
-import { ILoginProps, IRegisterProps, IUserSession } from "@/app/types/index";
+import { ILoginProps, IRegisterProps } from "@/app/types/index";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -40,8 +40,8 @@ export async function register(userData: IRegisterProps) {
       await sendEmailVerification(firebaseUser);
 
 
-    } catch (firebaseError: any) {
-      switch (firebaseError.code) {
+    } catch (firebaseError: unknown) {
+      switch ((firebaseError as { code?: string }).code) {
         case "auth/email-already-in-use":
           throw new Error("This email is already registered");
         case "auth/invalid-email":
@@ -52,7 +52,7 @@ export async function register(userData: IRegisterProps) {
           throw new Error("Password is too weak");
         default:
           throw new Error(
-            `Firebase registration error: ${firebaseError.message}`
+            `Firebase registration error: ${(firebaseError as Error).message || "Error connecting to server"}`
           );
       }
     }
@@ -95,15 +95,16 @@ export async function register(userData: IRegisterProps) {
       backendData: data,
       message: "Registration successful. Please verify your email.",
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (firebaseUser) {
       try {
         await firebaseUser.delete();
-      } catch (deleteError) {
+      } catch (deleteError: unknown) {
+        console.error("Error cleaning up Firebase user:", deleteError);
         // console.error("Error cleaning up Firebase user:", deleteError);
       }
     }
-    throw new Error(error.message || "Registration failed");
+    throw new Error((error as Error).message || "Registration failed");
   }
 
   
@@ -209,19 +210,19 @@ export async function loginWithGoogle() {
 
       return sessionData;
 
-    } catch (backendError: any) {
+    } catch (backendError: unknown) {
       await signOut(auth);
       // console.error("Backend error:", backendError);
       throw new Error(
-        (backendError as Error).message || "Error connecting to server"
+        (backendError as Error).message || "Error connecting to server" 
       );
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
 
     let errorMessage = 'An error occurred during Google login';
 
-    if (error.code) {
+    if (error instanceof Error && 'code' in error) {
       switch (error.code) {
         case "auth/popup-closed-by-user":
           errorMessage = "Login cancelled: You closed the login window";

@@ -1,7 +1,8 @@
+import { IBid } from "@/app/types/index";
 import React from "react";
 
 interface BidHistoryProps {
-  bids: any[];
+  bids: IBid[];
   bidsLoading: boolean;
   bidsError: string | null;
 }

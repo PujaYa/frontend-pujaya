@@ -1,4 +1,6 @@
-interface IAuction {
+import { IBid } from "./types/index";
+
+export interface IAuction {
   id: string;
   name: string;
   description: string;
@@ -21,5 +23,5 @@ interface IAuction {
     };
   };
   currentHighestBid?: number;
-  bids?: any[];
+  bids?: IBid[];
 }

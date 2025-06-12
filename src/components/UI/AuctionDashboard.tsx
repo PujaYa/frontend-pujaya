@@ -2,14 +2,14 @@
 
 import { useAuth } from '@/app/context/AuthContext';
 import { IAuction } from '@/app/types/index';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react'
 import AuctionDetailModal from '../AuctionDetailModal';
 import { toast } from 'react-toastify';
 
 const AuctionDashboard = () => {
     const { userData } = useAuth();
-    const router = useRouter();
+    // const router = useRouter();
     const [auctions, setAuctions] = useState<IAuction[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedAuction, setSelectedAuction] = useState<IAuction | null>(null);

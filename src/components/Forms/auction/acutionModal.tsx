@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+import Image from 'next/image';
 interface AuctionModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -167,10 +167,12 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
                 className="mt-1 block w-full"
               />
               {imagePreview && (
-                <img
+                <Image
                   src={imagePreview}
                   alt="Preview"
                   className="mt-2 h-20 w-20 object-cover rounded"
+                  width={100}
+                  height={100}
                 />
               )}
             </div>

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { createAuction, updateAuction } from "@/app/auctions/actions";
 import { useAuctionForm } from "@/app/context/AuctionFormContext";
+import { IAuction } from "@/app/types/index";
 
 interface FormErrors {
   name?: string;
@@ -14,7 +15,7 @@ interface FormErrors {
 }
 
 interface FormAuctionProps {
-  initialData?: any;
+  initialData?: IAuction;
   mode?: "edit" | "create";
 }
 
@@ -48,6 +49,7 @@ export default function FormAuction({
   const [productIdState, setProductId] = useState(
     initialData?.product?.id || auctionForm.productId || ""
   );
+  console.log(productIdState)
   const [productNameState, setProductName] = useState(
     initialData?.product?.name || auctionForm.productName || ""
   );
@@ -260,8 +262,8 @@ export default function FormAuction({
                 ? "Saving..."
                 : "Creating Auction..."
               : mode === "edit"
-              ? "Save Changes"
-              : "Create Auction"}
+                ? "Save Changes"
+                : "Create Auction"}
           </button>
         </div>
 

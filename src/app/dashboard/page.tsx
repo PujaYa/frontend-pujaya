@@ -1,6 +1,6 @@
 'use client'
 import { useAuth } from "../context/AuthContext";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import UpdateUser from "@/components/Forms/users/UpdateUser";
 import { toast } from 'react-toastify';
@@ -20,21 +20,12 @@ export default function AdminDashboard() {
   const [activeAuctions, setActiveAuctions] = useState<IAuction[]>([]);
   const [loading, setLoading] = useState(true);
   const [isInitializing, setIsInitializing] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (isInitializing && (!userData || userData.user.role !== "admin")) {
-      router.push('/');
-    }
 
-    if (userData?.user.role === "admin") {
-      setIsInitializing(false);
-      fetchDashboardData();
-    }
-  }, [userData, router, isInitializing]);
-
-  const fetchDashboardData = async () => {
+  
+  const fetchDashboardData = useCallback(async () => {
     try {
       const token = userData?.token;
 
@@ -68,7 +59,18 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userData]);
+
+  useEffect(() => {
+    if (isInitializing && (!userData || userData.user.role !== "admin")) {
+      router.push('/');
+    }
+
+    if (userData?.user.role === "admin") {
+      setIsInitializing(false);
+      fetchDashboardData();
+    }
+  }, [userData, router, isInitializing, fetchDashboardData]);
 
   const handleRoleChange = async (userId: string, newRole: 'regular' | 'premium' | 'admin') => {
     try {

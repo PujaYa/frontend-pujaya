@@ -5,6 +5,8 @@ import { useAuctionForm } from "@/app/context/AuctionFormContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createProduct, uploadImages } from "@/app/products/actions";
+import Image from "next/image";
+import { ICategory } from "@/app/types/index";
 
 interface Category {
   id: string;
@@ -51,7 +53,7 @@ export default function FormProduct({
       .then((data) => {
         if (Array.isArray(data.items)) {
           setCategories(
-            data.items.map((cat: any) => ({
+            data.items.map((cat: ICategory) => ({
               id: cat.id,
               name: cat.categoryName,
             }))
@@ -62,7 +64,8 @@ export default function FormProduct({
         }
         setIsLoadingCategories(false);
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
+        console.error("Error loading categories:", error);
         // console.error("Error loading categories:", error);
         setError("Failed to load categories. Please try again later.");
         setIsLoadingCategories(false);
@@ -117,9 +120,9 @@ export default function FormProduct({
     try {
       const urls = await uploadImages(Array.from(files), userData?.token || "");
       setUploadedImages((prev) => [...prev, ...urls]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       // console.error("Error uploading images:", error);
-      setFormErrors({ images: error.message });
+      setFormErrors({ images: (error as Error).message || "Error uploading images" });
     } finally {
       setIsUploadingImages(false);
       event.target.value = "";
@@ -176,7 +179,7 @@ export default function FormProduct({
       // console.error("Error:", error);
       setError(
         (error as Error).message ||
-          "An error occurred while creating the product"
+        "An error occurred while creating the product"
       );
     } finally {
       setIsSubmitting(false);
@@ -364,10 +367,12 @@ export default function FormProduct({
           <div className="grid grid-cols-3 gap-4">
             {uploadedImages.map((url, index) => (
               <div key={index} className="relative">
-                <img
+                <Image
                   src={url}
                   alt={`Uploaded ${index + 1}`}
                   className="w-full h-32 object-cover rounded-lg"
+                  width={100}
+                  height={100}
                 />
                 <button
                   type="button"

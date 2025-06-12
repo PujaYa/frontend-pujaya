@@ -1,6 +1,7 @@
-import { IAuction, IProduct, IUser } from '@/app/types';
+import { IAuction, IProduct, IUser } from '@/app/types/index';
 import { getProductById } from '@/app/utils/products.helper';
 import { getUserById } from '@/app/utils/users.helper';
+import Image from 'next/image';
 import { useEffect, useState, useCallback } from 'react';
 
 interface Props {
@@ -56,10 +57,12 @@ export default function AuctionDetailModal({ auction, isOpen, onClose }: Props) 
 
           {/* Image */}
           <div className="w-full h-48 mb-4">
-            <img
+            <Image
               src={product?.imgProduct?.[0] || '/default-auction.png'}
               alt={auction.name}
               className="w-full h-full object-cover rounded-lg"
+              width={100}
+              height={100}
             />
           </div>
 

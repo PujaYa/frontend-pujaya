@@ -1,7 +1,8 @@
+import { IUser } from "@/app/types/index";
 import React from "react";
 
 interface SellerInfoProps {
-  owner: any;
+  owner: IUser;
   onViewMoreProducts: (sellerId: string) => void;
   show?: boolean;
 }

@@ -35,6 +35,11 @@ public initialPrice: number;
 })
 public finalPrice: number; */
 
+export interface ICategory {
+  id: string;
+  categoryName: string;
+}
+
 export interface IProduct {
   id: string;
   name: string;
@@ -144,12 +149,14 @@ export interface IBid {
   userId: string;
   auctionId: string;
   createdAt: string;
+  user: IUser;
 }
 
 export interface IAuction {
   id: string;
   name: string;
   endDate: string;
+  startDate: string;
   description: string;
   isActive: boolean;
   deactivateAt: string;
@@ -165,7 +172,7 @@ export interface IProduct {
   name: string;
   initialPrice: number;
   finalPrice: number;
-  startDate: string;
+  // startDate: string;
   endDate: string;
   isActive: boolean;
   imgProduct: string[];

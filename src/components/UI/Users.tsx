@@ -2,29 +2,25 @@
 
 import { useAuth } from "@/app/context/AuthContext";
 import { IUser } from "@/app/types/index";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+// import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import UpdateUser from "../Forms/users/UpdateUser";
 
 export const UsersComponent = () => {
     const { userData } = useAuth();
-    const router = useRouter();
+    // const router = useRouter();
     const [users, setUsers] = useState<IUser[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    useEffect(() => {
-        if (userData?.user.role === "admin") {
-            fetchUsers();
-        }
-    }, [userData]);
-
-    const fetchUsers = async () => {
+    
+    
+    
+    const fetchUsers = useCallback(async () => {
         try {
             const token = userData?.token;
-
+            
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -43,8 +39,16 @@ export const UsersComponent = () => {
         } finally {
             setLoading(false);
         }
-    };
-
+    }, [userData]);
+    
+    useEffect(() => {
+        if (userData?.user.role === "admin") {
+            fetchUsers();
+        }else{
+            toast.error('You are not authorized to access this page');
+        }
+    }, [userData, fetchUsers]);
+    
     const handleDeleteUser = async (userId: string) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
             try {

@@ -1,6 +1,6 @@
 "use-client";
 
-import { IProduct } from "@/app/types";
+import { IBid, IProduct, IUser} from "@/app/types/index";
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/context/AuthContext";
 import AuctionGallery from "./auction/AuctionGallery";
@@ -34,7 +34,7 @@ interface AuctionInfo {
 }
 
 // Agrega la prop owner a AuctionDetail
-const AuctionDetail: React.FC<
+export const AuctionDetail: React.FC<
   IProduct & {
     auctionData?: {
       name: string;
@@ -252,7 +252,7 @@ const AuctionDetail: React.FC<
               )}
               {tab === "Seller info" && (
                 <SellerInfo
-                  owner={owner}
+                  owner={owner as IUser}
                   onViewMoreProducts={(sellerId) => {
                     window.location.href = `/auctions?seller=${sellerId}`;
                   }}
@@ -265,7 +265,7 @@ const AuctionDetail: React.FC<
         {/* Right column: auction info, bid, history, related */}
         <div className="flex flex-col gap-6">
           <AuctionInfoBox
-            auctionInfo={auctionInfo}
+            auctionInfo={auctionInfo as AuctionInfo}
             isActive={isActive}
             initialPrice={initialPrice}
             auctionId={
@@ -289,7 +289,7 @@ const AuctionDetail: React.FC<
             showUpgradePrompt={!!showUpgradePrompt}
           />
           <BidHistory
-            bids={bids}
+            bids={bids as IBid[]}
             bidsLoading={bidsLoading}
             bidsError={bidsError}
           />

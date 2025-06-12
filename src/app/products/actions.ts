@@ -44,9 +44,9 @@ export async function createProduct(formData: FormData) {
     }
 
     return response.json();
-  } catch (error: any) {
+    } catch (error: unknown) {
     console.error("Error creating product:", error);
-    throw new Error(error.message || "Failed to create product");
+    throw new Error((error as Error).message || "Failed to create product");
   }
 }
 
@@ -82,9 +82,9 @@ export async function uploadImages(files: File[], token: string) {
     } else {
       throw new Error("No image URLs returned from server");
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error uploading images:", error);
-    throw new Error(error.message || "Failed to upload images");
+    throw new Error((error as Error).message || "Failed to upload images");
   }
 }
 

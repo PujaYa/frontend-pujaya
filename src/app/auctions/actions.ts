@@ -41,8 +41,8 @@ export async function createAuction(formData: FormData) {
     }
 
     return response.json();
-  } catch (error: any) {
-    throw new Error(error.message || "Failed to create auction");
+  } catch (error: unknown) {
+    throw new Error((error as Error).message || "Failed to create auction");
   }
 }
 
@@ -152,8 +152,8 @@ export async function updateAuction(id: string, formData: FormData) {
   return response.json();
 }
 
-// @ts-ignore
 export async function endAuction(auctionId: string) {
+  console.log("endAuction", auctionId);
   // Este método debe ser llamado desde un server action, no desde un componente client
   throw new Error(
     "endAuction must be called from a server action, not directly from a client component"

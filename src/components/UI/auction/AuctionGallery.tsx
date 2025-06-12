@@ -1,5 +1,5 @@
 import React from "react";
-
+import Image from "next/image";
 interface AuctionGalleryProps {
   mainImg: string | null;
   imgProduct: string[];
@@ -33,13 +33,16 @@ const AuctionGallery: React.FC<AuctionGalleryProps> = ({
             aria-label="Close zoom">
             ×
           </button>
-          <img
+          <Image
             src={mainImg}
             alt={name}
             className="max-h-[80vh] max-w-full rounded-xl shadow-lg border bg-white"
             style={{ objectFit: "contain" }}
             onClick={(e) => e.stopPropagation()}
-          />
+            width={1000}
+            height={1000}
+            objectFit="contain"
+            />
         </div>
       </div>
     )}
@@ -48,17 +51,19 @@ const AuctionGallery: React.FC<AuctionGalleryProps> = ({
       <div className="flex md:flex-col flex-row gap-2 md:mr-4 md:mb-0 mb-2 items-center justify-center">
         {Array.isArray(imgProduct) && imgProduct.length > 0 ? (
           imgProduct.map((img, idx) => (
-            <img
+            <Image
               key={idx}
               src={img}
               alt={name + " " + (idx + 1)}
-              className={`w-14 h-14 object-cover rounded-lg border cursor-pointer transition-all shadow-sm ${
+              className={`object-cover rounded-lg border cursor-pointer transition-all shadow-sm ${
                 mainImg === img
                   ? "ring-2 ring-blue-600"
                   : "opacity-80 hover:opacity-100"
               }`}
               onClick={() => setMainImg(img)}
               style={{ background: "#fff" }}
+              width={50}
+              height={50}
             />
           ))
         ) : (
@@ -70,11 +75,14 @@ const AuctionGallery: React.FC<AuctionGalleryProps> = ({
       {/* Main image */}
       <div className="flex-1 flex items-center justify-center min-h-[320px]">
         {mainImg ? (
-          <img
+          <Image
             src={mainImg}
             alt={name}
             className="h-80 max-h-[340px] w-auto object-contain rounded-xl shadow border bg-white cursor-zoom-in"
             onClick={() => setZoomOpen(true)}
+            width={5000}
+            height={5000}
+            objectFit="contain"
           />
         ) : (
           <div className="h-80 w-full flex items-center justify-center bg-gray-100 rounded-xl">
@@ -88,11 +96,13 @@ const AuctionGallery: React.FC<AuctionGalleryProps> = ({
       {Array.isArray(imgProduct) &&
         imgProduct.length > 0 &&
         imgProduct.map((img, idx) => (
-          <img
+          <Image
             key={idx}
             src={img}
+            width={48}
+            height={48}
             alt={name + " " + (idx + 1)}
-            className={`w-12 h-12 object-cover rounded-lg border cursor-pointer transition-all shadow-sm ${
+            className={`object-cover rounded-lg border cursor-pointer transition-all shadow-sm ${
               mainImg === img
                 ? "ring-2 ring-blue-600"
                 : "opacity-80 hover:opacity-100"

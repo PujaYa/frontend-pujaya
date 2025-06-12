@@ -4,6 +4,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import { IUser } from "@/app/types/index";
 import { useState } from "react";
 import UpdateUser from "../Forms/users/UpdateUser";
+import Image from "next/image";
 
 const ProfileComponent = () => {
     /*   const [user, setUser] = useState({
@@ -92,10 +93,12 @@ const ProfileComponent = () => {
                     {/* esto es para que se muestre la imagen de perfil dentro del file cuando se selecciona una imagen */}
                     <div className="flex flex-col items-center mb-4">
                         <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-blue-500">
-                            <img
+                            <Image
                                 src={userData?.user.imgProfile || "/default-avatar.png"}
                                 alt="Profile"
                                 className="w-full h-full object-cover"
+                                width={100}
+                                height={100}
                             />
                         </div>
                         <label className="mt-2 text-sm text-blue-700 cursor-pointer hover:underline">

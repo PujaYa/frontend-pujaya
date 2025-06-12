@@ -54,8 +54,8 @@ const RegisterComponent = () => {
                 position: "top-center"
               })
               router.push("/");
-            } catch (error: any) {
-              setRegisterError(error.message || "Registration failed");
+            } catch (error: unknown) {
+              setRegisterError((error as Error).message || "Registration failed");
               toast.error(`User register has failed`, {
                 position: "top-center"
               })
