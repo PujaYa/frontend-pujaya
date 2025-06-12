@@ -115,9 +115,9 @@ const ProfileComponent = () => {
 
   return (
     <main className="flex flex-col items-center px-2 py-4 min-h-screen bg-blue-50">
-      <div className="w-full max-w-6xl bg-white p-2 sm:p-4 md:p-6 rounded-xl shadow-xl flex flex-col items-center">
-        {/* Horizontal profile card */}
-        <div className="w-full flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 p-4 md:p-6">
+      {/* Card de perfil separada */}
+      <div className="w-full max-w-6xl">
+        <div className="bg-white p-2 sm:p-4 md:p-6 rounded-xl shadow-xl flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
           {/* Profile image and edit */}
           <div className="relative flex flex-col items-center">
             <img
@@ -144,7 +144,7 @@ const ProfileComponent = () => {
                     window.open(userData?.user.imgProfile || '/default-avatar.png', '_blank');
                   }}
                 >
-                  View photo
+                  Ver foto
                 </button>
                 <button
                   className="px-4 py-2 text-left hover:bg-gray-100 text-sm"
@@ -153,7 +153,7 @@ const ProfileComponent = () => {
                     photoInputRef.current?.click();
                   }}
                 >
-                  Edit photo
+                  Editar foto
                 </button>
               </div>
             )}
@@ -170,27 +170,29 @@ const ProfileComponent = () => {
             <span className="text-2xl md:text-3xl font-bold text-gray-800">
               {userData?.user.name || ''}
             </span>
-            <span className="text-gray-500 text-sm">{user.email || ''}</span>
-            {/* Subtitle/description placeholder */}
+            {/* English description */}
             <span className="text-xs text-gray-400 mt-1">Art & Antiques Collector</span>
             <div className="flex flex-wrap gap-2 mt-2 items-center">
-              <span className="bg-gray-100 text-yellow-600 px-2 py-0.5 rounded text-xs font-semibold">
-                ⭐ 4.9 (127 reviews)
-              </span>
-              <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-semibold">
-                Verified
-              </span>
+              {/* Badge: Active/Inactive */}
+              {(userData?.user as { isActive?: boolean })?.isActive === false ? (
+                <span className="px-2 py-0.5 rounded text-xs font-semibold bg-red-100 text-red-700">
+                  Inactive
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-700">
+                  Active
+                </span>
+              )}
+              {/* Badge: Role */}
               <span className="bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded text-xs font-semibold">
-                Top Seller
+                {userData?.user.role
+                  ? userData.user.role.charAt(0).toUpperCase() + userData.user.role.slice(1)
+                  : 'User'}
               </span>
             </div>
           </div>
           {/* Action buttons */}
           <div className="flex flex-row md:flex-col gap-2 md:gap-3 items-center md:items-end mt-4 md:mt-0">
-            <button className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition text-sm flex items-center gap-2">
-              <span className="hidden md:inline">Configuration</span>
-              <span className="md:hidden">Settings</span>
-            </button>
             <button
               onClick={() => setIsModalOpen(true)}
               className="bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 transition text-sm"
@@ -201,21 +203,31 @@ const ProfileComponent = () => {
         </div>
         {/* Stats row */}
         <div className="flex flex-row justify-center gap-8 my-4 w-full">
-          {stats.map((stat, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col items-center bg-gray-50 rounded-xl px-8 py-4 shadow text-center min-w-[120px]"
-            >
-              <span className={`text-2xl font-bold ${stat.color || 'text-blue-700'}`}>
-                {stat.value}
-              </span>
-              <span className="text-sm text-gray-500 font-semibold mt-1">{stat.label}</span>
-            </div>
-          ))}
+          <div className="flex flex-col items-center bg-gray-50 rounded-xl px-8 py-4 shadow text-center min-w-[120px]">
+            <span className="text-2xl font-bold text-blue-700">156</span>
+            <span className="text-sm text-gray-500 font-semibold mt-1">Pujas Ganadas</span>
+          </div>
+          <div className="flex flex-col items-center bg-gray-50 rounded-xl px-8 py-4 shadow text-center min-w-[120px]">
+            <span className="text-2xl font-bold text-green-600">89</span>
+            <span className="text-sm text-gray-500 font-semibold mt-1">Artículos Vendidos</span>
+          </div>
+          <div className="flex flex-col items-center bg-gray-50 rounded-xl px-8 py-4 shadow text-center min-w-[120px]">
+            <span className="text-2xl font-bold text-orange-500">$45K</span>
+            <span className="text-sm text-gray-500 font-semibold mt-1">Total Vendido</span>
+          </div>
+          <div className="flex flex-col items-center bg-gray-50 rounded-xl px-8 py-4 shadow text-center min-w-[120px]">
+            <span className="text-2xl font-bold text-purple-600">3</span>
+            <span className="text-sm text-gray-500 font-semibold mt-1">Años Activo</span>
+          </div>
         </div>
-        {/* Tabs */}
-        <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={TABS} />
-        {/* Auction cards */}
+      </div>
+      {/* Tabs y cards fuera de la card de perfil */}
+      <div className="w-full max-w-6xl mt-4">
+        <ProfileTabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          tabs={['Pujas Activas', 'Ganadas', 'Vendiendo', 'Favoritos', 'Historial']}
+        />
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-1">
           {auctions.map((a, i) => (
             <AuctionProfileCard key={i} {...a} />

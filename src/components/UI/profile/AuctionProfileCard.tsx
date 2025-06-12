@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface AuctionProfileCardProps {
   title: string;
@@ -37,9 +37,13 @@ const AuctionProfileCard: React.FC<AuctionProfileCardProps> = ({
       <span className="font-semibold text-gray-800 mb-2 line-clamp-2 min-h-[40px]">{title}</span>
       <div className="flex flex-col gap-1 text-sm mb-2">
         {myBid !== undefined && (
-          <span>Tu puja: <span className="text-blue-700 font-bold">${myBid}</span></span>
+          <span>
+            Tu puja: <span className="text-blue-700 font-bold">${myBid}</span>
+          </span>
         )}
-        <span>Puja actual: <span className="text-green-700 font-bold">${currentBid}</span></span>
+        <span>
+          Puja actual: <span className="text-green-700 font-bold">${currentBid}</span>
+        </span>
       </div>
       {onBid && (
         <button
