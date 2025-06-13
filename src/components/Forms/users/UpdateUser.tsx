@@ -1,9 +1,10 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
-import { IUserSession, UpdateUserProps } from '@/app/types/index';
+import { UpdateUserProps } from '@/app/types/index';
 import { IUserFormData } from '@/app/types/index';
 import { toast } from 'react-toastify';
+import Image from 'next/image';
 
 interface Props extends UpdateUserProps {
   isOpen: boolean;
@@ -118,10 +119,12 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
             >
               {/* Avatar */}
               <div className="flex flex-col items-center mb-4">
-                <img
-                  src={user.imgProfile || '/default-avatar.png'}
-                  alt="Avatar"
-                  className="w-20 h-20 rounded-full border-4 border-blue-500 object-cover shadow mb-2"
+                <Image
+                  src={user.imgProfile || '/default-profile.png'}
+                  alt={user.name}
+                  width={80}
+                  height={80}
+                  className="w-20 h-20 rounded-full object-cover border-2 border-blue-500"
                 />
                 <h3 className="text-2xl font-bold text-gray-900 mb-1">Edit your profile</h3>
                 <p className="text-gray-500 text-sm mb-2 text-center">

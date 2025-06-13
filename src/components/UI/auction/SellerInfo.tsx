@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface SellerInfoProps {
-  owner: any;
+  owner: { id: string; name: string; email: string; createdAt?: string };
   onViewMoreProducts: (sellerId: string) => void;
   show?: boolean;
 }

@@ -64,7 +64,6 @@ const AuctionDetail: React.FC<
     category?: { categoryName?: string };
   }
 > = ({
-  id, // Se vuelve a incluir id porque es parte de ProductForAuctionDetail
   name,
   imgProduct,
   description,

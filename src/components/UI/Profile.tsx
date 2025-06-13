@@ -4,10 +4,10 @@ import { useAuth } from '@/app/context/AuthContext';
 import { IUser } from '@/app/types/index';
 import { useState, useRef } from 'react';
 import UpdateUser from '../Forms/users/UpdateUser';
-import UserStats from './profile/UserStats';
 import ProfileTabs from './profile/ProfileTabs';
 import AuctionProfileCard from './profile/AuctionProfileCard';
 import { FaPen } from 'react-icons/fa';
+import Image from 'next/image';
 
 const TABS = ['Active Bids', 'Won', 'Selling', 'Favorites', 'History'];
 
@@ -66,13 +66,6 @@ const ProfileComponent = () => {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const UserInfo = userData?.user as IUser;
 
-  // Simulación de datos de usuario y stats (reemplazar por datos reales)
-  const stats = [
-    { label: 'Bids Won', value: 156 },
-    { label: 'Items Sold', value: 89 },
-    { label: 'Total Sales', value: '$45K', color: 'text-orange-500' },
-    { label: 'Active Years', value: 3 },
-  ];
   // Simulación de cards de subasta (reemplazar por datos reales)
   const auctions = [
     {
@@ -120,10 +113,12 @@ const ProfileComponent = () => {
         <div className="bg-white p-2 sm:p-4 md:p-6 rounded-xl shadow-xl flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
           {/* Profile image and edit */}
           <div className="relative flex flex-col items-center">
-            <img
-              src={userData?.user.imgProfile || '/default-avatar.png'}
-              alt="Profile"
-              className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-blue-500 object-cover shadow-lg bg-gray-100"
+            <Image
+              src={userData?.user.imgProfile || '/default-profile.png'}
+              alt={userData?.user.name || 'User'}
+              width={80}
+              height={80}
+              className="w-20 h-20 rounded-full object-cover border-2 border-blue-500"
             />
             <button
               className="absolute bottom-2 right-2 bg-white rounded-full p-1 shadow-md border border-gray-200 hover:bg-blue-100 z-10"

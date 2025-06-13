@@ -1,24 +1,15 @@
-import React from "react";
+import React from 'react';
 
 interface UserCardProps {
   name: string;
   email: string;
   role?: string;
-  verified?: boolean;
   topSeller?: boolean;
   rating?: number;
   reviews?: number;
 }
 
-const UserCard: React.FC<UserCardProps> = ({
-  name,
-  email,
-  role,
-  verified,
-  topSeller,
-  rating,
-  reviews,
-}) => {
+const UserCard: React.FC<UserCardProps> = ({ name, email, role, topSeller, rating, reviews }) => {
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="flex flex-col items-center">
@@ -31,7 +22,9 @@ const UserCard: React.FC<UserCardProps> = ({
         )}
         <div className="flex gap-2 mt-2">
           {topSeller && (
-            <span className="bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded text-xs font-semibold">Top Seller</span>
+            <span className="bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded text-xs font-semibold">
+              Top Seller
+            </span>
           )}
           {rating && (
             <span className="bg-gray-100 text-yellow-600 px-2 py-0.5 rounded text-xs font-semibold">

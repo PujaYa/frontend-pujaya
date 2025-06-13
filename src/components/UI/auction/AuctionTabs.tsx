@@ -127,7 +127,7 @@ const AuctionTabs: React.FC<AuctionTabsProps> = ({
             </div>
           </div>
         )}
-        {tab === 'Seller info' && (
+        {tab === 'Seller info' && owner && (
           <SellerInfo
             owner={owner}
             onViewMoreProducts={(sellerId) => {

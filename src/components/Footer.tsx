@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react';
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -13,8 +14,7 @@ const Footer = () => {
             <span className="text-xl font-bold">Pujaya</span>
           </div>
           <p className="text-gray-300 text-sm mb-4">
-            The most reliable auction platform to discover and sell unique
-            items.
+            The most reliable auction platform to discover and sell unique items.
           </p>
           <div className="flex gap-3 text-gray-400 text-xl">
             <a href="#" aria-label="Facebook">
@@ -36,29 +36,29 @@ const Footer = () => {
           <h3 className="font-bold mb-3">Quick Links</h3>
           <ul className="space-y-2 text-gray-300 text-sm">
             <li>
-              <a href="/" className="hover:text-yellow-400">
+              <Link href="/" className="hover:text-yellow-400">
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/auctions" className="hover:text-yellow-400">
+              <Link href="/auctions" className="hover:text-yellow-400">
                 Auctions
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/how-it-works" className="hover:text-yellow-400">
+              <Link href="/how-it-works" className="hover:text-yellow-400">
                 How It Works
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/sell" className="hover:text-yellow-400">
+              <Link href="/sell" className="hover:text-yellow-400">
                 Sell
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/contact-us" className="hover:text-yellow-400">
+              <Link href="/contact-us" className="hover:text-yellow-400">
                 Contact
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

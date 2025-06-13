@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface AuctionProfileCardProps {
   title: string;
@@ -23,7 +24,13 @@ const AuctionProfileCard: React.FC<AuctionProfileCardProps> = ({
     <div className="bg-white rounded-xl shadow flex flex-col p-4 min-w-[220px] max-w-xs w-full">
       <div className="relative flex items-center justify-center h-32 bg-gray-100 rounded-lg mb-3">
         {image ? (
-          <img src={image} alt={title} className="object-contain h-full w-full rounded-lg" />
+          <Image
+            src={image}
+            alt={title}
+            width={500}
+            height={500}
+            className="object-contain h-full w-full rounded-lg"
+          />
         ) : (
           <span className="text-gray-400">No Img</span>
         )}
@@ -38,11 +45,11 @@ const AuctionProfileCard: React.FC<AuctionProfileCardProps> = ({
       <div className="flex flex-col gap-1 text-sm mb-2">
         {myBid !== undefined && (
           <span>
-            Tu puja: <span className="text-blue-700 font-bold">${myBid}</span>
+            Your Bid: <span className="text-blue-700 font-bold">${myBid}</span>
           </span>
         )}
         <span>
-          Puja actual: <span className="text-green-700 font-bold">${currentBid}</span>
+          AAual Bid: <span className="text-green-700 font-bold">${currentBid}</span>
         </span>
       </div>
       {onBid && (
@@ -50,7 +57,7 @@ const AuctionProfileCard: React.FC<AuctionProfileCardProps> = ({
           className="bg-blue-600 hover:bg-blue-700 text-white py-1 rounded font-semibold transition mt-auto"
           onClick={onBid}
         >
-          Aumentar Puja
+          Increment bid
         </button>
       )}
     </div>

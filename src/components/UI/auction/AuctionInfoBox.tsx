@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaRegHeart, FaGavel, FaEye } from 'react-icons/fa';
+import { FaGavel, FaEye } from 'react-icons/fa';
 
 interface AuctionInfoBoxProps {
   auctionInfo: {

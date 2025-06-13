@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface AuctionGalleryProps {
   mainImg: string | null;
@@ -75,12 +76,14 @@ const AuctionGallery: React.FC<AuctionGalleryProps> = ({
             >
               ×
             </button>
-            <img
+            <Image
               src={mainImg}
               alt={name}
               className="max-h-[80vh] max-w-full rounded-xl shadow-lg border bg-white"
               style={{ objectFit: 'contain' }}
               onClick={(e) => e.stopPropagation()}
+              width={800}
+              height={800}
             />
           </div>
         </div>
@@ -105,11 +108,13 @@ const AuctionGallery: React.FC<AuctionGalleryProps> = ({
               </div>
             )}
             {mainImg ? (
-              <img
+              <Image
                 src={mainImg}
                 alt={name}
                 className="h-80 max-h-[260px] w-auto object-contain rounded-xl cursor-zoom-in bg-white border"
                 onClick={() => setZoomOpen(true)}
+                width={400}
+                height={300}
               />
             ) : (
               <div className="h-48 w-full flex items-center justify-center">{PlaceholderSVG}</div>
@@ -129,11 +134,13 @@ const AuctionGallery: React.FC<AuctionGalleryProps> = ({
                     onClick={() => setMainImg(img)}
                   >
                     {img ? (
-                      <img
+                      <Image
                         src={img}
                         alt={name + ' ' + (idx + 1)}
                         className="w-12 h-12 object-cover rounded-md"
                         style={{ background: '#fff' }}
+                        width={100}
+                        height={100}
                       />
                     ) : (
                       <div className="w-12 h-12 flex items-center justify-center">
