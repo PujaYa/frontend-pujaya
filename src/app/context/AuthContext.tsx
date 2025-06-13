@@ -10,17 +10,19 @@ export interface AuthContextProps {
   userData: IUserSession | null;
   user: User | null;
   setUser: (user: User | null) => void;
-  setUserData: (userData: IUserSession | null) => void;
-  logout: () => void;
+  setUserData: (userData: IUserSession | null) => void
+  updateUserRole: (newRole: "regular" | "admin" | "premium") => void;
+  logout: () => void
 }
 
 export const AuthContext = createContext<AuthContextProps>({
   userData: null,
   user: null,
-  setUser: () => {},
-  setUserData: () => {},
-  logout: () => {},
-});
+  setUser: () => { },
+  setUserData: () => { },
+  updateUserRole: () => { },
+  logout: () => { },
+})
 
 export interface AuthProviderProps {
   children: React.ReactNode;
@@ -117,8 +119,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateUserRole = (newRole: "regular" | "admin" | "premium") => {
+    if (userData) {
+      const updatedUserData: IUserSession = {
+        ...userData,
+        user: {
+          ...userData.user,
+          role: newRole,
+        },
+      };
+      setUserData(updatedUserData);
+    }
+  };
+
+
   return (
-    <AuthContext.Provider value={{ userData, user, setUserData, setUser, logout }}>
+    <AuthContext.Provider value={{ userData, user, setUserData, setUser, updateUserRole, logout }}>
       {/* Loader global de sesión */}
       {loading ? (
         <div className="flex justify-center items-center min-h-[300px]">

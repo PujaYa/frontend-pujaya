@@ -24,8 +24,8 @@ export default function AuctionDetailModal({ auction, isOpen, onClose }: Props) 
         getUserById(auction.owner.id),
       ]);
 
-      setProduct(productData);
-      setUser(userData);
+      setProduct(productData as IProduct);
+      setUser(userData as IUser);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
