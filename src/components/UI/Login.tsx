@@ -1,16 +1,17 @@
-"use client";
+'use client';
 
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import Link from "next/link";
-import React from "react";
-import { validateLoginForm } from "../lib/validate";
-import { login, loginWithGoogle } from "@/app/utils/auth.helper";
-import { useAuth } from "@/app/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import Link from 'next/link';
+import React from 'react';
+import { validateLoginForm } from '../lib/validate';
+import { login, loginWithGoogle } from '@/app/utils/auth.helper';
+import { useAuth } from '@/app/context/AuthContext';
+import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import Image from 'next/image';
 
 const LoginComponent = () => {
-  const { setUserData, user, userData } = useAuth();
+  const { setUserData } = useAuth();
   const router = useRouter();
 
   // Ejemplo de llamada al login de Google
@@ -18,13 +19,13 @@ const LoginComponent = () => {
     try {
       const authData = await loginWithGoogle();
       setUserData(authData);
-      router.push('/')
+      router.push('/');
       toast.success(`User ${authData.user.name} logged in with Google`, {
-        position: "top-center"
+        position: 'top-center',
       });
     } catch (error) {
-      toast.error("Google login has failed", {
-        position: "top-center"
+      toast.error('Google login has failed', {
+        position: 'top-center',
       });
       console.error(error);
     }
@@ -37,31 +38,31 @@ const LoginComponent = () => {
           Welcome to <span className="text-yellow-400">PujaYa!</span>
         </h1>
         <Formik
-          initialValues={{ email: "", password: "" }}
+          initialValues={{ email: '', password: '' }}
           validate={validateLoginForm}
           onSubmit={async (values) => {
             try {
               const response = await login(values);
               if (!response) {
-                throw new Error("Bad Response");
+                throw new Error('Bad Response');
               }
               const { token, user } = response;
               setUserData({ token, user });
               if (!user) {
-                toast.error(`User not identified`)
+                toast.error(`User not identified`);
               } else {
-                const userValidated = user
+                const userValidated = user;
                 toast.success(`User ${userValidated.name} logged in PujaYa!`, {
-                  position: "top-center"
+                  position: 'top-center',
                 });
                 setUserData({ token, user: userValidated });
-                router.push("/");
+                router.push('/');
               }
-            } catch (error) {
-              toast.error('Login has failed, verify your data')
+            } catch {
+              toast.error('Login has failed, verify your data');
             }
-
-          }}>
+          }}
+        >
           {({ isSubmitting, errors }) => (
             <Form className="space-y-4">
               <div>
@@ -72,11 +73,7 @@ const LoginComponent = () => {
                   name="email"
                   placeholder="your@email.com"
                 />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
+                <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
               </div>
               <div>
                 <label className="text-blue-900 font-medium">Password</label>
@@ -86,38 +83,36 @@ const LoginComponent = () => {
                   name="password"
                   placeholder="********"
                 />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
+                <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
               </div>
               <button
                 type="submit"
-                disabled={
-                  isSubmitting || errors.email || errors.password ? true : false
-                }
-                className="w-full bg-blue-700 text-white py-2 rounded-xl font-semibold shadow-md hover:bg-blue-800 transition disabled:opacity-50">
+                disabled={isSubmitting || errors.email || errors.password ? true : false}
+                className="w-full bg-blue-700 text-white py-2 rounded-xl font-semibold shadow-md hover:bg-blue-800 transition disabled:opacity-50"
+              >
                 Log In
               </button>
               <button
                 type="button"
                 onClick={handleGoogleLogin} // Llama a la función que maneja la autenticación
-                className="w-full bg-white text-gray-800 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transition flex items-center justify-center gap-2">
-                <img
+                className="w-full bg-white text-gray-800 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transition flex items-center justify-center gap-2"
+              >
+                <Image
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1024px-Google_%22G%22_logo.svg.png"
                   alt="Google Logo"
-                  className="h-5"
+                  width={20}
+                  height={20}
+                  className="h-5 w-auto"
+                  priority
                 />
                 <span className="text-sm font-medium">Sign in with Google</span>
               </button>
-              <p className="text-sm text-center text-gray-500">
-                {`Don't have an account?`}
-              </p>
+              <p className="text-sm text-center text-gray-500">{`Don't have an account?`}</p>
               <Link href="/register" className="block">
                 <button
                   type="button"
-                  className="w-full bg-yellow-400 text-blue-900 py-2 rounded-xl font-semibold shadow-md hover:bg-yellow-500 transition">
+                  className="w-full bg-yellow-400 text-blue-900 py-2 rounded-xl font-semibold shadow-md hover:bg-yellow-500 transition"
+                >
                   Register
                 </button>
               </Link>

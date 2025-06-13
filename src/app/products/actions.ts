@@ -1,4 +1,4 @@
-"use server";
+'use server';
 
 interface ICreateProduct {
   name: string;
@@ -10,66 +10,66 @@ interface ICreateProduct {
 }
 
 export async function createProduct(formData: FormData) {
-  const token = formData.get("token");
+  const token = formData.get('token');
 
   if (!token) {
-    throw new Error("Authentication required");
+    throw new Error('Authentication required');
   }
 
   const productData: ICreateProduct = {
-    name: formData.get("name") as string,
-    description: formData.get("description") as string,
-    initialPrice: Number(formData.get("initialPrice")),
-    finalPrice: Number(formData.get("finalPrice")),
-    categoryId: formData.get("categoryId") as string,
-    imgProduct: Array.from(formData.getAll("imgProduct")).map((img) =>
-      img.toString()
-    ),
+    name: formData.get('name') as string,
+    description: formData.get('description') as string,
+    initialPrice: Number(formData.get('initialPrice')),
+    finalPrice: Number(formData.get('finalPrice')),
+    categoryId: formData.get('categoryId') as string,
+    imgProduct: Array.from(formData.getAll('imgProduct')).map((img) => img.toString()),
   };
 
   try {
-    const response = await fetch("http://localhost:3001/api/products", {
-      method: "POST",
+    const response = await fetch('http://localhost:3001/api/products', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(productData),
-      cache: "no-store",
+      cache: 'no-store',
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || "Failed to create product");
+      throw new Error(error.message || 'Failed to create product');
     }
 
     return response.json();
-  } catch (error: any) {
-    console.error("Error creating product:", error);
-    throw new Error(error.message || "Failed to create product");
+  } catch (error) {
+    console.error('Error creating product:', error);
+    throw new Error(
+      (error instanceof Error ? error.message : String(error)) || 'Failed to create product'
+    );
   }
 }
 
 export async function uploadImages(files: File[], token: string) {
   if (!token) {
-    throw new Error("Authentication required");
+    throw new Error('Authentication required');
   }
 
   try {
     const formData = new FormData();
-    files.forEach((file) => formData.append("file", file));
+    files.forEach((file) => formData.append('file', file));
 
-    const response = await fetch("http://localhost:3001/api/products/upload", {
-      method: "POST",
+    const response = await fetch('http://localhost:3001/api/products/upload', {
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
       },
       body: formData,
-      cache: "no-store",
+      cache: 'no-store',
     });
 
     if (!response.ok) {
-      throw new Error("Failed to upload image");
+      throw new Error('Failed to upload image');
     }
 
     const data = await response.json();
@@ -80,52 +80,52 @@ export async function uploadImages(files: File[], token: string) {
       // fallback por si solo devuelve una
       return [data.url];
     } else {
-      throw new Error("No image URLs returned from server");
+      throw new Error('No image URLs returned from server');
     }
-  } catch (error: any) {
-    console.error("Error uploading images:", error);
-    throw new Error(error.message || "Failed to upload images");
+  } catch (error) {
+    console.error('Error uploading images:', error);
+    throw new Error(
+      (error instanceof Error ? error.message : String(error)) || 'Failed to upload images'
+    );
   }
 }
 
 export async function getProductById(id: string) {
   const response = await fetch(`http://localhost:3001/api/products/${id}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
-    cache: "no-store",
+    cache: 'no-store',
   });
   if (!response.ok) return null;
   return response.json();
 }
 
 export async function updateProduct(id: string, formData: FormData) {
-  let token = formData.get("token") as string | undefined;
+  let token = formData.get('token') as string | undefined;
   if (!token) {
-    const { cookies } = await import("next/headers");
+    const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
-    token = cookieStore.get("token")?.value;
+    token = cookieStore.get('token')?.value;
   }
-  if (!token) throw new Error("Authentication required");
+  if (!token) throw new Error('Authentication required');
   const productData: Partial<ICreateProduct> = {
-    name: formData.get("name") as string,
-    description: formData.get("description") as string,
-    initialPrice: Number(formData.get("initialPrice")),
-    finalPrice: Number(formData.get("finalPrice")),
-    categoryId: formData.get("categoryId") as string,
-    imgProduct: Array.from(formData.getAll("imgProduct")).map((img) =>
-      img.toString()
-    ),
+    name: formData.get('name') as string,
+    description: formData.get('description') as string,
+    initialPrice: Number(formData.get('initialPrice')),
+    finalPrice: Number(formData.get('finalPrice')),
+    categoryId: formData.get('categoryId') as string,
+    imgProduct: Array.from(formData.getAll('imgProduct')).map((img) => img.toString()),
   };
   const response = await fetch(`http://localhost:3001/api/products/${id}`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(productData),
   });
-  if (!response.ok) throw new Error("Error al actualizar el producto");
+  if (!response.ok) throw new Error('Error al actualizar el producto');
   return response.json();
 }

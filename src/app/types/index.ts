@@ -116,13 +116,11 @@ export interface IUserSession {
     email: string;
     phone: string;
     address: string;
-    role: "regular" | "admin" | "premium";
+    role: 'regular' | 'admin' | 'premium';
     imgProfile?: string;
     country: string;
     // Puedes agregar aquí otros campos opcionales si los necesitas
   };
-
-
 }
 
 export interface IUserFormData {
@@ -189,6 +187,8 @@ export interface IUser {
   country: string;
   address: string;
   createdAt: string;
+  imgProfile?: string;
+  isActive: boolean;
 }
 
 // Definir tipo para la subasta y el producto
