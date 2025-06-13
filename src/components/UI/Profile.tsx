@@ -2,14 +2,15 @@
 
 import { useAuth } from '@/app/context/AuthContext';
 import { IUser } from '@/app/types/index';
-import { useState, useRef } from 'react';
+import { AuctionProfile } from '@/app/types/auction';
+import { useState, useRef, useEffect } from 'react';
 import UpdateUser from '../Forms/users/UpdateUser';
 import ProfileTabs from './profile/ProfileTabs';
-import AuctionProfileCard from './profile/AuctionProfileCard';
-import { FaPen } from 'react-icons/fa';
-import Image from 'next/image';
+import ProfileStats from './profile/ProfileStats';
+import ProfileAuctions from './profile/ProfileAuctions';
+import ProfileHeader from './profile/ProfileHeader';
 
-const TABS = ['Active Bids', 'Won', 'Selling', 'Favorites', 'History'];
+const TABS = ['Active Bids'];
 
 const ProfileComponent = () => {
   const { user, userData, setUserData } = useAuth();
@@ -63,36 +64,55 @@ const ProfileComponent = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(TABS[0]);
   const [showPhotoMenu, setShowPhotoMenu] = useState(false);
-  const photoInputRef = useRef<HTMLInputElement>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>;
   const UserInfo = userData?.user as IUser;
 
-  // Simulación de cards de subasta (reemplazar por datos reales)
-  const auctions = [
-    {
-      title: 'Modern Abstract Painting',
-      category: 'Art',
-      image: '',
-      myBid: 1200,
-      currentBid: 1250,
-      timeLeft: '2h 15m',
-    },
-    {
-      title: 'Modern Abstract Painting',
-      category: 'Art',
-      image: '',
-      myBid: 1200,
-      currentBid: 1250,
-      timeLeft: '2h 15m',
-    },
-    {
-      title: 'Modern Abstract Painting',
-      category: 'Art',
-      image: '',
-      myBid: 1200,
-      currentBid: 1250,
-      timeLeft: '2h 15m',
-    },
-  ];
+  // Calcular tiempo activo
+  function getActiveTime() {
+    if (!userData?.user?.createdAt) return '';
+    const created = new Date(userData.user.createdAt);
+    const now = new Date();
+    const diffMs = now.getTime() - created.getTime();
+    const diffYears = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365));
+    if (diffYears > 0) return `${diffYears} year${diffYears > 1 ? 's' : ''}`;
+    const diffMonths = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 30));
+    if (diffMonths > 0) return `${diffMonths} month${diffMonths > 1 ? 's' : ''}`;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays > 0) return `${diffDays} day${diffDays > 1 ? 's' : ''}`;
+    return 'New';
+  }
+
+  // Estado para auctions reales
+  const [auctions, setAuctions] = useState<AuctionProfile[]>([]);
+  const [loadingAuctions, setLoadingAuctions] = useState(false);
+
+  // Obtener auctions reales según el tab activo
+  useEffect(() => {
+    async function fetchAuctions() {
+      if (!userData?.user?.id) return;
+      setLoadingAuctions(true);
+      try {
+        const token = userData.token;
+        let url = '';
+        // Solo hay un tab: Active Bids
+        url = `${process.env.NEXT_PUBLIC_API_URL}/bids?userId=${userData.user.id}&onlyActive=true`;
+        const res = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setAuctions(data);
+        } else {
+          setAuctions([]);
+        }
+      } catch {
+        setAuctions([]);
+      } finally {
+        setLoadingAuctions(false);
+      }
+    }
+    fetchAuctions();
+  }, [userData]); // Ya no depende de activeTab
 
   // Verificar si userData está cargado antes de renderizar
   if (!user) {
@@ -111,123 +131,26 @@ const ProfileComponent = () => {
       {/* Card de perfil separada */}
       <div className="w-full max-w-6xl">
         <div className="bg-white p-2 sm:p-4 md:p-6 rounded-xl shadow-xl flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
-          {/* Profile image and edit */}
-          <div className="relative flex flex-col items-center">
-            <Image
-              src={userData?.user.imgProfile || '/default-profile.png'}
-              alt={userData?.user.name || 'User'}
-              width={80}
-              height={80}
-              className="w-20 h-20 rounded-full object-cover border-2 border-blue-500"
-            />
-            <button
-              className="absolute bottom-2 right-2 bg-white rounded-full p-1 shadow-md border border-gray-200 hover:bg-blue-100 z-10"
-              onClick={() => {
-                setShowPhotoMenu((v) => !v);
-              }}
-              aria-label="Edit photo"
-              type="button"
-            >
-              <FaPen className="text-blue-700 w-4 h-4" />
-            </button>
-            {showPhotoMenu && (
-              <div className="absolute z-20 top-12 right-0 bg-white border rounded shadow-lg flex flex-col min-w-[140px] animate-fade-in">
-                <button
-                  className="px-4 py-2 text-left hover:bg-gray-100 text-sm"
-                  onClick={() => {
-                    setShowPhotoMenu(false);
-                    window.open(userData?.user.imgProfile || '/default-avatar.png', '_blank');
-                  }}
-                >
-                  Ver foto
-                </button>
-                <button
-                  className="px-4 py-2 text-left hover:bg-gray-100 text-sm"
-                  onClick={() => {
-                    setShowPhotoMenu(false);
-                    photoInputRef.current?.click();
-                  }}
-                >
-                  Editar foto
-                </button>
-              </div>
-            )}
-            <input
-              ref={photoInputRef}
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageChange(e.target.files?.[0])}
-              className="hidden"
-            />
-          </div>
-          {/* User info and badges */}
-          <div className="flex-1 flex flex-col gap-2 items-center md:items-start">
-            <span className="text-2xl md:text-3xl font-bold text-gray-800">
-              {userData?.user.name || ''}
-            </span>
-            {/* English description */}
-            <span className="text-xs text-gray-400 mt-1">Art & Antiques Collector</span>
-            <div className="flex flex-wrap gap-2 mt-2 items-center">
-              {/* Badge: Active/Inactive */}
-              {(userData?.user as { isActive?: boolean })?.isActive === false ? (
-                <span className="px-2 py-0.5 rounded text-xs font-semibold bg-red-100 text-red-700">
-                  Inactive
-                </span>
-              ) : (
-                <span className="px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-700">
-                  Active
-                </span>
-              )}
-              {/* Badge: Role */}
-              <span className="bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded text-xs font-semibold">
-                {userData?.user.role
-                  ? userData.user.role.charAt(0).toUpperCase() + userData.user.role.slice(1)
-                  : 'User'}
-              </span>
-            </div>
-          </div>
-          {/* Action buttons */}
-          <div className="flex flex-row md:flex-col gap-2 md:gap-3 items-center md:items-end mt-4 md:mt-0">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 transition text-sm"
-            >
-              Edit Profile
-            </button>
-          </div>
+          <ProfileHeader
+            userData={userData!}
+            showPhotoMenu={showPhotoMenu}
+            setShowPhotoMenu={setShowPhotoMenu}
+            photoInputRef={photoInputRef}
+            handleImageChange={handleImageChange}
+            onEditProfile={() => setIsModalOpen(true)}
+          />
         </div>
         {/* Stats row */}
-        <div className="flex flex-row justify-center gap-8 my-4 w-full">
-          <div className="flex flex-col items-center bg-gray-50 rounded-xl px-8 py-4 shadow text-center min-w-[120px]">
-            <span className="text-2xl font-bold text-blue-700">156</span>
-            <span className="text-sm text-gray-500 font-semibold mt-1">Pujas Ganadas</span>
-          </div>
-          <div className="flex flex-col items-center bg-gray-50 rounded-xl px-8 py-4 shadow text-center min-w-[120px]">
-            <span className="text-2xl font-bold text-green-600">89</span>
-            <span className="text-sm text-gray-500 font-semibold mt-1">Artículos Vendidos</span>
-          </div>
-          <div className="flex flex-col items-center bg-gray-50 rounded-xl px-8 py-4 shadow text-center min-w-[120px]">
-            <span className="text-2xl font-bold text-orange-500">$45K</span>
-            <span className="text-sm text-gray-500 font-semibold mt-1">Total Vendido</span>
-          </div>
-          <div className="flex flex-col items-center bg-gray-50 rounded-xl px-8 py-4 shadow text-center min-w-[120px]">
-            <span className="text-2xl font-bold text-purple-600">3</span>
-            <span className="text-sm text-gray-500 font-semibold mt-1">Años Activo</span>
-          </div>
-        </div>
+        <ProfileStats activeTime={getActiveTime()} />
       </div>
       {/* Tabs y cards fuera de la card de perfil */}
       <div className="w-full max-w-6xl mt-4">
-        <ProfileTabs
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          tabs={['Pujas Activas', 'Ganadas', 'Vendiendo', 'Favoritos', 'Historial']}
-        />
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-1">
-          {auctions.map((a, i) => (
-            <AuctionProfileCard key={i} {...a} />
-          ))}
-        </div>
+        <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={['Active Bids']} />
+        {loadingAuctions ? (
+          <div className="text-center py-8 text-gray-500">Loading auctions...</div>
+        ) : (
+          <ProfileAuctions auctions={auctions} />
+        )}
       </div>
       {/* Edit modal */}
       {isModalOpen && (
