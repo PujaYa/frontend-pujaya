@@ -1,4 +1,4 @@
-import { ILoginErrors, ILoginProps, IRegisterErrors, IRegisterProps } from "../../app/types/index";
+import { ILoginErrors, ILoginProps, IRegisterErrors, IRegisterProps } from "../../app/types";
 
 
 export function validateLoginForm(values: ILoginProps) {

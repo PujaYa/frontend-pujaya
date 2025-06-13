@@ -1,10 +1,10 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
     domains: ['res.cloudinary.com', 'upload.wikimedia.org'],
   },
-  /* otras opciones de configuración si las hay */
+  /* config options here */
 };
 
 export default nextConfig;

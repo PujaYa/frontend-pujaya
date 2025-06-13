@@ -62,7 +62,6 @@ export async function createProduct(formData: FormData, auctionId: string) {
     finalPrice: Number(formData.get('finalPrice')),
     categoryId: formData.get('categoryId') as string,
     imgProduct: Array.from(formData.getAll('imgProduct')).map((img) => img.toString()),
-    auctionId: auctionId,
   };
 
   const response = await fetch('http://localhost:3001/api/products', {
@@ -83,7 +82,7 @@ export async function createProduct(formData: FormData, auctionId: string) {
 }
 
 export async function uploadImages(files: File[]) {
-  const token = (await cookies()).get('token')?.value;
+  const token = cookies().get('token')?.value;
 
   if (!token) {
     throw new Error('Authentication required');

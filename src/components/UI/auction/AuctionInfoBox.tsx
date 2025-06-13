@@ -1,5 +1,5 @@
-import React from 'react';
-import { FaGavel, FaEye } from 'react-icons/fa';
+import React from "react";
+import { FaGavel, FaEye } from "react-icons/fa";
 
 interface AuctionInfoBoxProps {
   auctionInfo: {
@@ -22,13 +22,47 @@ const AuctionInfoBox: React.FC<AuctionInfoBoxProps> = ({
   viewsCount = 45, // fallback demo
   initialPrice,
 }) => {
-  const currentPrice = auctionInfo?.currentHighestBid ?? auctionInfo?.initialPrice ?? initialPrice;
+  const currentPrice =
+    auctionInfo?.finalPrice ??
+    auctionInfo?.currentPrice ??
+    auctionInfo?.initialPrice ??
+    initialPrice;
   return (
     <div className="bg-white rounded-2xl shadow p-6 mb-2 flex flex-col items-center">
       {/* 1. Auction name */}
       <h2 className="text-xl font-bold text-gray-900 mb-2 leading-tight text-center w-full">
         {auctionInfo?.name}
+        {isOwner && (
+          <div className="flex gap-2 ml-2">
+            <button
+              className="bg-yellow-400 hover:bg-yellow-500 text-blue-900 rounded-lg px-3 py-1 font-semibold text-sm transition shadow-sm border border-yellow-300"
+              onClick={() =>
+                (window.location.href = `/auctions/${auctionId}/edit`)
+              }>
+              Edit auction
+            </button>
+            <button
+              className="bg-yellow-200 hover:bg-yellow-300 text-blue-900 rounded-lg px-3 py-1 font-semibold text-sm transition shadow-sm border border-yellow-100"
+              onClick={() => (window.location.href = `/products/${id}/edit`)}>
+              Edit product
+            </button>
+          </div>
+        )}
       </h2>
+      <div className="mb-4">
+        <span className="text-gray-500 text-sm">Current price</span>
+        <div className="text-3xl font-bold text-blue-700">
+          ${currentPrice} USD
+        </div>
+      </div>
+      <div className="flex gap-2 mb-4">
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            auctionInfo?.isActive ?? isActive
+              ? "bg-blue-100 text-blue-700"
+              : "bg-gray-200 text-gray-500"
+          }`}>
+          {auctionInfo?.isActive ?? isActive ? "Active" : "Finished"}
       {/* 2. Category badge */}
       <div className="mb-4 w-full flex justify-center">
         <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">

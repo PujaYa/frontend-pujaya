@@ -1,5 +1,5 @@
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
-import { IProduct } from "../types/index";
+import { IProduct } from "../types";
 
 export async function getProductsDB(
   limit = 6,

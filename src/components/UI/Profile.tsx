@@ -155,7 +155,7 @@ const ProfileComponent = () => {
       {/* Edit modal */}
       {isModalOpen && (
         <UpdateUser
-          user={UserInfo}
+          user={userInfo}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onUpdateSuccess={() => setIsModalOpen(false)}

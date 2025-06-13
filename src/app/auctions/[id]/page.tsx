@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import AuctionDetail from "@/components/UI/AuctionDetail";
-import { IAuctionDetailType } from "@/app/types/index";
+import { IAuctionDetailType } from "@/app/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
