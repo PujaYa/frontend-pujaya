@@ -6,7 +6,7 @@ export interface IAuction {
   description: string;
   endDate: string;
   isActive: boolean;
-  owner: {
+  owner?: {
     id: string;
     name: string;
     email: string;
@@ -24,4 +24,22 @@ export interface IAuction {
   };
   currentHighestBid?: number;
   bids?: IBid[];
+}
+
+export interface IProduct {
+  id: string;
+  name: string;
+  imgProduct: string[];
+  description: string;
+  initialPrice: number;
+  currentHighestBid?: number;
+  category?: {
+    categoryName: string;
+  };
+}
+
+export interface IUser {
+  id: string;
+  name: string;
+  email: string;
 }

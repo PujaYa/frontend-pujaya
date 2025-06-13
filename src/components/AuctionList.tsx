@@ -12,6 +12,8 @@ interface AuctionListProps {
   category?: string;
   sort?: string;
   sellerId?: string;
+  page?: number;
+  setPage?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 // Definir un tipo mínimo para Auction (puedes reemplazarlo por el tipo real si lo tienes)
@@ -43,11 +45,17 @@ const AuctionList: React.FC<AuctionListProps> = ({
   category = '',
   sort = 'ending',
   sellerId = '',
+  page: controlledPage,
+  setPage: controlledSetPage,
 }) => {
   const [products, setProducts] = useState<AuctionType[]>([]);
-  const [page, setPage] = useState(1);
+  const [internalPage, internalSetPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // Usar page/setPage controlados si vienen del padre, si no usar internos
+  const page = controlledPage !== undefined ? controlledPage : internalPage;
+  const setPage = controlledSetPage !== undefined ? controlledSetPage : internalSetPage;
 
   useEffect(() => {
     setLoading(true);
@@ -62,8 +70,12 @@ const AuctionList: React.FC<AuctionListProps> = ({
     fetch(`${API_URL}/auctions?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data.auctions || []);
-        setTotal(data.total || 0);
+        // Filtrar solo subastas activas
+        const filtered = (data.auctions || []).filter(
+          (auction: { isActive?: boolean }) => auction.isActive !== false
+        );
+        setProducts(filtered);
+        setTotal(data.total || filtered.length); // Usar total real si viene del backend
         setLoading(false);
       })
       .catch(() => {

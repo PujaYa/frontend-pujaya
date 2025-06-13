@@ -4,6 +4,7 @@ import { getUserById } from '@/app/utils/users.helper';
 import Image from 'next/image';
 import { useEffect, useState, useCallback } from 'react';
 
+
 interface Props {
   auction: IAuction | null;
   isOpen: boolean;

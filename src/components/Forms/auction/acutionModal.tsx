@@ -49,18 +49,20 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
     }
   }, [auction]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: name === 'initialPrice' ? Number(value) : value
+      [name]: name === 'initialPrice' ? Number(value) : value,
     }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData(prev => ({ ...prev, image: file }));
+      setFormData((prev) => ({ ...prev, image: file }));
       setImagePreview(URL.createObjectURL(file));
     }
   };
@@ -77,10 +79,7 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium">{auction ? 'Editar' : 'Crear'} Subasta</h3>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-500"
-          >
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
             ×
           </button>
         </div>
@@ -114,7 +113,9 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Fecha de Finalización</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Fecha de Finalización
+              </label>
               <input
                 type="datetime-local"
                 name="endDate"
@@ -170,9 +171,9 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
                 <Image
                   src={imagePreview}
                   alt="Preview"
-                  className="mt-2 h-20 w-20 object-cover rounded"
-                  width={100}
-                  height={100}
+                  width={400}
+                  height={300}
+                  className="mt-2 w-full h-32 object-cover rounded-lg"
                 />
               )}
             </div>
@@ -197,4 +198,4 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
       </div>
     </div>
   );
-} 
+}

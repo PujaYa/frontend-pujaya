@@ -14,8 +14,7 @@ const Footer = () => {
             <span className="text-xl font-bold">Pujaya</span>
           </div>
           <p className="text-gray-300 text-sm mb-4">
-            The most reliable auction platform to discover and sell unique
-            items.
+            The most reliable auction platform to discover and sell unique items.
           </p>
           <div className="flex gap-3 text-gray-400 text-xl">
             <a href="#" aria-label="Facebook">

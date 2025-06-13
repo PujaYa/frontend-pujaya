@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import React, { useState } from "react";
-import { validateRegisterForm } from "../lib/validate";
-import Link from "next/link";
-import { register } from "@/app/utils/auth.helper";
-import { useRouter } from "next/navigation";
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import React, { useState } from 'react';
+import { validateRegisterForm } from '../lib/validate';
+import Link from 'next/link';
+import { register } from '@/app/utils/auth.helper';
+import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { useAuth } from "@/app/context/AuthContext";
-import { getIdToken } from "firebase/auth";
+import { useAuth } from '@/app/context/AuthContext';
+import { getIdToken } from 'firebase/auth';
 
 const RegisterComponent = () => {
   const [registerError, setRegisterError] = useState<string | null>(null);
@@ -26,13 +26,13 @@ const RegisterComponent = () => {
         </p>
         <Formik
           initialValues={{
-            name: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-            phone: "",
-            address: "",
-            country: "",
+            name: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            phone: '',
+            address: '',
+            country: '',
           }}
           validate={validateRegisterForm}
           onSubmit={async (values, { setSubmitting }) => {
@@ -41,14 +41,13 @@ const RegisterComponent = () => {
               const response = await register(values);
 
               const updatedUser = {
-                token: await getIdToken(response.user),
+                token: response.user ? await getIdToken(response.user) : '',
                 user: {
                   ...response.backendData,
-                }
-              }
+                },
+              };
 
               setUserData(updatedUser);
-
 
               toast.success(`User registered succesfully`, {
                 position: "top-center"
@@ -57,18 +56,17 @@ const RegisterComponent = () => {
             } catch (error: unknown) {
               setRegisterError((error as Error).message || "Registration failed");
               toast.error(`User register has failed`, {
-                position: "top-center"
-              })
+                position: 'top-center',
+              });
             } finally {
               setSubmitting(false);
             }
-          }}>
+          }}
+        >
           {({ isSubmitting, errors }) => (
             <Form className="space-y-4">
               {registerError && (
-                <div className="text-red-500 text-sm text-center">
-                  {registerError}
-                </div>
+                <div className="text-red-500 text-sm text-center">{registerError}</div>
               )}
               {/* Name */}
               <div>
@@ -79,11 +77,7 @@ const RegisterComponent = () => {
                   name="name"
                   placeholder="Your name"
                 />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
+                <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
               </div>
               {/* Email */}
               <div>
@@ -94,11 +88,7 @@ const RegisterComponent = () => {
                   name="email"
                   placeholder="mail@example.com"
                 />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
+                <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
               </div>
               {/* Password */}
               <div>
@@ -109,17 +99,11 @@ const RegisterComponent = () => {
                   name="password"
                   placeholder="********"
                 />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
+                <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
               </div>
               {/* Confirm Password */}
               <div>
-                <label className="text-blue-900 font-medium">
-                  Confirmar Contraseña
-                </label>
+                <label className="text-blue-900 font-medium">Confirmar Contraseña</label>
                 <Field
                   className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                   type="password"
@@ -141,11 +125,7 @@ const RegisterComponent = () => {
                   name="address"
                   placeholder="Your address"
                 />
-                <ErrorMessage
-                  name="address"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
+                <ErrorMessage name="address" component="div" className="text-red-500 text-sm" />
               </div>
               {/* Country */}
               <div>
@@ -156,28 +136,18 @@ const RegisterComponent = () => {
                   name="country"
                   placeholder="e.g. Argentina"
                 />
-                <ErrorMessage
-                  name="country"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
+                <ErrorMessage name="country" component="div" className="text-red-500 text-sm" />
               </div>
               {/* Phone */}
               <div>
-                <label className="text-blue-900 font-medium">
-                  Phone Number
-                </label>
+                <label className="text-blue-900 font-medium">Phone Number</label>
                 <Field
                   className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                   type="text"
                   name="phone"
                   placeholder="e.g. 1123456789"
                 />
-                <ErrorMessage
-                  name="phone"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
+                <ErrorMessage name="phone" component="div" className="text-red-500 text-sm" />
               </div>
               <button
                 type="submit"
@@ -191,16 +161,16 @@ const RegisterComponent = () => {
                     ? true
                     : false
                 }
-                className="w-full bg-yellow-400 text-blue-900 font-semibold py-2 rounded-xl shadow-md hover:bg-yellow-500 transition disabled:opacity-50">
+                className="w-full bg-yellow-400 text-blue-900 font-semibold py-2 rounded-xl shadow-md hover:bg-yellow-500 transition disabled:opacity-50"
+              >
                 Register
               </button>
-              <p className="text-sm text-center text-gray-500">
-                Do you already have an account?
-              </p>
+              <p className="text-sm text-center text-gray-500">Do you already have an account?</p>
               <Link href="/login" className="block">
                 <button
                   type="button"
-                  className="w-full bg-blue-800 text-white py-2 rounded-xl shadow-md hover:bg-blue-900 transition">
+                  className="w-full bg-blue-800 text-white py-2 rounded-xl shadow-md hover:bg-blue-900 transition"
+                >
                   LogIn
                 </button>
               </Link>

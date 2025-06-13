@@ -32,7 +32,9 @@ const Auction: React.FC<{ auction: AuctionProps }> = ({ auction }) => {
           width={300}
           height={300}
           alt={auction.product.name}
-          className="object-contain h-full w-full"
+          width={400}
+          height={300}
+          className="w-full h-48 object-cover rounded-t-lg"
         />
       </div>
       {/* Info */}
