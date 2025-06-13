@@ -45,7 +45,7 @@ const BidForm: React.FC<BidFormProps> = ({
         </span>
         <button
           className="mt-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded font-bold transition"
-          onClick={() => (window.location.href = "/upgrade")}>
+          onClick={() => (window.location.href = "/payment")}>
           Upgrade to Premium
         </button>
       </div>

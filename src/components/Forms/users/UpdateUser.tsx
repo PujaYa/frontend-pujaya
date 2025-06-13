@@ -1,8 +1,8 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
-import { IUserSession, UpdateUserProps } from '@/app/types/index';
-import { IUserFormData } from '@/app/types/index';
+import { IUserSession, UpdateUserProps } from '@/app/types';
+import { IUserFormData } from '@/app/types';
 import { toast } from 'react-toastify';
 
 interface Props extends UpdateUserProps {

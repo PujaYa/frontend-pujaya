@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import AuctionList from "@/components/AuctionList";
 import { getProductsDB } from "@/app/utils/products.helper";
 import Image from "next/image";
-import { IProduct } from "@/app/types/index";
+import { IProduct } from "@/app/types";
 
 // El featured debe ser un producto completo para tener el id
 export default function Home() {

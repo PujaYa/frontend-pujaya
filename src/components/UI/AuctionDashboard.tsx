@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from '@/app/context/AuthContext';
-import { IAuction } from '@/app/types/index';
+import { IAuction } from '@/app/types';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react'
 import AuctionDetailModal from '../AuctionDetailModal';
@@ -90,7 +90,7 @@ const AuctionDashboard = () => {
             </header>
 
             <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
-                <div className="max-w-8xl mx-auto py-6 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
                     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">

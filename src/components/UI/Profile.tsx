@@ -1,7 +1,6 @@
 'use client'
 
 import { useAuth } from "@/app/context/AuthContext";
-import { IUser } from "@/app/types/index";
 import { useState } from "react";
 import UpdateUser from "../Forms/users/UpdateUser";
 
@@ -65,8 +64,7 @@ const ProfileComponent = () => {
     }
     /* fin cambio Juan*/
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const UserInfo = userData?.user as IUser;
-
+    const { user: userInfo } = userData;
 
     // Verificar si userData está cargado antes de renderizar
     if (!user) {
@@ -140,7 +138,7 @@ const ProfileComponent = () => {
 
             {isModalOpen && (
                 <UpdateUser
-                    user={UserInfo}
+                    user={userInfo}
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     onUpdateSuccess={() => {
