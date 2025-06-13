@@ -63,6 +63,7 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
         e.preventDefault();
 
         try {
+            console.log(formData);
             const token = userData?.token;
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`, {
                 method: 'PATCH',
@@ -72,6 +73,8 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
                 },
                 body: JSON.stringify(formData),
             });
+
+           
 
             if (response.ok) {
                 onClose();

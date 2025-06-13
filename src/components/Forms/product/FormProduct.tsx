@@ -43,7 +43,7 @@ export default function FormProduct({
 
   useEffect(() => {
     // Cargar categorías
-    fetch("http://localhost:3001/api/category")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to load categories");
@@ -112,11 +112,11 @@ export default function FormProduct({
   ) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
-
+    
     setIsUploadingImages(true);
     setUploadProgress(0);
     setFormErrors({});
-
+    
     try {
       const urls = await uploadImages(Array.from(files), userData?.token || "");
       setUploadedImages((prev) => [...prev, ...urls]);

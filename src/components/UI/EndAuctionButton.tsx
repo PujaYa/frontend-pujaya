@@ -32,7 +32,7 @@ const EndAuctionButton: React.FC<EndAuctionButtonProps> = ({
     }
     try {
       const response = await fetch(
-        `http://localhost:3001/api/auctions/${auctionId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auctions/${auctionId}`,
         {
           method: "DELETE",
           headers: {

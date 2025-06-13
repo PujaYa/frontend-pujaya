@@ -66,7 +66,7 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
   }, [initialData]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/category")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`)
       .then((response) => {
         if (!response.ok) throw new Error("Failed to load categories");
         return response.json();

@@ -28,7 +28,7 @@ export async function createProduct(formData: FormData) {
   };
 
   try {
-    const response = await fetch("http://localhost:3001/api/products", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -37,6 +37,7 @@ export async function createProduct(formData: FormData) {
       body: JSON.stringify(productData),
       cache: "no-store",
     });
+    console.log(response);
 
     if (!response.ok) {
       const error = await response.json();
@@ -51,22 +52,27 @@ export async function createProduct(formData: FormData) {
 }
 
 export async function uploadImages(files: File[], token: string) {
+ 
   if (!token) {
     throw new Error("Authentication required");
   }
 
+
   try {
     const formData = new FormData();
     files.forEach((file) => formData.append("file", file));
+   
+    console.log(process.env.NEXT_PUBLIC_API_URL);
 
-    const response = await fetch("http://localhost:3001/api/products/upload", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/upload`, {
       method: "POST",
       headers: {
+        // "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
       body: formData,
-      cache: "no-store",
     });
+    console.log(response);
 
     if (!response.ok) {
       throw new Error("Failed to upload image");
@@ -89,7 +95,7 @@ export async function uploadImages(files: File[], token: string) {
 }
 
 export async function getProductById(id: string) {
-  const response = await fetch(`http://localhost:3001/api/products/${id}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -118,7 +124,7 @@ export async function updateProduct(id: string, formData: FormData) {
       img.toString()
     ),
   };
-  const response = await fetch(`http://localhost:3001/api/products/${id}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

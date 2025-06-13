@@ -25,7 +25,7 @@ export async function createAuction(formData: FormData) {
   };
 
   try {
-    const response = await fetch("http://localhost:3001/api/auctions", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auctions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -65,7 +65,7 @@ export async function createProduct(formData: FormData, auctionId: string) {
     auctionId: auctionId,
   };
 
-  const response = await fetch("http://localhost:3001/api/products", {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export async function uploadImages(files: File[]) {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetch("http://localhost:3001/api/products/upload", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/upload`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -115,7 +115,7 @@ export async function uploadImages(files: File[]) {
 export async function getAuctionById(id: string) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
-  const response = await fetch(`http://localhost:3001/api/auctions/${id}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auctions/${id}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -139,7 +139,7 @@ export async function updateAuction(id: string, formData: FormData) {
     endDate: formData.get("endDate") as string,
     productId: formData.get("productId") as string,
   };
-  const response = await fetch(`http://localhost:3001/api/auctions/${id}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auctions/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
