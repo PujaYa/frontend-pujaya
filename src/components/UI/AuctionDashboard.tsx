@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/app/context/AuthContext';
-import { IAuction } from '@/app/types';
+import { IAuction } from '@/app/types/index';
 import React, { useCallback, useEffect, useState } from 'react';
 import AuctionDetailModal from '../AuctionDetailModal';
 import { toast } from 'react-toastify';

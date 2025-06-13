@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { createAuction, updateAuction } from "@/app/auctions/actions";
 import { useAuctionForm } from "@/app/context/AuctionFormContext";
-import { IAuction } from "@/app/types/index";
 
 interface FormErrors {
   name?: string;

@@ -11,6 +11,7 @@ export interface IAuction {
     name: string;
     email: string;
   };
+
   product: {
     id: string;
     name: string;
@@ -25,6 +26,8 @@ export interface IAuction {
   currentHighestBid?: number;
   bids?: IBid[];
 }
+
+
 
 export interface IProduct {
   id: string;

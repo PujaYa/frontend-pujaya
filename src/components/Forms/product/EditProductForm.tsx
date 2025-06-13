@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { updateProduct, uploadImages } from "@/app/products/actions";
 import { useAuth } from "@/app/context/AuthContext";
 import Image from "next/image";
-import { IAuction } from "@/app/types/index";
+
 
 interface Category {
   id: string;
@@ -316,8 +316,6 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
                   width={400}
                   height={128}
                   className="w-full h-32 object-cover rounded-lg"
-                  width={100}
-                  height={100}
                 />
                 <button
                   type="button"

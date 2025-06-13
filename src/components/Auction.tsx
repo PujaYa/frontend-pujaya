@@ -29,11 +29,10 @@ const Auction: React.FC<{ auction: AuctionProps }> = ({ auction }) => {
               ? auction.product.imgProduct[0]
               : '/no-image.png'
           }
-          width={300}
-          height={300}
-          alt={auction.product.name}
           width={400}
           height={300}
+          priority
+          alt={auction.product.name}
           className="w-full h-48 object-cover rounded-t-lg"
         />
       </div>
