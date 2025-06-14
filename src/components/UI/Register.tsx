@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { register } from '@/app/utils/auth.helper';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { useAuth } from '@/app/context/AuthContext';
 import { getIdToken } from 'firebase/auth';
 
 const RegisterComponent = () => {

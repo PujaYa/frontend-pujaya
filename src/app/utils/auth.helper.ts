@@ -1,4 +1,4 @@
-import { ILoginProps, IRegisterProps, IUserSession } from "@/app/types";
+import { ILoginProps, IRegisterProps } from '@/app/types';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,

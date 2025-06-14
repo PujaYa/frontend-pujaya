@@ -65,7 +65,6 @@ const ProfileComponent = () => {
   const [activeTab, setActiveTab] = useState(TABS[0]);
   const [showPhotoMenu, setShowPhotoMenu] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>;
-  const UserInfo = userData?.user as IUser;
 
   // Calcular tiempo activo
   function getActiveTime() {
@@ -155,7 +154,7 @@ const ProfileComponent = () => {
       {/* Edit modal */}
       {isModalOpen && (
         <UpdateUser
-          user={userInfo}
+          user={userData!.user}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onUpdateSuccess={() => setIsModalOpen(false)}

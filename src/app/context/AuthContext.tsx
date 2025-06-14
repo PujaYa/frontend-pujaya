@@ -1,28 +1,28 @@
 'use client';
 
-import { IUserSession } from "@/app/types";
-import { auth } from "@/components/lib/firebaseConfig";
-import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
-import Cookies from "js-cookie";
-import { createContext, useContext, useEffect, useState } from "react";
+import { IUserSession } from '@/app/types';
+import { auth } from '@/components/lib/firebaseConfig';
+import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
+import Cookies from 'js-cookie';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 export interface AuthContextProps {
   userData: IUserSession | null;
   user: User | null;
   setUser: (user: User | null) => void;
-  setUserData: (userData: IUserSession | null) => void
-  updateUserRole: (newRole: "regular" | "admin" | "premium") => void;
-  logout: () => void
+  setUserData: (userData: IUserSession | null) => void;
+  updateUserRole: (newRole: 'regular' | 'admin' | 'premium') => void;
+  logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
   userData: null,
   user: null,
-  setUser: () => { },
-  setUserData: () => { },
-  updateUserRole: () => { },
-  logout: () => { },
-})
+  setUser: () => {},
+  setUserData: () => {},
+  updateUserRole: () => {},
+  logout: () => {},
+});
 
 export interface AuthProviderProps {
   children: React.ReactNode;
@@ -35,15 +35,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (userData) {
-      localStorage.setItem("userSession", JSON.stringify({ token: userData.token, user: userData.user }))
-      Cookies.set("userSession", JSON.stringify({ token: userData.token, user: userData.user }))
+      localStorage.setItem(
+        'userSession',
+        JSON.stringify({ token: userData.token, user: userData.user })
+      );
+      Cookies.set('userSession', JSON.stringify({ token: userData.token, user: userData.user }));
     }
-  }, [userData])
+  }, [userData]);
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("userSession")!)
-    setUserData(userData)
-  }, [])
+    const userData = JSON.parse(localStorage.getItem('userSession')!);
+    setUserData(userData);
+  }, []);
 
   useEffect(() => {
     const auth = getAuth();
@@ -51,7 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(currentUser);
     });
     return () => unsuscribe();
-  })
+  });
   // Guardar sesión en localStorage y cookies cuando userData cambia
   useEffect(() => {
     if (userData) {
@@ -112,7 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const updateUserRole = (newRole: "regular" | "admin" | "premium") => {
+  const updateUserRole = (newRole: 'regular' | 'admin' | 'premium') => {
     if (userData) {
       const updatedUserData: IUserSession = {
         ...userData,
@@ -123,16 +126,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       };
       setUserData(updatedUserData);
     }
-  };
-
-
-
-  const getFreshToken = async () => {
-    const auth = getAuth();
-    if (auth.currentUser) {
-      return await auth.currentUser.getIdToken();
-    }
-    return null;
   };
 
   return (

@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
-import { IUserSession, UpdateUserProps } from '@/app/types';
+import { UpdateUserProps } from '@/app/types';
 import { IUserFormData } from '@/app/types';
 import { toast } from 'react-toastify';
 import Image from 'next/image';

@@ -1,11 +1,10 @@
 'use client';
 
-import AuctionList from "@/components/AuctionList";
-import Link from "next/link";
-import { useAuth } from "@/app/context/AuthContext";
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import PaymentComponent from "@/components/UI/Payment";
+import AuctionList from '@/components/AuctionList';
+import Link from 'next/link';
+import { useAuth } from '@/app/context/AuthContext';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 // Modularización: Filtros y búsqueda
 function AuctionFilters({
@@ -139,7 +138,10 @@ export default function AuctionsPage() {
             <span>Create Auction</span>
           </Link>
         ) : userData ? (
-          <Link href={'/payment'} className="align-content-center px-6 py-3 bg-yellow-400 text-blue-900 font-semibold rounded-xl shadow-md hover:bg-yellow-500 transition">
+          <Link
+            href={'/payment'}
+            className="align-content-center px-6 py-3 bg-yellow-400 text-blue-900 font-semibold rounded-xl shadow-md hover:bg-yellow-500 transition"
+          >
             Upgrade to Premium to create auctions
           </Link>
         ) : null}

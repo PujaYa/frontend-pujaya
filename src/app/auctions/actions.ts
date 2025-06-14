@@ -48,7 +48,7 @@ export async function createAuction(formData: FormData) {
   }
 }
 
-export async function createProduct(formData: FormData, auctionId: string) {
+export async function createProduct(formData: FormData) {
   const token = (await cookies()).get('token')?.value;
 
   if (!token) {
