@@ -4,21 +4,15 @@ import { useState } from "react";
 export default function ContactUs() {
   const [status, setStatus] = useState("");
 
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("Sending...");
     const form = e.currentTarget;
-    const formData = new FormData(form);
-    
     const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      message: formData.get("message"),
+      name: form.name.value,
+      email: form.email.value,
+      message: form.message.value,
     };
-
-    console.log(data);
-
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact`, {
         method: "POST",

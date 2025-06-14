@@ -1,4 +1,4 @@
-import { ILoginProps, IRegisterProps } from '@/app/types/index';
+import { ILoginProps, IRegisterProps } from '@/app/types';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,

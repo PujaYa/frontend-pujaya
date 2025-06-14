@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import UpdateUser from '@/components/Forms/users/UpdateUser';
 import { toast } from 'react-toastify';
-import { DashboardStats, IUser, IAuction } from '../types/index';
+import { DashboardStats, User, Auction } from "../types";
 
 export default function AdminDashboard() {
   const { userData } = useAuth();
@@ -16,8 +16,8 @@ export default function AdminDashboard() {
     premiumUsers: 0,
     regularUsers: 0,
   });
-  const [users, setUsers] = useState<IUser[]>([]);
-  const [activeAuctions, setActiveAuctions] = useState<IAuction[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [activeAuctions, setActiveAuctions] = useState<Auction[]>([]);
   const [loading, setLoading] = useState(true);
   const [isInitializing, setIsInitializing] = useState(true);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -51,15 +51,15 @@ export default function AdminDashboard() {
       });
       const auctionsDataResponse = await auctionsResponse.json();
       const auctionsData = auctionsDataResponse.auctions;
-      setActiveAuctions(auctionsData.filter((auction: IAuction) => auction.isActive === true));
+      setActiveAuctions(auctionsData.filter((auction: Auction) => auction.isActive === true));
 
       // Calculate stats
       setStats({
         totalUsers: usersData.length,
-        activeAuctions: auctionsData.filter((a: IAuction) => a.isActive === true).length,
+        activeAuctions: auctionsData.filter((a: Auction) => a.isActive === true).length,
         totalAuctions: auctionsData.length,
-        premiumUsers: usersData.filter((u: IUser) => u.role === 'premium').length,
-        regularUsers: usersData.filter((u: IUser) => u.role === 'regular').length,
+        premiumUsers: usersData.filter((u: User) => u.role === 'premium').length,
+        regularUsers: usersData.filter((u: User) => u.role === 'regular').length
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);

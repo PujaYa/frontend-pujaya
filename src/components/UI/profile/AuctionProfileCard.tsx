@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface AuctionProfileCardProps {
   title: string;
@@ -9,6 +10,7 @@ interface AuctionProfileCardProps {
   currentBid: number;
   timeLeft?: string;
   onBid?: () => void;
+  auctionId?: string;
 }
 
 const AuctionProfileCard: React.FC<AuctionProfileCardProps> = ({
@@ -19,9 +21,11 @@ const AuctionProfileCard: React.FC<AuctionProfileCardProps> = ({
   currentBid,
   timeLeft,
   onBid,
+  auctionId,
 }) => {
-  return (
-    <div className="bg-white rounded-xl shadow flex flex-col p-4 min-w-[220px] max-w-xs w-full">
+  // Envolver la card en un Link si auctionId está presente
+  const cardContent = (
+    <div className="bg-white rounded-xl shadow flex flex-col p-4 min-w-[220px] max-w-xs w-full cursor-pointer hover:shadow-lg transition-shadow">
       <div className="relative flex items-center justify-center h-32 bg-gray-100 rounded-lg mb-3">
         {image ? (
           <Image
@@ -49,7 +53,7 @@ const AuctionProfileCard: React.FC<AuctionProfileCardProps> = ({
           </span>
         )}
         <span>
-          AAual Bid: <span className="text-green-700 font-bold">${currentBid}</span>
+          Actual Bid: <span className="text-green-700 font-bold">${currentBid}</span>
         </span>
       </div>
       {onBid && (
@@ -62,6 +66,7 @@ const AuctionProfileCard: React.FC<AuctionProfileCardProps> = ({
       )}
     </div>
   );
+  return auctionId ? <Link href={`/auctions/${auctionId}`}>{cardContent}</Link> : cardContent;
 };
 
 export default AuctionProfileCard;

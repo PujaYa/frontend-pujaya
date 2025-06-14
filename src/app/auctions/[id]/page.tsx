@@ -1,12 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import AuctionDetail from "@/components/UI/AuctionDetail";
-import { IAuctionDetailType } from "@/app/types/index";
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import AuctionDetail from '@/components/UI/AuctionDetail';
+import { IAuctionDetailType } from '@/app/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
 
 export default function AuctionDetailPage() {
   const { id } = useParams();
@@ -18,7 +17,7 @@ export default function AuctionDetailPage() {
     if (!id) return;
     fetch(`${API_URL}/auctions/${id}`)
       .then((res) => {
-        if (!res.ok) throw new Error("No se encontró la subasta");
+        if (!res.ok) throw new Error('No se encontró la subasta');
         return res.json();
       })
       .then((data) => {
@@ -32,8 +31,7 @@ export default function AuctionDetailPage() {
   }, [id]);
 
   if (loading) return <div className="text-center py-10">Cargando...</div>;
-  if (error)
-    return <div className="text-center py-10 text-red-500">{error}</div>;
+  if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
   if (!auction) return null;
 
   // Pasar los datos del producto y la subasta a AuctionDetail

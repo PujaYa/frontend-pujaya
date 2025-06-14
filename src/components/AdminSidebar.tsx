@@ -17,18 +17,18 @@ export default function AdminSidebar() {
       href: '/dashboard/auctions',
       title: 'Auctions',
     },
-    // {
-    //   href: '/dashboard/sales',
-    //   title: 'Sales',
-    // },
-    // {
-    //   href: '/dashboard/settings',
-    //   title: 'Settings',
-    // },
+    {
+      href: '/dashboard/sales',
+      title: 'Sales',
+    },
+    {
+      href: '/dashboard/settings',
+      title: 'Settings',
+    },
   ];
 
   return (
-    <div className="flex flex-col h-3/4 bg-white  w-60 rounded-b-lg">
+    <div className="flex flex-col h-3/4 bg-white  w-60 rounded-lg">
       <div className="flex items-center justify-center h-17 ">
         <span className="text-lg font-bold">Admin Panel</span>
       </div>

@@ -7,13 +7,11 @@ import Link from 'next/link';
 import { register } from '@/app/utils/auth.helper';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { useAuth } from '@/app/context/AuthContext';
 import { getIdToken } from 'firebase/auth';
 
 const RegisterComponent = () => {
   const [registerError, setRegisterError] = useState<string | null>(null);
   const router = useRouter();
-  const { setUserData } = useAuth();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-50">

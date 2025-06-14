@@ -1,6 +1,6 @@
 'use client';
 
-import { IUserSession } from '@/app/types/index';
+import { IUserSession } from '@/app/types';
 import { auth } from '@/components/lib/firebaseConfig';
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import Cookies from 'js-cookie';
@@ -11,6 +11,7 @@ export interface AuthContextProps {
   user: User | null;
   setUser: (user: User | null) => void;
   setUserData: (userData: IUserSession | null) => void;
+  updateUserRole: (newRole: 'regular' | 'admin' | 'premium') => void;
   logout: () => void;
 }
 
@@ -19,6 +20,7 @@ export const AuthContext = createContext<AuthContextProps>({
   user: null,
   setUser: () => {},
   setUserData: () => {},
+  updateUserRole: () => {},
   logout: () => {},
 });
 
@@ -113,8 +115,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateUserRole = (newRole: 'regular' | 'admin' | 'premium') => {
+    if (userData) {
+      const updatedUserData: IUserSession = {
+        ...userData,
+        user: {
+          ...userData.user,
+          role: newRole,
+        },
+      };
+      setUserData(updatedUserData);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ userData, user, setUserData, setUser, logout }}>
+    <AuthContext.Provider value={{ userData, user, setUserData, setUser, updateUserRole, logout }}>
       {/* Loader global de sesión */}
       {loading ? (
         <div className="flex justify-center items-center min-h-[300px]">

@@ -252,6 +252,19 @@ const AuctionDetail: React.FC<
                   showUpgradePrompt={!!showUpgradePrompt}
                 />
               )}
+              {!showBidForm && showUpgradePrompt && (
+                <div className="text-center mt-4">
+                  <a
+                    href="/payment"
+                    className="inline-block bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-semibold px-6 py-3 rounded-xl shadow transition"
+                  >
+                    Upgrade to Premium
+                  </a>
+                  <p className="text-gray-500 mt-2">
+                    Only premium users can place bids in auctions.
+                  </p>
+                </div>
+              )}
             </div>
             <div className="bg-white rounded-2xl shadow-md p-6">
               <BidHistory bids={bids} bidsLoading={bidsLoading} bidsError={bidsError} />

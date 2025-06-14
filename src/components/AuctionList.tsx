@@ -34,7 +34,7 @@ function AuctionCard({ auction }: { auction: AuctionType }) {
       href={`/auctions/${auction.id}`}
       className="block transition hover:scale-105"
     >
-      <Auction auction={auction} />
+      <Auction product={auction.product} />
     </Link>
   );
 }
