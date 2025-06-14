@@ -132,7 +132,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-
   return (
     <AuthContext.Provider value={{ userData, user, setUserData, setUser, updateUserRole, logout }}>
       {/* Loader global de sesión */}

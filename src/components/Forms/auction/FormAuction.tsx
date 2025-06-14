@@ -51,9 +51,9 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
   const [endDate, setEndDate] = useState(
     initialData?.endDate ? initialData.endDate.slice(0, 16) : auctionForm.endDate || ''
   );
-  const [productIdState, setProductId] = useState(
-    initialData?.product?.id || auctionForm.productId || ''
-  );
+  // const [productIdState, setProductId] = useState(
+  //   initialData?.product?.id || auctionForm.productId || ''
+  // );
 
   // Estado para el valor mínimo del input de fecha
   const [minEndDate, setMinEndDate] = useState('');
@@ -64,7 +64,7 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
       setName(initialData.name || '');
       setDescription(initialData.description || '');
       setEndDate(initialData.endDate ? initialData.endDate.slice(0, 16) : '');
-      setProductId(initialData.product?.id || '');
+      // setProductId(initialData.product?.id || '');
     }
   }, [initialData]);
 

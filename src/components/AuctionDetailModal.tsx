@@ -67,6 +67,24 @@ export default function AuctionDetailModal({ auction, isOpen, onClose }: Props) 
             />
           </div>
 
+                    {/* Content */}
+                    <div className="w-full space-y-4">
+                        <div>
+                            <h4 className="text-xl font-semibold text-gray-900">{auction.name}</h4>
+                            <p className="text-sm text-gray-500">{auction.description}</p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-sm text-gray-500">Initial Price</p>
+                                <p className="text-lg font-semibold">${product?.initialPrice || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500">Current Price</p>
+                                <p className="text-lg font-semibold">${product?.finalPrice || 'N/A'}</p>
+                            </div>
+                        </div>
+                    </div>
           {/* Content */}
           <div className="w-full space-y-4">
             <div>

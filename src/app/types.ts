@@ -45,4 +45,12 @@ export interface IUser {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  address?: string;
+  country?: string;
+  imgProfile?: string;
+  createdAt?: string;
+  role?: string;
+  isActive?: boolean;
+  firebaseId?: string;
 }

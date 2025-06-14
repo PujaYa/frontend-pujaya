@@ -124,6 +124,7 @@ export interface IUserSession {
     role: 'regular' | 'admin' | 'premium';
     imgProfile?: string;
     country: string;
+    createdAt: string;
     // Puedes agregar aquí otros campos opcionales si los necesitas
   };
 }
