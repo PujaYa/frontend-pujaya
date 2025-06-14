@@ -8,7 +8,7 @@ import { login, loginWithGoogle } from '@/app/utils/auth.helper';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import Image from 'next/image';
+import Image from "next/image";
 
 const LoginComponent = () => {
   const { setUserData } = useAuth();
@@ -58,8 +58,9 @@ const LoginComponent = () => {
                 setUserData({ token, user: userValidated });
                 router.push('/');
               }
-            } catch {
-              toast.error('Login has failed, verify your data');
+            } catch (error: unknown) {
+              console.error(error);
+              toast.error('Login has failed, verify your data')
             }
           }}
         >
@@ -95,15 +96,13 @@ const LoginComponent = () => {
               <button
                 type="button"
                 onClick={handleGoogleLogin} // Llama a la función que maneja la autenticación
-                className="w-full bg-white text-gray-800 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transition flex items-center justify-center gap-2"
-              >
+                className="w-full bg-white text-gray-800 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transition flex items-center justify-center gap-2">
                 <Image
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1024px-Google_%22G%22_logo.svg.png"
                   alt="Google Logo"
+                  className="h-5"
                   width={20}
-                  height={20}
-                  className="h-5 w-auto"
-                  priority
+                  height={50}
                 />
                 <span className="text-sm font-medium">Sign in with Google</span>
               </button>

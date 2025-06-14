@@ -1,9 +1,10 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { updateProduct, uploadImages } from '@/app/products/actions';
-import { useAuth } from '@/app/context/AuthContext';
-import Image from 'next/image';
+"use client";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { updateProduct, uploadImages } from "@/app/products/actions";
+import { useAuth } from "@/app/context/AuthContext";
+import Image from "next/image";
+
 
 interface Category {
   id: string;
@@ -63,7 +64,7 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
   }, [initialData]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/category')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`)
       .then((response) => {
         if (!response.ok) throw new Error('Failed to load categories');
         return response.json();

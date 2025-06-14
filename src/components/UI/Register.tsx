@@ -7,11 +7,13 @@ import Link from 'next/link';
 import { register } from '@/app/utils/auth.helper';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { useAuth } from '@/app/context/AuthContext';
 import { getIdToken } from 'firebase/auth';
 
 const RegisterComponent = () => {
   const [registerError, setRegisterError] = useState<string | null>(null);
   const router = useRouter();
+  const { setUserData } = useAuth();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-50">
@@ -48,12 +50,11 @@ const RegisterComponent = () => {
               setUserData(updatedUser);
 
               toast.success(`User registered succesfully`, {
-                position: 'top-center',
-              });
-              router.push('/');
-            } catch (error) {
-              const errMsg = error instanceof Error ? error.message : 'Registration failed';
-              setRegisterError(errMsg);
+                position: "top-center"
+              })
+              router.push("/");
+            } catch (error: unknown) {
+              setRegisterError((error as Error).message || "Registration failed");
               toast.error(`User register has failed`, {
                 position: 'top-center',
               });

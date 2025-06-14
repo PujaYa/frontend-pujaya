@@ -8,11 +8,14 @@ import ProfileTabs from './profile/ProfileTabs';
 import ProfileStats from './profile/ProfileStats';
 import ProfileAuctions from './profile/ProfileAuctions';
 import ProfileHeader from './profile/ProfileHeader';
+import { IUser } from '@/app/types/index';
 
 const TABS = ['Active Bids'];
 
 const ProfileComponent = () => {
   const { user, userData, setUserData } = useAuth();
+
+
   async function handleImageChange(file: File | undefined) {
     if (!file) return;
     const formData = new FormData();
@@ -153,7 +156,7 @@ const ProfileComponent = () => {
       {/* Edit modal */}
       {isModalOpen && (
         <UpdateUser
-          user={userData!.user}
+          user={userData!.user as IUser}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onUpdateSuccess={() => setIsModalOpen(false)}

@@ -33,6 +33,7 @@ const CheckoutForm = () => {
           }),
         });
         const data = await res.json();
+        console.log(data);
         setClientSecret(data.clientSecret);
       } catch {
         toast.error('Error creating payment intent');
@@ -53,9 +54,22 @@ const CheckoutForm = () => {
     if (error) {
       toast.error(error.message || 'Payment failed');
     } else if (paymentIntent?.status === 'succeeded') {
+
+
+
+      const res = await fetch(`${API_URL.replace(/\/$/, '')}/payments/update-subscription`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userData?.user.id, plan , paymentIntentId: paymentIntent?.id}),
+      });
+      const data = await res.json();
+      if (!data) {
+        toast.error(data.message);
+        return;
+      }
       toast.success('Payment successful! Premium activated soon.');
       updateUserRole('premium');
-      router.push(`/payment-success?amount=${amount}`);
+      router.push(`/payment-success?amount=${amount}&plan=${plan}`);
     }
     setLoading(false);
   };

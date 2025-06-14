@@ -1,5 +1,5 @@
-import React from 'react';
-import Link from 'next/link';
+import Link from "next/link";
+import React from "react";
 
 const Footer = () => {
   return (
@@ -67,29 +67,29 @@ const Footer = () => {
           <h3 className="font-bold mb-3">Categories</h3>
           <ul className="space-y-2 text-gray-300 text-sm">
             <li>
-              <a href="#" className="hover:text-yellow-400">
+              <Link href="#" className="hover:text-yellow-400">
                 Art
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-yellow-400">
+              <Link href="#" className="hover:text-yellow-400">
                 Watches
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-yellow-400">
+              <Link href="#" className="hover:text-yellow-400">
                 Jewelry
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-yellow-400">
+              <Link href="#" className="hover:text-yellow-400">
                 Collectibles
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-yellow-400">
+              <Link href="#" className="hover:text-yellow-400">
                 Antiques
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -98,29 +98,29 @@ const Footer = () => {
           <h3 className="font-bold mb-3">Support</h3>
           <ul className="space-y-2 text-gray-300 text-sm">
             <li>
-              <a href="#" className="hover:text-yellow-400">
+              <Link href="#" className="hover:text-yellow-400">
                 Help Center
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-yellow-400">
+              <Link href="#" className="hover:text-yellow-400">
                 Terms & Conditions
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-yellow-400">
+              <Link href="#" className="hover:text-yellow-400">
                 Privacy Policy
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-yellow-400">
+              <Link href="#" className="hover:text-yellow-400">
                 Security
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-yellow-400">
+              <Link href="#" className="hover:text-yellow-400">
                 FAQ
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -128,15 +128,15 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6 mt-10 border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center text-gray-400 text-xs">
         <span>© 2024 Pujaya. All rights reserved.</span>
         <div className="flex gap-6 mt-2 md:mt-0">
-          <a href="#" className="hover:text-yellow-400">
+          <Link href="#" className="hover:text-yellow-400">
             Terms
-          </a>
-          <a href="#" className="hover:text-yellow-400">
+          </Link>
+          <Link href="#" className="hover:text-yellow-400">
             Privacy
-          </a>
-          <a href="#" className="hover:text-yellow-400">
+          </Link>
+          <Link href="#" className="hover:text-yellow-400">
             Cookies
-          </a>
+          </Link>
         </div>
       </div>
     </footer>

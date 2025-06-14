@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Auction from './Auction';
 import Link from 'next/link';
+import { IAuction } from '@/app/types';
 
 const PAGE_SIZE = 6;
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -27,14 +28,13 @@ type AuctionType = {
 };
 
 // Subcomponente para la tarjeta de subasta
-function AuctionCard({ auction }: { auction: AuctionType }) {
+function AuctionCard({ auction }: { auction: IAuction }) {
   return (
     <Link
       key={auction.id}
       href={`/auctions/${auction.id}`}
-      className="block transition hover:scale-105"
-    >
-      <Auction product={auction.product} />
+      className="block transition hover:scale-105">
+      <Auction auction={auction} />
     </Link>
   );
 }
@@ -93,7 +93,7 @@ const AuctionList: React.FC<AuctionListProps> = ({
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
           {products &&
-            products.map((auction) => <AuctionCard key={auction.id} auction={auction} />)}
+            products.map((auction) => <AuctionCard key={auction.id} auction={auction as IAuction} />)}
         </div>
       )}
       {/* Paginación */}

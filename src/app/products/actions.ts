@@ -26,8 +26,8 @@ export async function createProduct(formData: FormData) {
   };
 
   try {
-    const response = await fetch('http://localhost:3001/api/products', {
-      method: 'POST',
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
+      method: "POST",
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
@@ -35,6 +35,7 @@ export async function createProduct(formData: FormData) {
       body: JSON.stringify(productData),
       cache: 'no-store',
     });
+    console.log(response);
 
     if (!response.ok) {
       const error = await response.json();
@@ -42,31 +43,34 @@ export async function createProduct(formData: FormData) {
     }
 
     return response.json();
-  } catch (error) {
-    console.error('Error creating product:', error);
-    throw new Error(
-      (error instanceof Error ? error.message : String(error)) || 'Failed to create product'
-    );
+    } catch (error: unknown) {
+    console.error("Error creating product:", error);
+    throw new Error((error as Error).message || "Failed to create product");
   }
 }
 
 export async function uploadImages(files: File[], token: string) {
+ 
   if (!token) {
     throw new Error('Authentication required');
   }
 
+
   try {
     const formData = new FormData();
-    files.forEach((file) => formData.append('file', file));
+    files.forEach((file) => formData.append("file", file));
+   
+    console.log(process.env.NEXT_PUBLIC_API_URL);
 
-    const response = await fetch('http://localhost:3001/api/products/upload', {
-      method: 'POST',
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/upload`, {
+      method: "POST",
       headers: {
+        // "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
       body: formData,
-      cache: 'no-store',
     });
+    console.log(response);
 
     if (!response.ok) {
       throw new Error('Failed to upload image');
@@ -82,17 +86,15 @@ export async function uploadImages(files: File[], token: string) {
     } else {
       throw new Error('No image URLs returned from server');
     }
-  } catch (error) {
-    console.error('Error uploading images:', error);
-    throw new Error(
-      (error instanceof Error ? error.message : String(error)) || 'Failed to upload images'
-    );
+  } catch (error: unknown) {
+    console.error("Error uploading images:", error);
+    throw new Error((error as Error).message || "Failed to upload images");
   }
 }
 
 export async function getProductById(id: string) {
-  const response = await fetch(`http://localhost:3001/api/products/${id}`, {
-    method: 'GET',
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
+    method: "GET",
     headers: {
       'Content-Type': 'application/json',
     },
@@ -118,8 +120,8 @@ export async function updateProduct(id: string, formData: FormData) {
     categoryId: formData.get('categoryId') as string,
     imgProduct: Array.from(formData.getAll('imgProduct')).map((img) => img.toString()),
   };
-  const response = await fetch(`http://localhost:3001/api/products/${id}`, {
-    method: 'PATCH',
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
+    method: "PATCH",
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,

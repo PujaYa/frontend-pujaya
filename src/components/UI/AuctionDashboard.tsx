@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/app/context/AuthContext';
-import { IAuction } from '@/app/types';
+import { IAuction } from '@/app/types/index';
 import React, { useCallback, useEffect, useState } from 'react';
 import AuctionDetailModal from '../AuctionDetailModal';
 import { toast } from 'react-toastify';
@@ -77,9 +77,74 @@ const AuctionDashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading auctions...</div>
-      </div>
+        <>
+            <header className="bg-white shadow">
+                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <h1 className="text-3xl font-bold text-gray-900">Auctions Management</h1>
+                </div>
+            </header>
+
+            <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Auction Name
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {auctions.map((auction) => (
+                                    <tr key={auction.id}>
+                                        <td className="px-6 py-4">
+                                            <button
+                                                onClick={() => setSelectedAuction(auction)}
+                                                className="text-sm font-medium text-indigo-600 hover:text-indigo-900"
+                                            >
+                                                {auction.name}
+                                            </button>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${auction.isActive
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-red-100 text-red-800'
+                                                }`}>
+                                                {auction.isActive ? 'Active' : 'Inactive'}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm font-medium">
+                                            <button
+                                                onClick={() => handleToggleStatus(auction.id, auction.isActive)}
+                                                className={`px-4 py-2 rounded-md ${auction.isActive
+                                                    ? 'bg-red-600 text-white hover:bg-red-700'
+                                                    : 'bg-green-600 text-white hover:bg-green-700'
+                                                    }`}
+                                            >
+                                                {auction.isActive ? 'Deactivate' : 'Activate'}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+
+            <AuctionDetailModal
+                auction={selectedAuction}
+                isOpen={selectedAuction !== null}
+                onClose={() => setSelectedAuction(null)}
+            />
+        </>
     );
   }
 
@@ -151,7 +216,7 @@ const AuctionDashboard = () => {
       </main>
 
       <AuctionDetailModal
-        auction={selectedAuction}
+        auction={selectedAuction as IAuction}
         isOpen={selectedAuction !== null}
         onClose={() => setSelectedAuction(null)}
       />

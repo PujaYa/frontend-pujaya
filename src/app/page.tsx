@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AuctionList from '@/components/AuctionList';
 import Image from 'next/image';
-import { IAuction } from '@/app/types';
+import { IAuction } from '@/app/types/index';
 
 // El featured debe ser un producto completo para tener el id
 export default function Home() {

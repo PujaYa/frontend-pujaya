@@ -1,10 +1,11 @@
 'use client';
 
-import AuctionList from '@/components/AuctionList';
-import Link from 'next/link';
-import { useAuth } from '@/app/context/AuthContext';
-import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import AuctionList from "@/components/AuctionList";
+import Link from "next/link";
+import { useAuth } from "@/app/context/AuthContext";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+// import PaymentComponent from "@/components/UI/Payment";
 
 // Modularización: Filtros y búsqueda
 function AuctionFilters({

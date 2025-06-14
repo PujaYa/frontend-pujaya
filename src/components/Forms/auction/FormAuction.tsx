@@ -1,10 +1,10 @@
 'use client';
 
-import { useAuth } from '@/app/context/AuthContext';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { createAuction, updateAuction } from '@/app/auctions/actions';
-import { useAuctionForm } from '@/app/context/AuctionFormContext';
+import { useAuth } from "@/app/context/AuthContext";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { createAuction, updateAuction } from "@/app/auctions/actions";
+import { useAuctionForm } from "@/app/context/AuctionFormContext";
 
 interface FormErrors {
   name?: string;
@@ -51,9 +51,9 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
   const [endDate, setEndDate] = useState(
     initialData?.endDate ? initialData.endDate.slice(0, 16) : auctionForm.endDate || ''
   );
-  const [productIdState, setProductId] = useState(
-    initialData?.product?.id || auctionForm.productId || ''
-  );
+  // const [productIdState, setProductId] = useState(
+  //   initialData?.product?.id || auctionForm.productId || ''
+  // );
 
   // Estado para el valor mínimo del input de fecha
   const [minEndDate, setMinEndDate] = useState('');
@@ -64,7 +64,7 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
       setName(initialData.name || '');
       setDescription(initialData.description || '');
       setEndDate(initialData.endDate ? initialData.endDate.slice(0, 16) : '');
-      setProductId(initialData.product?.id || '');
+      // setProductId(initialData.product?.id || '');
     }
   }, [initialData]);
 
@@ -212,7 +212,7 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
                 type="text"
                 id="product"
                 name="product"
-                value={productIdState || ''}
+                value={productName || ''}
                 readOnly
                 placeholder="No product selected"
                 className="block w-full rounded-md border border-gray-300 px-3 py-2 bg-gray-50 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"

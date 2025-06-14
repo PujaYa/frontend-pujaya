@@ -1,4 +1,4 @@
-import { ILoginProps, IRegisterProps } from '@/app/types';
+import { ILoginProps, IRegisterProps } from "@/app/types/index";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -36,25 +36,22 @@ export async function register(userData: IRegisterProps) {
       });
 
       await sendEmailVerification(firebaseUser);
-    } catch (firebaseError) {
-      let errorMsg = 'Firebase registration error';
-      if (firebaseError && typeof firebaseError === 'object' && 'message' in firebaseError) {
-        errorMsg = `Firebase registration error: ${(firebaseError as { message: string }).message}`;
-      }
-      if (firebaseError && typeof firebaseError === 'object' && 'code' in firebaseError) {
-        const code = (firebaseError as { code: string }).code;
-        switch (code) {
-          case 'auth/email-already-in-use':
-            throw new Error('This email is already registered');
-          case 'auth/invalid-email':
-            throw new Error('Invalid email format');
-          case 'auth/operation-not-allowed':
-            throw new Error('Email/password accounts are not enabled');
-          case 'auth/weak-password':
-            throw new Error('Password is too weak');
-          default:
-            throw new Error(errorMsg);
-        }
+
+
+    } catch (firebaseError: unknown) {
+      switch ((firebaseError as { code?: string }).code) {
+        case "auth/email-already-in-use":
+          throw new Error("This email is already registered");
+        case "auth/invalid-email":
+          throw new Error("Invalid email format");
+        case "auth/operation-not-allowed":
+          throw new Error("Email/password accounts are not enabled");
+        case "auth/weak-password":
+          throw new Error("Password is too weak");
+        default:
+          throw new Error(
+            `Firebase registration error: ${(firebaseError as Error).message || "Error connecting to server"}`
+          );
       }
     }
 
@@ -92,17 +89,16 @@ export async function register(userData: IRegisterProps) {
       backendData: data,
       message: 'Registration successful. Please verify your email.',
     };
-  } catch (error) {
+  } catch (error: unknown) {
     if (firebaseUser) {
       try {
         await firebaseUser.delete();
-      } catch {
+      } catch (deleteError: unknown) {
+        console.error("Error cleaning up Firebase user:", deleteError);
         // console.error("Error cleaning up Firebase user:", deleteError);
       }
     }
-    throw new Error(
-      (error instanceof Error ? error.message : String(error)) || 'Registration failed'
-    );
+    throw new Error((error as Error).message || "Registration failed");
   }
 }
 
@@ -194,19 +190,23 @@ export async function loginWithGoogle() {
       localStorage.setItem('userSession', JSON.stringify(sessionData));
 
       return sessionData;
-    } catch (backendError) {
+
+    } catch (backendError: unknown) {
       await signOut(auth);
       // console.error("Backend error:", backendError);
-      throw new Error((backendError as Error).message || 'Error connecting to server');
+      throw new Error(
+        (backendError as Error).message || "Error connecting to server" 
+      );
     }
-  } catch (error) {
+
+  } catch (error: unknown) {
+
     let errorMessage = 'An error occurred during Google login';
 
-    if (error && typeof error === 'object' && 'code' in error) {
-      const code = (error as { code: string }).code;
-      switch (code) {
-        case 'auth/popup-closed-by-user':
-          errorMessage = 'Login cancelled: You closed the login window';
+    if (error instanceof Error && 'code' in error) {
+      switch (error.code) {
+        case "auth/popup-closed-by-user":
+          errorMessage = "Login cancelled: You closed the login window";
           break;
         case 'auth/popup-blocked':
           errorMessage = 'Login failed: Pop-up was blocked by your browser';

@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import AuctionDetail from '@/components/UI/AuctionDetail';
-import { IAuctionDetailType } from '@/app/types';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import AuctionDetail from "@/components/UI/AuctionDetail";
+import { IAuctionDetailType } from "@/app/types/index";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -41,7 +41,9 @@ export default function AuctionDetailPage() {
         ...auction.product,
         initialPrice: Number(auction.product.initialPrice),
         finalPrice: Number(auction.product.finalPrice),
-        category: auction.product.category, // <-- Añadido
+        category: auction.product.category,
+        startDate: auction.endDate,
+        endDate: auction.endDate,
       }}
       auctionData={{
         name: auction.name,

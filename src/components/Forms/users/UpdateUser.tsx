@@ -1,8 +1,8 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
-import { UpdateUserProps } from '@/app/types';
-import { IUserFormData } from '@/app/types';
+import {  UpdateUserProps } from '@/app/types/index';
+import { IUserFormData } from '@/app/types/index';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 
@@ -66,6 +66,33 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error('Invalid email address');
+      return;
+    }
+    const phoneRegex = /^[0-9]+$/;
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error('Invalid phone number');
+      return;
+    }
+    const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    if (!nameRegex.test(formData.name)) {
+      toast.error('Invalid name');
+      return;
+    }
+    const countryRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    if (!countryRegex.test(formData.country)) {
+      toast.error('Invalid country');
+      return;
+    }
+    const addressRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    if (!addressRegex.test(formData.address)) {
+      toast.error('Invalid address');
+      return;
+    }
+    
 
     try {
       const token = userData?.token;

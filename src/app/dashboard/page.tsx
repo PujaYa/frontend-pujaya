@@ -1,10 +1,10 @@
-'use client';
-import { useAuth } from '../context/AuthContext';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import UpdateUser from '@/components/Forms/users/UpdateUser';
+'use client'
+import { useAuth } from "../context/AuthContext";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import UpdateUser from "@/components/Forms/users/UpdateUser";
 import { toast } from 'react-toastify';
-import { DashboardStats, User, Auction } from "../types";
+import { DashboardStats, IUser, IAuction } from '../types/index';
 
 export default function AdminDashboard() {
   const { userData } = useAuth();
@@ -16,25 +16,16 @@ export default function AdminDashboard() {
     premiumUsers: 0,
     regularUsers: 0,
   });
-  const [users, setUsers] = useState<User[]>([]);
-  const [activeAuctions, setActiveAuctions] = useState<Auction[]>([]);
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [activeAuctions, setActiveAuctions] = useState<IAuction[]>([]);
   const [loading, setLoading] = useState(true);
   const [isInitializing, setIsInitializing] = useState(true);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (isInitializing && (!userData || userData.user.role !== 'admin')) {
-      router.push('/');
-    }
 
-    if (userData?.user.role === 'admin') {
-      setIsInitializing(false);
-      fetchDashboardData();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData, router, isInitializing]);
-
-  const fetchDashboardData = async () => {
+  
+  const fetchDashboardData = useCallback(async () => {
     try {
       const token = userData?.token;
 
@@ -51,15 +42,15 @@ export default function AdminDashboard() {
       });
       const auctionsDataResponse = await auctionsResponse.json();
       const auctionsData = auctionsDataResponse.auctions;
-      setActiveAuctions(auctionsData.filter((auction: Auction) => auction.isActive === true));
+      setActiveAuctions(auctionsData.filter((auction: IAuction) => auction.isActive === true));
 
       // Calculate stats
       setStats({
         totalUsers: usersData.length,
-        activeAuctions: auctionsData.filter((a: Auction) => a.isActive === true).length,
+        activeAuctions: auctionsData.filter((a: IAuction) => a.isActive === true).length,
         totalAuctions: auctionsData.length,
-        premiumUsers: usersData.filter((u: User) => u.role === 'premium').length,
-        regularUsers: usersData.filter((u: User) => u.role === 'regular').length
+        premiumUsers: usersData.filter((u: IUser) => u.role === 'premium').length,
+        regularUsers: usersData.filter((u: IUser) => u.role === 'regular').length,
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -67,7 +58,18 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userData]);
+
+  useEffect(() => {
+    if (isInitializing && (!userData || userData.user.role !== "admin")) {
+      router.push('/');
+    }
+
+    if (userData?.user.role === "admin") {
+      setIsInitializing(false);
+      fetchDashboardData();
+    }
+  }, [userData, router, isInitializing, fetchDashboardData]);
 
   const handleRoleChange = async (userId: string, newRole: 'regular' | 'premium' | 'admin') => {
     try {
@@ -291,6 +293,7 @@ export default function AdminDashboard() {
                             Edit
                           </button>
                           <UpdateUser
+                            key={user.id}
                             user={user}
                             isOpen={selectedUserId === user.id}
                             onClose={() => setSelectedUserId(null)}

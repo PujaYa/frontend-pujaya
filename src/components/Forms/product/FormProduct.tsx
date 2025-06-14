@@ -1,11 +1,12 @@
 'use client';
 
-import { useAuth } from '@/app/context/AuthContext';
-import { useAuctionForm } from '@/app/context/AuctionFormContext';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { createProduct, uploadImages } from '@/app/products/actions';
-import Image from 'next/image';
+import { useAuth } from "@/app/context/AuthContext";
+import { useAuctionForm } from "@/app/context/AuctionFormContext";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { createProduct, uploadImages } from "@/app/products/actions";
+import Image from "next/image";
+import { ICategory } from "@/app/types/index";
 
 interface Category {
   id: string;
@@ -40,7 +41,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
 
   useEffect(() => {
     // Cargar categorías
-    fetch('http://localhost:3001/api/category')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to load categories');
@@ -50,9 +51,9 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
       .then((data) => {
         if (Array.isArray(data.items)) {
           setCategories(
-            data.items.map((cat: { id: string; name: string }) => ({
+            data.items.map((cat: ICategory) => ({
               id: cat.id,
-              name: cat.name,
+              name: cat.categoryName,
             }))
           );
         } else {
@@ -61,8 +62,11 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
         }
         setIsLoadingCategories(false);
       })
-      .catch(() => {
-        // Error handling code (optional)
+      .catch((error: unknown) => {
+        console.error("Error loading categories:", error);
+        // console.error("Error loading categories:", error);
+        setError("Failed to load categories. Please try again later.");
+        setIsLoadingCategories(false);
       });
   }, []);
 
@@ -104,17 +108,17 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
-
+    
     setIsUploadingImages(true);
     setUploadProgress(0);
     setFormErrors({});
-
+    
     try {
       const urls = await uploadImages(Array.from(files), userData?.token || '');
       setUploadedImages((prev) => [...prev, ...urls]);
     } catch (error: unknown) {
       // console.error("Error uploading images:", error);
-      setFormErrors({ images: (error as Error).message });
+      setFormErrors({ images: (error as Error).message || "Error uploading images" });
     } finally {
       setIsUploadingImages(false);
       event.target.value = '';
@@ -166,7 +170,10 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
       }
     } catch (error) {
       // console.error("Error:", error);
-      setError((error as Error).message || 'An error occurred while creating the product');
+      setError(
+        (error as Error).message ||
+        "An error occurred while creating the product"
+      );
     } finally {
       setIsSubmitting(false);
     }

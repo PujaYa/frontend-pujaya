@@ -1,12 +1,4 @@
-export interface IBid {
-  id: string;
-  amount: number;
-  createdAt: string;
-  user?: {
-    id: string;
-    name: string;
-  };
-}
+import { IBid } from "./types/index";
 
 export interface IAuction {
   id: string;
@@ -19,6 +11,7 @@ export interface IAuction {
     name: string;
     email: string;
   };
+
   product: {
     id: string;
     name: string;
@@ -33,6 +26,8 @@ export interface IAuction {
   currentHighestBid?: number;
   bids?: IBid[];
 }
+
+
 
 export interface IProduct {
   id: string;
@@ -50,4 +45,12 @@ export interface IUser {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  address?: string;
+  country?: string;
+  imgProfile?: string;
+  createdAt?: string;
+  role?: string;
+  isActive?: boolean;
+  firebaseId?: string;
 }

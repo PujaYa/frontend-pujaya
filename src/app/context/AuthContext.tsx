@@ -1,6 +1,6 @@
 'use client';
 
-import { IUserSession } from '@/app/types';
+import { IUserSession } from '@/app/types/index';
 import { auth } from '@/components/lib/firebaseConfig';
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import Cookies from 'js-cookie';
@@ -10,19 +10,19 @@ export interface AuthContextProps {
   userData: IUserSession | null;
   user: User | null;
   setUser: (user: User | null) => void;
-  setUserData: (userData: IUserSession | null) => void;
-  updateUserRole: (newRole: 'regular' | 'admin' | 'premium') => void;
-  logout: () => void;
+  setUserData: (userData: IUserSession | null) => void
+  updateUserRole: (newRole: "regular" | "admin" | "premium") => void;
+  logout: () => void
 }
 
 export const AuthContext = createContext<AuthContextProps>({
   userData: null,
   user: null,
-  setUser: () => {},
-  setUserData: () => {},
-  updateUserRole: () => {},
-  logout: () => {},
-});
+  setUser: () => { },
+  setUserData: () => { },
+  updateUserRole: () => { },
+  logout: () => { },
+})
 
 export interface AuthProviderProps {
   children: React.ReactNode;
@@ -81,6 +81,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               parsed.user.firebaseUid = parsed.user.firebase_uid;
             }
             setUserData(parsed);
+            // restored = true;
+
+            // console.log(restored)
           }
         } catch {
           localStorage.removeItem('userSession');
@@ -109,13 +112,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await signOut(auth);
       localStorage.removeItem('userSession');
       setUserData(null);
-      Cookies.remove('userSession');
-    } catch {
+      Cookies.remove("userSession");
+    } catch (error: unknown) {  
+        console.error("Error al cerrar sesión: ", error);
       // console.error("Error al cerrar sesión: ", error); // Quitado
     }
   };
 
-  const updateUserRole = (newRole: 'regular' | 'admin' | 'premium') => {
+  const updateUserRole = (newRole: "regular" | "admin" | "premium") => {
     if (userData) {
       const updatedUserData: IUserSession = {
         ...userData,
