@@ -1,7 +1,6 @@
 'use client';
 
 import { useAuth } from '@/app/context/AuthContext';
-import { IUser } from '@/app/types/index';
 import { AuctionProfile } from '@/app/types/auction';
 import { useState, useRef, useEffect } from 'react';
 import UpdateUser from '../Forms/users/UpdateUser';
