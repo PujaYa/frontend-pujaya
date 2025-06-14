@@ -1,5 +1,5 @@
 "use client";
-"use client";
+
 import { useState } from "react";
 
 export default function ContactUs() {
@@ -11,14 +11,32 @@ export default function ContactUs() {
     setStatus("Sending...");
     const form = e.currentTarget;
     const formData = new FormData(form);
-    
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const email = formData.get("email");
+    if (!emailRegex.test(email as string)) {
+      setStatus("Invalid email address.");
+      return;
+    }
+    const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    const name = formData.get("name");
+    if (name && !regex.test(name as string) && (name as string).length < 3) {
+      setStatus("Name must be at least 3 characters long and only contain letters.");
+      return;
+    }
+
+    const message = formData.get("message");
+    if (message && (message as string).length < 10 || !regex.test(message as string)) {
+      setStatus("Message must be at least 10 characters long and only contain letters.");
+      return;
+    }
+
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),
       message: formData.get("message"),
     };
 
-    console.log(data);
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact`, {

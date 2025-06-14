@@ -212,7 +212,7 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
                 type="text"
                 id="product"
                 name="product"
-                value={productIdState || ''}
+                value={productName || ''}
                 readOnly
                 placeholder="No product selected"
                 className="block w-full rounded-md border border-gray-300 px-3 py-2 bg-gray-50 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
