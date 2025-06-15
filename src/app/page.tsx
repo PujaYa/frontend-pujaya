@@ -5,17 +5,17 @@ import AuctionList from '@/components/AuctionList';
 import Image from 'next/image';
 import { IAuction } from '@/app/types/index';
 
-// El featured debe ser un producto completo para tener el id
+// The featured auction must be a complete product to have the id
 export default function Home() {
-  // Estado para búsqueda
+  // State for search input
   const [search, setSearch] = useState('');
   const router = useRouter();
 
-  // Estado y carga de featured
+  // State and fetch for featured auction
   const [featured, setFeatured] = useState<IAuction | null>(null);
   const [showZoom, setShowZoom] = useState(false);
   useEffect(() => {
-    // Buscar la subasta activa que termina más pronto
+    // Fetch the active auction ending soonest
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/auctions?limit=1&sort=ending`)
       .then((res) => res.json())
       .then((data) => {
@@ -25,7 +25,7 @@ export default function Home() {
       });
   }, []);
 
-  // Handler para buscar
+  // Handler for search form
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (search.trim()) {
@@ -35,7 +35,7 @@ export default function Home() {
     }
   };
 
-  // Handler para el botón
+  // Handler for explore button
   const handleExplore = () => {
     router.push('/auctions');
   };
@@ -100,7 +100,7 @@ export default function Home() {
             {featured && featured.product ? (
               <div className="bg-white bg-opacity-90 rounded-xl shadow-lg p-6 w-80 flex flex-col gap-4 transition-transform hover:scale-105 hover:shadow-2xl duration-200">
                 <span className="text-gray-500 text-sm">Featured Auction</span>
-                {/* Imagen del producto destacado con zoom modal */}
+                {/* Featured product image with zoom modal */}
                 <div
                   className="bg-gray-100 h-40 flex items-center justify-center rounded-lg overflow-hidden mb-2 cursor-zoom-in"
                   onClick={() => setShowZoom(true)}
@@ -131,7 +131,7 @@ export default function Home() {
                 >
                   Bid Now
                 </button>
-                {/* Modal de zoom */}
+                {/* Zoom modal */}
                 {showZoom && (
                   <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
