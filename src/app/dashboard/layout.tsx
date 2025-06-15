@@ -53,7 +53,7 @@ export default function DashboardLayout({
                 </svg>
             </button>
 
-            {/* Overlay para cerrar sidebar (solo en móviles y cuando está abierto) */}
+            {/* Overlay to close sidebar (only on mobile and when open) */}
             {sidebarOpen && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
@@ -70,10 +70,10 @@ export default function DashboardLayout({
                 <AdminSidebar />
             </div>
 
-            {/* Contenido principal */}
+            {/* Main content */}
             <div className="flex-1 flex flex-col overflow-hidden z-10">
                 {children}
             </div>
         </div>
     );
-} 
+}

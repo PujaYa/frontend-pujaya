@@ -5,6 +5,7 @@ import { auth } from '@/components/lib/firebaseConfig';
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import Cookies from 'js-cookie';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 export interface AuthContextProps {
   userData: IUserSession | null;
@@ -113,8 +114,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.removeItem('userSession');
       setUserData(null);
       Cookies.remove("userSession");
-    } catch (error: unknown) {  
-        console.error("Error al cerrar sesión: ", error);
+    } catch (error: unknown) {
+      console.error("Fail to close session: ", error);
       // console.error("Error al cerrar sesión: ", error); // Quitado
     }
   };
@@ -138,7 +139,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       {loading ? (
         <div className="flex justify-center items-center min-h-[300px]">
           <span className="text-blue-700 font-semibold text-lg animate-pulse">
-            Cargando usuario...
+            <LoadingSpinner />
           </span>
         </div>
       ) : (
