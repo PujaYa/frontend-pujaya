@@ -1,7 +1,9 @@
 import Link from "next/link";
-import React from "react";
+
 
 const Footer = () => {
+  
+
   return (
     <footer className="bg-[#0a1736] text-white pt-12 pb-6 mt-16">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
@@ -46,17 +48,12 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link href="/how-it-works" className="hover:text-yellow-400">
-                How It Works
-              </Link>
-            </li>
-            <li>
-              <Link href="/sell" className="hover:text-yellow-400">
+              <Link href="/auctions/create" className="hover:text-yellow-400">
                 Sell
               </Link>
             </li>
             <li>
-              <Link href="/contact-us" className="hover:text-yellow-400">
+              <Link href="contactUs" className="hover:text-yellow-400">
                 Contact
               </Link>
             </li>
@@ -67,27 +64,27 @@ const Footer = () => {
           <h3 className="font-bold mb-3">Categories</h3>
           <ul className="space-y-2 text-gray-300 text-sm">
             <li>
-              <Link href="#" className="hover:text-yellow-400">
+              <Link href="/auctions?search=art" className="hover:text-yellow-400">
                 Art
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-yellow-400">
+              <Link href="/auctions?search=watches" className="hover:text-yellow-400">
                 Watches
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-yellow-400">
+              <Link href="/auctions?search=jewelry" className="hover:text-yellow-400">
                 Jewelry
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-yellow-400">
+              <Link href="/auctions?search=collectibles" className="hover:text-yellow-400">
                 Collectibles
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-yellow-400">
+              <Link href="/auctions?search=antiques" className="hover:text-yellow-400">
                 Antiques
               </Link>
             </li>
@@ -103,22 +100,22 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-yellow-400">
+              <Link href="/terms" className="hover:text-yellow-400">
                 Terms & Conditions
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-yellow-400">
+              <Link href="/privacy" className="hover:text-yellow-400">
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-yellow-400">
+              <Link href="/security" className="hover:text-yellow-400">
                 Security
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-yellow-400">
+              <Link href="/faq" className="hover:text-yellow-400">
                 FAQ
               </Link>
             </li>

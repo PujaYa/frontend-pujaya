@@ -9,6 +9,7 @@ import ProfileStats from './profile/ProfileStats';
 import ProfileAuctions from './profile/ProfileAuctions';
 import ProfileHeader from './profile/ProfileHeader';
 import { IUser } from '@/app/types/index';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 const TABS = ['Active Bids'];
 
@@ -121,7 +122,7 @@ const ProfileComponent = () => {
       <main className="flex flex-col items-center px-4 py-8 min-h-screen bg-blue-50">
         <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl">
           <h1 className="text-3xl font-bold mb-4 text-blue-900 text-center">My Profile</h1>
-          <p className="text-center text-gray-500">Loading...</p>
+          <LoadingSpinner />
         </div>
       </main>
     );
@@ -148,7 +149,7 @@ const ProfileComponent = () => {
       <div className="w-full max-w-6xl mt-4">
         <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={['Active Bids']} />
         {loadingAuctions ? (
-          <div className="text-center py-8 text-gray-500">Loading auctions...</div>
+          <LoadingSpinner />
         ) : (
           <ProfileAuctions auctions={auctions} />
         )}

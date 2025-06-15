@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AdminSidebar from "@/components/AdminSidebar";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 export default function DashboardLayout({
     children,
@@ -33,7 +34,7 @@ export default function DashboardLayout({
         return (
             <div className="flex h-screen bg-gray-100">
                 <div className="flex-1 flex items-center justify-center">
-                    <div className="text-xl text-gray-600">Loading...</div>
+                    <LoadingSpinner />
                 </div>
             </div>
         );

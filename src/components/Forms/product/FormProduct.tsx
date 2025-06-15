@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { createProduct, uploadImages } from "@/app/products/actions";
 import Image from "next/image";
 import { ICategory } from "@/app/types/index";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 interface Category {
   id: string;
@@ -326,7 +327,13 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
                 ></div>
               </div>
               <p className="text-sm text-gray-500 mt-1">
-                Uploading... {Math.round(uploadProgress)}%
+                {isUploadingImages ? (
+                  <>
+                    Uploading... {Math.round(uploadProgress)}%
+                  </>
+                ) : (
+                  <LoadingSpinner />
+                )}
               </p>
             </div>
           )}

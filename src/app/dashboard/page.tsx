@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import UpdateUser from "@/components/Forms/users/UpdateUser";
 import { toast } from 'react-toastify';
 import { DashboardStats, IUser, IAuction } from '../types/index';
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 export default function AdminDashboard() {
   const { userData } = useAuth();
@@ -131,7 +132,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading dashboard data...</div>
+        <LoadingSpinner />
       </div>
     );
   }
