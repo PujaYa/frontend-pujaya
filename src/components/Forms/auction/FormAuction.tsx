@@ -35,7 +35,7 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Obtener el producto seleccionado de los parámetros de la URL
+  // Get the selected product from URL parameters
   const productIdFromUrl = searchParams.get('productId');
   const productId = productIdFromUrl || auctionForm.productId;
   const productNameFromUrl = searchParams.get('productName');
@@ -51,25 +51,21 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
   const [endDate, setEndDate] = useState(
     initialData?.endDate ? initialData.endDate.slice(0, 16) : auctionForm.endDate || ''
   );
-  // const [productIdState, setProductId] = useState(
-  //   initialData?.product?.id || auctionForm.productId || ''
-  // );
 
-  // Estado para el valor mínimo del input de fecha
+  // State for the minimum value of the date input
   const [minEndDate, setMinEndDate] = useState('');
 
-  // Si initialData cambia (navegación entre subastas), actualizar campos
+  // If initialData changes (navigating between auctions), update fields
   useEffect(() => {
     if (initialData) {
       setName(initialData.name || '');
       setDescription(initialData.description || '');
       setEndDate(initialData.endDate ? initialData.endDate.slice(0, 16) : '');
-      // setProductId(initialData.product?.id || '');
     }
   }, [initialData]);
 
   useEffect(() => {
-    // Solo calcular en el cliente para evitar hydration mismatch
+    // Only calculate on client side to avoid hydration mismatch
     const now = new Date();
     setMinEndDate(now.toISOString().slice(0, 16));
   }, []);
@@ -141,7 +137,7 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
   }
 
   const handleAddProduct = () => {
-    // Redirigir al formulario de creación de producto
+    // Redirect to product creation form
     const currentUrl = window.location.pathname;
     router.push(`/products/create?returnTo=${encodeURIComponent(currentUrl)}`);
   };

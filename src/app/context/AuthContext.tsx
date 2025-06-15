@@ -113,8 +113,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.removeItem('userSession');
       setUserData(null);
       Cookies.remove("userSession");
-    } catch (error: unknown) {  
-        console.error("Error al cerrar sesión: ", error);
+    } catch (error: unknown) {
+      console.error("Fail to close session: ", error);
       // console.error("Error al cerrar sesión: ", error); // Quitado
     }
   };
@@ -138,7 +138,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       {loading ? (
         <div className="flex justify-center items-center min-h-[300px]">
           <span className="text-blue-700 font-semibold text-lg animate-pulse">
-            Cargando usuario...
+            Loading user...
           </span>
         </div>
       ) : (
