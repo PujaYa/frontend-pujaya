@@ -102,7 +102,7 @@ export async function register(userData: IRegisterProps) {
   }
 }
 
-// Login con email y password
+// Login with email and password
 export async function login(userData: ILoginProps) {
   try {
     const firebase = await signInWithEmailAndPassword(auth, userData.email, userData.password);
@@ -128,7 +128,7 @@ export async function login(userData: ILoginProps) {
   }
 }
 
-// Login con Google
+// Login with Google
 export async function loginWithGoogle() {
   let firebaseUser = null;
   try {

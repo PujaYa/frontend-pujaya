@@ -152,7 +152,7 @@ export async function updateAuction(id: string, formData: FormData) {
 
 export async function endAuction(auctionId: string) {
   console.log("endAuction", auctionId);
-  // Este método debe ser llamado desde un server action, no desde un componente client
+  // This method must be called from a server action, not from a client component
   throw new Error(
     'endAuction must be called from a server action, not directly from a client component'
   );

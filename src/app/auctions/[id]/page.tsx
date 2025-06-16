@@ -34,7 +34,7 @@ export default function AuctionDetailPage() {
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
   if (!auction) return null;
 
-  // Pasar los datos del producto y la subasta a AuctionDetail
+  // Pass the product and auction data to AuctionDetail
   return (
     <AuctionDetail
       {...{

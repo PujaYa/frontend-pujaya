@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
     return () => unsuscribe();
   });
-  // Guardar sesión en localStorage y cookies cuando userData cambia
+  // save session in localStorage and cookies when userData changes
   useEffect(() => {
     if (userData) {
       localStorage.setItem(
@@ -71,7 +71,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [userData]);
 
   useEffect(() => {
-    // Recuperar sesión desde localStorage SOLO una vez al montar
+    // Recover session from localStorage ONLY once when mounting
     if (!userData) {
       const session = localStorage.getItem('userSession');
       if (session) {
@@ -90,16 +90,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           localStorage.removeItem('userSession');
         }
       }
-      // loading debe terminar siempre, haya o no usuario
+      // loading must always end, whether there is a user or not
       setLoading(false);
     } else {
-      // Si ya hay userData, loading termina igual
+      // If there is already userData, loading ends the same
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // SOLO al montar
 
-  // Mantener actualizado el usuario de Firebase
+  // Keep the Firebase user updated
   useEffect(() => {
     const auth = getAuth();
     const unsuscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -116,7 +116,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       Cookies.remove("userSession");
     } catch (error: unknown) {
       console.error("Fail to close session: ", error);
-      // console.error("Error al cerrar sesión: ", error); // Quitado
     }
   };
 
@@ -135,7 +134,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ userData, user, setUserData, setUser, updateUserRole, logout }}>
-      {/* Loader global de sesión */}
+      {/* Global session loader */}
       {loading ? (
         <div className="flex justify-center items-center min-h-[300px]">
           <span className="text-blue-700 font-semibold text-lg animate-pulse">

@@ -65,7 +65,7 @@ export default function AuctionsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPremium, setIsPremium] = useState(false);
-  // Estado para filtros: leer los query params SOLO al primer render
+  // State for filters: read the query params ONLY on the first render
   const initialSearch = searchParams.get('search') || '';
   const initialCategory = searchParams.get('category') || '';
   const initialSort = searchParams.get('sort') || 'ending';
@@ -76,7 +76,7 @@ export default function AuctionsPage() {
   const [sort, setSort] = useState(initialSort);
   const [sellerId, setSellerId] = useState(initialSeller);
   const [page, setPage] = useState(initialPage);
-  // Puedes cargar las categorías dinámicamente si lo deseas
+  // You can load the categories dynamically if you want
   const categories = [
     'Art & Antiques',
     'Jewelry & Watches',
@@ -95,7 +95,7 @@ export default function AuctionsPage() {
     'Collectibles',
   ];
 
-  // Verificar el rol del usuario cuando userData cambie
+  // Check the user's role when userData changes
   useEffect(() => {
     if (userData?.user?.role === 'premium') {
       setIsPremium(true);
@@ -104,12 +104,12 @@ export default function AuctionsPage() {
     }
   }, [userData]);
 
-  // Resetear página a 1 cuando cambian los filtros
+  // Reset the page to 1 when the filters change
   useEffect(() => {
     setPage(1);
   }, [search, category, sort, sellerId]);
 
-  // Sincronizar los filtros y la página con la URL
+  // Synchronize the filters and the page with the URL
   useEffect(() => {
     const params = new URLSearchParams();
     if (search) params.set('search', search);
@@ -148,7 +148,7 @@ export default function AuctionsPage() {
         ) : null}
       </div>
 
-      {/* Filtros y búsqueda modularizados */}
+      {/* Modularized filters and search */}
       <AuctionFilters
         search={search}
         setSearch={setSearch}
@@ -159,7 +159,7 @@ export default function AuctionsPage() {
         categories={categories}
       />
 
-      {/* Botón para limpiar el filtro de vendedor si está activo */}
+      {/* Button to clear the seller filter if it is active */}
       {sellerId && (
         <div className="mb-4 flex justify-end">
           <button
@@ -182,7 +182,7 @@ export default function AuctionsPage() {
         </div>
       )}
 
-      {/* Auction list con filtros */}
+      {/* Auction list with filters */}
       <AuctionList
         search={search}
         category={category}
