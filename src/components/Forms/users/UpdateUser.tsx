@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
-import {  UpdateUserProps } from '@/app/types/index';
+import { UpdateUserProps } from '@/app/types/index';
 import { IUserFormData } from '@/app/types/index';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
@@ -87,12 +87,12 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
       toast.error('Invalid country');
       return;
     }
-    const addressRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    // Address: letras, números, comas, puntos y espacios, mínimo 5 caracteres
+    const addressRegex = /^[a-zA-Z0-9\s,.'-]{5,}$/;
     if (!addressRegex.test(formData.address)) {
       toast.error('Invalid address');
       return;
     }
-    
 
     try {
       const token = userData?.token;
@@ -218,8 +218,8 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
                       type="email"
                       name="email"
                       value={formData.email}
-                      onChange={handleInputChange}
-                      className="pl-10 pr-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      disabled
+                      className="pl-10 pr-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-100 cursor-not-allowed"
                     />
                   </div>
                 </div>

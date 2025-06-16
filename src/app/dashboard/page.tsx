@@ -1,11 +1,11 @@
-'use client'
-import { useAuth } from "../context/AuthContext";
-import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import UpdateUser from "@/components/Forms/users/UpdateUser";
+'use client';
+import { useAuth } from '../context/AuthContext';
+import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import UpdateUser from '@/components/Forms/users/UpdateUser';
 import { toast } from 'react-toastify';
 import { DashboardStats, IUser, IAuction } from '../types/index';
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 export default function AdminDashboard() {
   const { userData } = useAuth();
@@ -24,8 +24,6 @@ export default function AdminDashboard() {
   // const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
-
-  
   const fetchDashboardData = useCallback(async () => {
     try {
       const token = userData?.token;
@@ -62,11 +60,11 @@ export default function AdminDashboard() {
   }, [userData]);
 
   useEffect(() => {
-    if (isInitializing && (!userData || userData.user.role !== "admin")) {
+    if (isInitializing && (!userData || userData.user.role !== 'admin')) {
       router.push('/');
     }
 
-    if (userData?.user.role === "admin") {
+    if (userData?.user.role === 'admin') {
       setIsInitializing(false);
       fetchDashboardData();
     }
@@ -140,13 +138,15 @@ export default function AdminDashboard() {
   return (
     <>
       <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center">
+          {/* Espacio para el botón hamburguesa en móvil */}
+          <div className="block md:hidden w-12 h-10 mr-2"></div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
         </div>
       </header>
 
       <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
-        <div className="max-w-8xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div className="w-full max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto py-6 sm:px-2 px-1 lg:px-8">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             <div className="bg-white overflow-hidden shadow rounded-lg">
@@ -226,7 +226,7 @@ export default function AdminDashboard() {
               <div className="px-4 py-5 sm:px-6">
                 <h2 className="text-lg font-medium text-gray-900">User Management</h2>
               </div>
-              <div className="border-t border-gray-200">
+              <div className="border-t border-gray-200 overflow-x-auto w-full">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
@@ -315,7 +315,7 @@ export default function AdminDashboard() {
               <div className="px-4 py-5 sm:px-6">
                 <h2 className="text-lg font-medium text-gray-900">Active Auctions</h2>
               </div>
-              <div className="border-t border-gray-200">
+              <div className="border-t border-gray-200 overflow-x-auto w-full">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
