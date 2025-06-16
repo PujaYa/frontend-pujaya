@@ -7,6 +7,7 @@ import AuctionInfoBox from './auction/AuctionInfoBox';
 import BidForm from './auction/BidForm';
 import BidHistory from './auction/BidHistory';
 import AuctionTabs from './auction/AuctionTabs';
+import FloatingAuctionChat from '../FloatingAuctionChat';
 
 // Tipos para pujas y usuario
 interface Bid {
@@ -194,6 +195,11 @@ const AuctionDetail: React.FC<
   const showUpgradePrompt = !!userData && userData.user?.role !== 'premium';
   const isPremium = !!userData && userData.user?.role === 'premium';
 
+  // Determine if the authenticated user has placed a bid
+  const userHasBid = !!(
+    userData && bids.some((bid) => String(bid.user?.id) === String(userData.user?.id))
+  );
+
   return (
     <div className="min-h-screen w-full bg-[#F6F8FA] pb-12">
       <div className="max-w-7xl mx-auto pt-8 px-2 md:px-8">
@@ -269,6 +275,22 @@ const AuctionDetail: React.FC<
             <div className="bg-white rounded-2xl shadow-md p-6">
               <BidHistory bids={bids} bidsLoading={bidsLoading} bidsError={bidsError} />
             </div>
+            {/* Floating chat for bidders: only show if user has placed a bid and is not owner */}
+            {!isOwner &&
+              userHasBid &&
+              auctionId &&
+              userData?.token &&
+              userData.user?.name &&
+              ownerId && (
+                <FloatingAuctionChat
+                  auctionId={auctionId}
+                  token={userData.token}
+                  room={`auction-${auctionId}-owner-${ownerId}-user-${userData.user.id}`}
+                  username={userData.user.name}
+                  targetUserId={ownerId}
+                  uid={userData.user.firebaseUid}
+                />
+              )}
           </div>
         </div>
       </div>

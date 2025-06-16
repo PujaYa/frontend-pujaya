@@ -6,12 +6,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useHasOwnAuctions } from './hooks/useHasOwnAuctions';
 
 const Navbar = () => {
   const { user, userData, logout } = useAuth();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const { setNavbarOpen } = useMenuContext();
+  const hasOwnAuctions = useHasOwnAuctions(userData?.user.id, userData?.token);
 
   const toggleMenu = () => {
     setMenuOpen((prev) => {
@@ -81,6 +83,14 @@ const Navbar = () => {
               >
                 Profile
               </Link>
+              {hasOwnAuctions && (
+                <Link
+                  href="/owner/chats"
+                  className="text-blue-800 font-medium hover:text-yellow-400 transition"
+                >
+                  Messages
+                </Link>
+              )}
               {userData?.user.role === 'admin' && (
                 <Link
                   href="/dashboard"
@@ -145,6 +155,15 @@ const Navbar = () => {
               >
                 Profile
               </Link>
+              {hasOwnAuctions && (
+                <Link
+                  href="/owner/chats"
+                  onClick={closeMenu}
+                  className="text-blue-800 font-medium hover:text-yellow-400"
+                >
+                  Messages
+                </Link>
+              )}
               {userData?.user.role === 'admin' && (
                 <Link
                   href="/dashboard"
