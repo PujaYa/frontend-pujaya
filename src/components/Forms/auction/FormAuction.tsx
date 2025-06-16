@@ -1,10 +1,10 @@
 'use client';
 
-import { useAuth } from "@/app/context/AuthContext";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { createAuction, updateAuction } from "@/app/auctions/actions";
-import { useAuctionForm } from "@/app/context/AuctionFormContext";
+import { useAuth } from '@/app/context/AuthContext';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { createAuction, updateAuction } from '@/app/auctions/actions';
+import { useAuctionForm } from '@/app/context/AuctionFormContext';
 
 interface FormErrors {
   name?: string;
@@ -101,11 +101,49 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
     return errors;
   };
 
+  // Añadir validación en vivo para cada campo
+  const liveValidateField = (field: string, value: string) => {
+    let errors: FormErrors = { ...formErrors };
+    switch (field) {
+      case 'name':
+        if (!value || value.length < 3) {
+          errors.name = 'Name must be at least 3 characters long';
+        } else {
+          delete errors.name;
+        }
+        break;
+      case 'description':
+        if (!value || value.length < 10) {
+          errors.description = 'Description must be at least 10 characters long';
+        } else {
+          delete errors.description;
+        }
+        break;
+      case 'endDate':
+        if (!value) {
+          errors.endDate = 'End date is required';
+        } else {
+          const selectedDate = new Date(value);
+          const now = new Date();
+          if (selectedDate <= now) {
+            errors.endDate = 'End date must be in the future';
+          } else {
+            delete errors.endDate;
+          }
+        }
+        break;
+      default:
+        break;
+    }
+    setFormErrors(errors);
+  };
+
   const handleFieldChange = (field: string, value: string) => {
     setAuctionForm({ [field]: value });
     if (field === 'name') setName(value);
     if (field === 'description') setDescription(value);
     if (field === 'endDate') setEndDate(value);
+    liveValidateField(field, value);
   };
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {

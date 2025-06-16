@@ -8,6 +8,7 @@ import BidForm from './auction/BidForm';
 import BidHistory from './auction/BidHistory';
 import AuctionTabs from './auction/AuctionTabs';
 import FloatingAuctionChat from '../FloatingAuctionChat';
+import Link from 'next/link';
 
 // Tipos para pujas y usuario
 interface Bid {
@@ -43,28 +44,31 @@ interface ProductForAuctionDetail {
   category?: { categoryName?: string };
 }
 
-// Agrega la prop owner a AuctionDetail
-const AuctionDetail: React.FC<
-  ProductForAuctionDetail & {
-    auctionData?: {
-      name: string;
-      description: string;
-      endDate: string;
-      isActive: boolean;
-      auctionId?: string;
-      userId?: string;
-    };
+// Add minBid to AuctionDetail props
+type AuctionDetailProps = ProductForAuctionDetail & {
+  auctionData?: {
+    name: string;
+    description: string;
+    endDate: string;
+    isActive: boolean;
     auctionId?: string;
     userId?: string;
-    owner?: {
-      id: string;
-      name: string;
-      email: string;
-      createdAt?: string;
-    };
-    category?: { categoryName?: string };
-  }
-> = ({
+  };
+  auctionId?: string;
+  userId?: string;
+  owner?: {
+    id: string;
+    name: string;
+    email: string;
+    createdAt?: string;
+  };
+  category?: { categoryName?: string };
+  minBid: number;
+};
+
+// Agrega la prop owner a AuctionDetail
+const AuctionDetail: React.FC<AuctionDetailProps> = ({
+  id,
   name,
   imgProduct,
   description,
@@ -74,6 +78,7 @@ const AuctionDetail: React.FC<
   userId,
   owner,
   category,
+  minBid,
 }) => {
   const { userData } = useAuth();
   const [mainImg, setMainImg] = useState(
@@ -245,6 +250,7 @@ const AuctionDetail: React.FC<
               />
             </div>
             <div className="bg-white rounded-2xl shadow-md p-6">
+              {/* Mostrar BidForm solo si puede pujar, si no, mostrar botones de edición si es owner */}
               {showBidForm && (
                 <BidForm
                   canBid={!!canBid}
@@ -256,9 +262,26 @@ const AuctionDetail: React.FC<
                   onSubmit={handleBidSubmit}
                   showLoginPrompt={!!showLoginPrompt}
                   showUpgradePrompt={!!showUpgradePrompt}
+                  minBid={minBid}
                 />
               )}
-              {!showBidForm && showUpgradePrompt && (
+              {!showBidForm && isOwner && (
+                <div className="flex flex-col gap-3 items-center justify-center">
+                  <Link
+                    href={`/auctions/${auctionId}/edit`}
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full text-center"
+                  >
+                    Edit Auction
+                  </Link>
+                  <Link
+                    href={`/products/${id}/edit`}
+                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full text-center"
+                  >
+                    Edit Product
+                  </Link>
+                </div>
+              )}
+              {!showBidForm && !isOwner && showUpgradePrompt && (
                 <div className="text-center mt-4">
                   <a
                     href="/payment"
