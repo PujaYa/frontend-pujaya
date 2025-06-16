@@ -60,7 +60,7 @@ const CheckoutForm = () => {
       const res = await fetch(`${API_URL.replace(/\/$/, '')}/payments/update-subscription`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: userData?.user.id, plan , paymentIntentId: paymentIntent?.id}),
+        body: JSON.stringify({ userId: userData?.user.id, plan, paymentIntentId: paymentIntent?.id }),
       });
       const data = await res.json();
       if (!data) {
@@ -89,7 +89,7 @@ const CheckoutForm = () => {
             setAmount(14.99);
           }}
         >
-          Premium Mensual ($14.99)
+          Premium Monthly ($14.99)
         </button>
         <button
           type="button"
@@ -99,7 +99,7 @@ const CheckoutForm = () => {
             setAmount(99.99);
           }}
         >
-          Premium Anual ($99.99)
+          Premium Annual ($99.99)
         </button>
       </div>
       <p className="text-lg text-gray-600 text-center mb-6">

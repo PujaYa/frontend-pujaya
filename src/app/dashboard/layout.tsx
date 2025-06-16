@@ -29,6 +29,18 @@ export default function DashboardLayout({
         }
     }, [userData, router]);
 
+    // Hook extra para controlar el scroll del body
+    useEffect(() => {
+        if (sidebarOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [sidebarOpen]);
+
     if (!userData || userData.user.role !== 'admin') {
         return (
             <div className="flex h-screen bg-gray-100">
@@ -70,7 +82,7 @@ export default function DashboardLayout({
             </div>
 
             {/* Main content */}
-            <div className="flex-1 flex flex-col overflow-hidden z-10">
+            <div className="flex-1 flex flex-col overflow-y-auto p-4 z-10">
                 {children}
             </div>
         </div>
