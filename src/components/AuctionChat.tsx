@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuctionChat } from '../context/useAuctionChat';
+// import { useAuctionChat } from '../context/useAuctionChat';
+import { useAuctionChatPusher } from '../context/useAuctionChatPusher';
 import Image from 'next/image';
 
 interface AuctionChatProps {
@@ -23,12 +24,20 @@ export default function AuctionChat({
   onMessages,
   uid,
 }: AuctionChatProps) {
-  const { messages, sendMessage, error, joined } = useAuctionChat({
+  // const { messages, sendMessage, error, joined } = useAuctionChat({
+  //   auctionId,
+  //   token,
+  //   room,
+  //   targetUserId,
+  //   uid,
+  // });
+  const { messages, sendMessage, error, joined } = useAuctionChatPusher({
     auctionId,
     token,
     room,
     targetUserId,
-    uid, // <-- se pasa el uid
+    uid,
+    username,
   });
   const [input, setInput] = useState('');
 
@@ -39,7 +48,7 @@ export default function AuctionChat({
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
-      sendMessage(input, username);
+      sendMessage(input);
       setInput('');
     }
   };
@@ -92,7 +101,7 @@ export default function AuctionChat({
           className="flex-1 border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Escribe un mensaje..."
+          placeholder="Type a message..."
           disabled={!joined}
         />
         <button
@@ -100,7 +109,7 @@ export default function AuctionChat({
           className="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded disabled:opacity-50"
           disabled={!joined || !input.trim()}
         >
-          Enviar
+          Send
         </button>
       </form>
     </div>

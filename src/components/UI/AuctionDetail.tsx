@@ -299,21 +299,15 @@ const AuctionDetail: React.FC<AuctionDetailProps> = ({
               <BidHistory bids={bids} bidsLoading={bidsLoading} bidsError={bidsError} />
             </div>
             {/* Floating chat for bidders: only show if user has placed a bid and is not owner */}
-            {!isOwner &&
-              userHasBid &&
-              auctionId &&
-              userData?.token &&
-              userData.user?.name &&
-              ownerId && (
-                <FloatingAuctionChat
-                  auctionId={auctionId}
-                  token={userData.token}
-                  room={`auction-${auctionId}-owner-${ownerId}-user-${userData.user.id}`}
-                  username={userData.user.name}
-                  targetUserId={ownerId}
-                  uid={userData.user.firebaseUid}
-                />
-              )}
+            {!isOwner && userHasBid && auctionId && userData.user?.name && ownerId && (
+              <FloatingAuctionChat
+                auctionId={auctionId}
+                room={`auction-${auctionId}-owner-${ownerId}-user-${userData.user.id}`}
+                username={userData.user.name}
+                targetUserId={ownerId}
+                uid={userData.user.firebaseUid}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import AuctionChat from './AuctionChat';
+import AuctionChatWrapper from './AuctionChatWrapper';
 
 interface FloatingAuctionChatProps {
   auctionId: string;
-  token: string;
   room: string;
   username: string;
   targetUserId: string;
@@ -20,12 +19,11 @@ interface Message {
 
 export default function FloatingAuctionChat({
   auctionId,
-  token,
   room,
   username,
   targetUserId,
   uid,
-}: FloatingAuctionChatProps) {
+}: Omit<FloatingAuctionChatProps, 'token'>) {
   const [open, setOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
   const [lastMessageCount, setLastMessageCount] = useState(0);
@@ -76,24 +74,15 @@ export default function FloatingAuctionChat({
         </button>
       </div>
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-80 max-w-full h-[420px] bg-white rounded-xl shadow-2xl flex flex-col border border-blue-200 animate-fade-in">
-          <div className="flex items-center justify-between px-4 py-2 border-b bg-blue-600 rounded-t-xl">
-            <span className="text-white font-semibold">Auction Chat</span>
-            <button onClick={() => setOpen(false)} className="text-white text-xl font-bold">
-              ×
-            </button>
-          </div>
-          <div className="flex-1 overflow-hidden">
-            <AuctionChat
-              auctionId={auctionId}
-              token={token}
-              room={room}
-              username={username}
-              targetUserId={targetUserId}
-              onMessages={handleMessages}
-              uid={uid}
-            />
-          </div>
+        <div className="fixed bottom-24 right-6 z-50 w-96 max-w-[95vw] h-[500px]">
+          <AuctionChatWrapper
+            auctionId={auctionId}
+            room={room}
+            username={username}
+            targetUserId={targetUserId}
+            uid={uid}
+            onMessages={handleMessages}
+          />
         </div>
       )}
     </>
