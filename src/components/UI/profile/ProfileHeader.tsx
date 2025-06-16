@@ -26,10 +26,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   handleImageChange,
   onEditProfile,
 }) => (
-  <div className="flex flex-col md:flex-row items-center md:items-start w-full gap-4 md:gap-0">
+  <div className="flex flex-col sm:flex-row flex-wrap items-center sm:items-start w-full gap-4">
     {/* Left: Avatar + Info */}
-    <div className="flex flex-row items-center w-full md:w-auto gap-4">
-      <div className="relative flex flex-col items-center">
+    <div className="flex flex-col sm:flex-row items-center sm:items-start w-full sm:w-auto gap-4">
+      <div className="relative">
         <Image
           src={userData.user.imgProfile || '/default-profile.png'}
           alt={userData.user.name}
@@ -51,7 +51,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               className="px-4 py-2 text-left hover:bg-gray-100 text-sm"
               onClick={() => {
                 setShowPhotoMenu(false);
-                window.open(userData.user.imgProfile || '/default-avatar.png', '_blank');
+                window.open(userData.user.imgProfile || '/default-profile.png', '_blank');
               }}
             >
               View photo
@@ -75,10 +75,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           className="hidden"
         />
       </div>
-      <div className="flex flex-col items-start">
-        <span className="text-3xl font-bold text-gray-900">{userData.user.name}</span>
-        <span className="text-xs text-gray-400 mt-1">Art & Antiques Collector</span>
-        <div className="flex flex-wrap gap-2 mt-2 items-center">
+
+      <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+        <span className="text-2xl font-bold text-gray-900">{userData.user.name}</span>
+        <span className="text-xs text-gray-500 mt-1">Art & Antiques Collector</span>
+        <div className="flex flex-wrap gap-2 mt-2 items-center justify-center sm:justify-start">
           {userData.user.isActive === false ? (
             <span className="px-2 py-0.5 rounded text-xs font-semibold bg-red-100 text-red-700">
               Inactive
@@ -90,7 +91,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           )}
           {userData.user.role && (
             <span
-              className={`px-2 py-0.5 rounded text-xs font-semibold ${userData.user.role === 'premium' ? 'bg-yellow-200 text-yellow-800' : 'bg-blue-100 text-blue-700'}`}
+              className={`px-2 py-0.5 rounded text-xs font-semibold ${userData.user.role === 'premium'
+                ? 'bg-yellow-200 text-yellow-800'
+                : 'bg-blue-100 text-blue-700'
+                }`}
             >
               {userData.user.role.charAt(0).toUpperCase() + userData.user.role.slice(1)}
             </span>
@@ -98,13 +102,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         </div>
       </div>
     </div>
+
     {/* Right: Edit Profile Button */}
-    <div className="flex w-full md:w-auto justify-center md:justify-end mt-4 md:mt-0 md:ml-auto">
+    <div className="flex w-full sm:w-auto justify-center sm:justify-end mt-2 sm:mt-0">
       <button
         onClick={onEditProfile}
         className="bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 transition text-sm flex items-center"
       >
-        Edit Profile <FaPen className="inline ml-2" />
+        Edit Profile <FaPen className="flex justify-center inline ml-2" />
       </button>
     </div>
   </div>

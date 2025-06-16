@@ -129,7 +129,7 @@ const ProfileComponent = () => {
   }
 
   return (
-    <main className="flex flex-col items-center px-2 py-4 min-h-screen bg-blue-50">
+    <main className="flex flex-col items-center px-2 sm:px-4 py-4 min-h-screen bg-blue-50">
       {/* Card de perfil separada */}
       <div className="w-full max-w-6xl">
         <div className="bg-white p-2 sm:p-4 md:p-6 rounded-xl shadow-xl flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
@@ -141,7 +141,7 @@ const ProfileComponent = () => {
             handleImageChange={handleImageChange}
             onEditProfile={() => setIsModalOpen(true)}
           />
-        </div>
+        </div >
         {/* Stats row */}
         <ProfileStats activeTime={getActiveTime()} />
       </div>

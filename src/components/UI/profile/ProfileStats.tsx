@@ -8,7 +8,7 @@ interface ProfileStatsProps {
 const ProfileStats: React.FC<ProfileStatsProps> = ({ stats, activeTime }) => {
   const safeStats = stats || { bidsWon: 0, itemsSold: 0, totalSold: 0 };
   return (
-    <div className="flex flex-row justify-center gap-8 my-4 w-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-3">
       <div className="flex flex-col items-center bg-gray-50 rounded-xl px-8 py-4 shadow text-center min-w-[120px]">
         <span className="text-2xl font-bold text-blue-700">{safeStats.bidsWon}</span>
         <span className="text-sm text-gray-500 font-semibold mt-1">Bids Won</span>
