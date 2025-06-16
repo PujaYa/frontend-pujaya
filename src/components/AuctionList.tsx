@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Auction from './Auction';
 import Link from 'next/link';
 import { IAuction } from '@/app/types';
+import { LoadingSpinner } from './LoadingSpinner';
 
 const PAGE_SIZE = 6;
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -87,7 +88,8 @@ const AuctionList: React.FC<AuctionListProps> = ({
   return (
     <div>
       {loading ? (
-        <div className="text-center text-gray-500 py-10">Loading auctions...</div>
+        <LoadingSpinner />
+
       ) : products && products.length === 0 ? (
         <div className="text-center text-gray-500 py-10">No auctions found.</div>
       ) : (

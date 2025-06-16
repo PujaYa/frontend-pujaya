@@ -17,14 +17,7 @@ export default function AdminSidebar() {
       href: '/dashboard/auctions',
       title: 'Auctions',
     },
-    {
-      href: '/dashboard/sales',
-      title: 'Sales',
-    },
-    {
-      href: '/dashboard/settings',
-      title: 'Settings',
-    },
+ 
   ];
 
   return (
