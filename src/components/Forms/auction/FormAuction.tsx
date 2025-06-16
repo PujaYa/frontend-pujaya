@@ -103,7 +103,7 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
 
   // Añadir validación en vivo para cada campo
   const liveValidateField = (field: string, value: string) => {
-    let errors: FormErrors = { ...formErrors };
+    const errors: FormErrors = { ...formErrors };
     switch (field) {
       case 'name':
         if (!value || value.length < 3) {

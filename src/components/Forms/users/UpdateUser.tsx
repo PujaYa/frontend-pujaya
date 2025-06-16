@@ -72,8 +72,6 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
   };
 
   const liveValidateField = (field: string, value: string) => {
-    // Copy current formData for validation
-    const tempFormData = { ...formData, [field]: value };
     switch (field) {
       case 'name':
         if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value) || value.length < 2) {
