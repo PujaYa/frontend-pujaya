@@ -180,6 +180,11 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
     router.push(`/products/create?returnTo=${encodeURIComponent(currentUrl)}`);
   };
 
+  const handleEditProduct = () => {
+    const currentUrl = window.location.pathname;
+    router.push(`/products/${productId}/edit?url=${currentUrl}?productId=${productId}`);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-8 bg-white shadow-sm rounded-lg p-6">
       {error && <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-md">{error}</div>}
@@ -252,6 +257,7 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
                 className="block w-full rounded-md border border-gray-300 px-3 py-2 bg-gray-50 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
+            {!productId && (
             <button
               type="button"
               onClick={handleAddProduct}
@@ -259,6 +265,16 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
             >
               Add Product
             </button>
+            )}
+            {productId && (
+            <button
+              type="button"
+              onClick={handleEditProduct}
+              className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
+            >
+                Edit Product
+              </button>
+            )}
           </div>
           {formErrors.productId && (
             <p className="mt-1 text-sm text-red-600">{formErrors.productId}</p>
