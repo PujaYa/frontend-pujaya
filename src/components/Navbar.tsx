@@ -15,15 +15,16 @@ const Navbar = () => {
   const { setNavbarOpen } = useMenuContext();
   const hasOwnAuctions = useHasOwnAuctions(userData?.user.id, userData?.token);
 
+  // Sincroniza el estado local con el contexto SOLO cuando cambia menuOpen
+  React.useEffect(() => {
+    setNavbarOpen(menuOpen);
+  }, [menuOpen, setNavbarOpen]);
+
   const toggleMenu = () => {
-    setMenuOpen((prev) => {
-      setNavbarOpen(!prev);
-      return !prev;
-    });
+    setMenuOpen((prev) => !prev);
   };
   const closeMenu = () => {
     setMenuOpen(false);
-    setNavbarOpen(false);
   };
 
   const handleLogout = () => {
@@ -117,12 +118,13 @@ const Navbar = () => {
       </div>
 
       {/* Menú móvil deslizable */}
-      <div className={`
+      <div
+        className={`
     fixed inset-y-0 right-0 w-64 bg-white shadow-md transform transition-transform duration-300 z-40
     ${menuOpen ? 'translate-x-0' : 'translate-x-full'}
     md:hidden
-`}>
-
+`}
+      >
         <div className="flex flex-col p-6 space-y-4">
           <Link
             href="/"
