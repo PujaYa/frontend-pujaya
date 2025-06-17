@@ -117,13 +117,12 @@ const Navbar = () => {
       </div>
 
       {/* Menú móvil deslizable */}
-      <div
-        className={`
-        fixed inset-y-0 left-0 w-64 bg-white shadow-md transform transition-transform duration-300 z-40
-        ${menuOpen ? 'translate-x-0' : '-translate-x-full'}
-        md:hidden
-      `}
-      >
+      <div className={`
+    fixed inset-y-0 right-0 w-64 bg-white shadow-md transform transition-transform duration-300 z-40
+    ${menuOpen ? 'translate-x-0' : 'translate-x-full'}
+    md:hidden
+`}>
+
         <div className="flex flex-col p-6 space-y-4">
           <Link
             href="/"
