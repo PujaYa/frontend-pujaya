@@ -74,10 +74,11 @@ const Navbar = () => {
 
       {/* Menú móvil deslizable */}
       <div className={`
-        fixed inset-y-0 left-0 w-64 bg-white shadow-md transform transition-transform duration-300 z-40
-        ${menuOpen ? 'translate-x-0' : '-translate-x-full'}
-        md:hidden
-      `}>
+    fixed inset-y-0 right-0 w-64 bg-white shadow-md transform transition-transform duration-300 z-40
+    ${menuOpen ? 'translate-x-0' : 'translate-x-full'}
+    md:hidden
+`}>
+
         <div className="flex flex-col p-6 space-y-4">
           <Link href="/" onClick={closeMenu} className="text-blue-800 font-medium hover:text-yellow-400">Home</Link>
           <Link href="/auctions" onClick={closeMenu} className="text-blue-800 font-medium hover:text-yellow-400">Auctions</Link>
