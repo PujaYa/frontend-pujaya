@@ -35,7 +35,6 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Get the selected product from URL parameters
   const productIdFromUrl = searchParams.get('productId');
   const productId = productIdFromUrl || auctionForm.productId;
   const productNameFromUrl = searchParams.get('productName');
@@ -52,10 +51,8 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
     initialData?.endDate ? initialData.endDate.slice(0, 16) : auctionForm.endDate || ''
   );
 
-  // State for the minimum value of the date input
   const [minEndDate, setMinEndDate] = useState('');
 
-  // If initialData changes (navigating between auctions), update fields
   useEffect(() => {
     if (initialData) {
       setName(initialData.name || '');
@@ -65,10 +62,25 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
   }, [initialData]);
 
   useEffect(() => {
-    // Only calculate on client side to avoid hydration mismatch
     const now = new Date();
     setMinEndDate(now.toISOString().slice(0, 16));
   }, []);
+
+  const validateField = (field: string, value: string): string | undefined => {
+    if (field === 'name') {
+      if (!value || value.length < 3) return 'Name must be at least 3 characters long';
+    }
+    if (field === 'description') {
+      if (!value || value.length < 10) return 'Description must be at least 10 characters long';
+    }
+    if (field === 'endDate') {
+      if (!value) return 'End date is required';
+      const selectedDate = new Date(value);
+      const now = new Date();
+      if (selectedDate <= now) return 'End date must be in the future';
+    }
+    return undefined;
+  };
 
   const validateForm = (formData: FormData): FormErrors => {
     const errors: FormErrors = {};
@@ -76,57 +88,57 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
     const description = formData.get('description') as string;
     const endDate = formData.get('endDate') as string;
 
-    if (!name || name.length < 3) {
-      errors.name = 'Name must be at least 3 characters long';
-    }
-
-    if (!description || description.length < 10) {
-      errors.description = 'Description must be at least 10 characters long';
-    }
-
+    if (!name || name.length < 3) errors.name = 'Name must be at least 3 characters long';
+    if (!description || description.length < 10) errors.description = 'Description must be at least 10 characters long';
     if (!endDate) {
       errors.endDate = 'End date is required';
     } else {
       const selectedDate = new Date(endDate);
       const now = new Date();
-      if (selectedDate <= now) {
-        errors.endDate = 'End date must be in the future';
-      }
+      if (selectedDate <= now) errors.endDate = 'End date must be in the future';
     }
-
-    if (!productId) {
-      errors.productId = 'Product is required';
-    }
+    if (!productId) errors.productId = 'Product is required';
 
     return errors;
   };
 
   const handleFieldChange = (field: string, value: string) => {
     setAuctionForm({ [field]: value });
+
     if (field === 'name') setName(value);
     if (field === 'description') setDescription(value);
     if (field === 'endDate') setEndDate(value);
+
+    const errorMessage = validateField(field, value);
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      [field]: errorMessage,
+    }));
   };
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setAuctionForm({ name, description, endDate, productId, productName });
+
     const formData = new FormData(event.currentTarget);
     const errors = validateForm(formData);
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
+
     try {
       setError(null);
       setIsSubmitting(true);
       formData.append('productId', productId || '');
       formData.append('token', userData?.token || '');
+
       if (mode === 'edit' && initialData?.id) {
         await updateAuction(initialData.id, formData);
       } else {
         await createAuction(formData);
       }
+
       clearAuctionForm();
       router.push('/auctions');
     } catch (error) {
@@ -137,7 +149,6 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
   }
 
   const handleAddProduct = () => {
-    // Redirect to product creation form
     const currentUrl = window.location.pathname;
     router.push(`/products/create?returnTo=${encodeURIComponent(currentUrl)}`);
   };
@@ -147,6 +158,7 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
       {error && <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-md">{error}</div>}
 
       <div className="space-y-6">
+        {/* Auction Name */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">
             Auction Name <span className="text-red-500">*</span>
@@ -160,9 +172,12 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
             onChange={(e) => handleFieldChange('name', e.target.value)}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
-          {formErrors.name && <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>}
+          {formErrors.name && (
+            <p className="mt-1 text-sm text-red-600 transition-opacity duration-200">{formErrors.name}</p>
+          )}
         </div>
 
+        {/* Description */}
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700">
             Description <span className="text-red-500">*</span>
@@ -177,10 +192,11 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
           {formErrors.description && (
-            <p className="mt-1 text-sm text-red-600">{formErrors.description}</p>
+            <p className="mt-1 text-sm text-red-600 transition-opacity duration-200">{formErrors.description}</p>
           )}
         </div>
 
+        {/* End Date */}
         <div>
           <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
             End Date <span className="text-red-500">*</span>
@@ -195,9 +211,12 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
             onChange={(e) => handleFieldChange('endDate', e.target.value)}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
-          {formErrors.endDate && <p className="mt-1 text-sm text-red-600">{formErrors.endDate}</p>}
+          {formErrors.endDate && (
+            <p className="mt-1 text-sm text-red-600 transition-opacity duration-200">{formErrors.endDate}</p>
+          )}
         </div>
 
+        {/* Product */}
         <div>
           <label htmlFor="product" className="block text-sm font-medium text-gray-700">
             Product <span className="text-red-500">*</span>
@@ -223,10 +242,11 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
             </button>
           </div>
           {formErrors.productId && (
-            <p className="mt-1 text-sm text-red-600">{formErrors.productId}</p>
+            <p className="mt-1 text-sm text-red-600 transition-opacity duration-200">{formErrors.productId}</p>
           )}
         </div>
 
+        {/* Submit */}
         <div className="flex gap-4">
           <button
             type="submit"
