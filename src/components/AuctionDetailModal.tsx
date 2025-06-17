@@ -1,7 +1,9 @@
-import { IAuction, IProduct, IUser } from '@/app/types';
+import { IAuction, IProduct, IUser } from '@/app/types/index';
 import { getProductById } from '@/app/utils/products.helper';
 import { getUserById } from '@/app/utils/users.helper';
+import Image from 'next/image';
 import { useEffect, useState, useCallback } from 'react';
+
 
 interface Props {
   auction: IAuction | null;
@@ -22,8 +24,8 @@ export default function AuctionDetailModal({ auction, isOpen, onClose }: Props) 
         getUserById(auction.owner.id),
       ]);
 
-      setProduct(productData);
-      setUser(userData);
+      setProduct(productData as IProduct);
+      setUser(userData as IUser);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -56,13 +58,33 @@ export default function AuctionDetailModal({ auction, isOpen, onClose }: Props) 
 
           {/* Image */}
           <div className="w-full h-48 mb-4">
-            <img
+            <Image
               src={product?.imgProduct?.[0] || '/default-auction.png'}
               alt={auction.name}
               className="w-full h-full object-cover rounded-lg"
+              width={100}
+              height={100}
             />
           </div>
 
+                    {/* Content */}
+                    <div className="w-full space-y-4">
+                        <div>
+                            <h4 className="text-xl font-semibold text-gray-900">{auction.name}</h4>
+                            <p className="text-sm text-gray-500">{auction.description}</p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-sm text-gray-500">Initial Price</p>
+                                <p className="text-lg font-semibold">${product?.initialPrice || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500">Current Price</p>
+                                <p className="text-lg font-semibold">${product?.finalPrice || 'N/A'}</p>
+                            </div>
+                        </div>
+                    </div>
           {/* Content */}
           <div className="w-full space-y-4">
             <div>

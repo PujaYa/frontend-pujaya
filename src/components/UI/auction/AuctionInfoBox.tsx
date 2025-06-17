@@ -1,5 +1,5 @@
 import React from 'react';
-import EndAuctionButton from '../EndAuctionButton';
+import { FaGavel, FaEye } from 'react-icons/fa';
 
 interface AuctionInfoBoxProps {
   auctionInfo: {
@@ -8,77 +8,55 @@ interface AuctionInfoBoxProps {
     initialPrice?: number;
     isActive?: boolean;
     endDate?: string;
+    categoryName?: string;
     // otros campos relevantes
   };
-  isActive: boolean;
   initialPrice: number;
-  auctionId: string;
-  isOwner: boolean;
-  id: string;
+  bidsCount?: number; // allow passing bid count
+  viewsCount?: number; // allow passing views count
 }
 
 const AuctionInfoBox: React.FC<AuctionInfoBoxProps> = ({
   auctionInfo,
-  isActive,
+  bidsCount = 12, // fallback demo
+  viewsCount = 45, // fallback demo
   initialPrice,
-  auctionId,
-  isOwner,
-  id,
 }) => {
   const currentPrice = auctionInfo?.currentHighestBid ?? auctionInfo?.initialPrice ?? initialPrice;
   return (
-    <div className="bg-white rounded-2xl shadow p-6 mb-2">
-      <h2 className="text-xl font-bold mb-4 text-gray-900 flex items-center justify-between">
+    <div className="bg-white rounded-2xl shadow p-6 mb-2 flex flex-col items-center">
+      {/* 1. Auction name */}
+      <h2 className="text-xl font-bold text-gray-900 mb-2 leading-tight text-center w-full">
         {auctionInfo?.name}
-        {isOwner && (
-          <div className="flex gap-2 ml-2">
-            <button
-              className="bg-yellow-400 hover:bg-yellow-500 text-blue-900 rounded-lg px-3 py-1 font-semibold text-sm transition shadow-sm border border-yellow-300"
-              onClick={() => (window.location.href = `/auctions/${auctionId}/edit`)}
-            >
-              Edit auction
-            </button>
-            <button
-              className="bg-yellow-200 hover:bg-yellow-300 text-blue-900 rounded-lg px-3 py-1 font-semibold text-sm transition shadow-sm border border-yellow-100"
-              onClick={() => (window.location.href = `/products/${id}/edit`)}
-            >
-              Edit product
-            </button>
-          </div>
-        )}
       </h2>
-      <div className="mb-4">
-        <span className="text-gray-500 text-sm">Current price</span>
-        <div className="text-3xl font-bold text-blue-700">${currentPrice} USD</div>
-      </div>
-      <div className="flex gap-2 mb-4">
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-            (auctionInfo?.isActive ?? isActive)
-              ? 'bg-blue-100 text-blue-700'
-              : 'bg-gray-200 text-gray-500'
-          }`}
-        >
-          {(auctionInfo?.isActive ?? isActive) ? 'Active' : 'Finished'}
+      {/* 2. Category badge */}
+      <div className="mb-4 w-full flex justify-center">
+        <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
+          {auctionInfo?.categoryName || ''}
         </span>
       </div>
-      <div className="flex gap-2 items-center mb-4">
-        <span className="text-gray-500 text-sm">Initial price:</span>
-        <span className="text-gray-700 font-semibold">
-          ${auctionInfo?.initialPrice ?? initialPrice} USD
-        </span>
-      </div>
-      {auctionInfo?.endDate && (
-        <div className="mb-2 text-sm text-gray-600">
-          <b>Ends:</b> {new Date(auctionInfo.endDate).toLocaleString()}
+      {/* 3. Current price (blue box) */}
+      <div className="mb-2 w-full flex justify-center">
+        <div className="bg-blue-50 text-blue-700 text-3xl font-bold rounded-xl px-4 py-3 border border-blue-100 shadow-sm text-center w-full">
+          ${currentPrice} <span className="text-base font-medium">USD</span>
         </div>
-      )}
-      <EndAuctionButton
-        auctionId={auctionId}
-        isOwner={isOwner}
-        isActive={!!(auctionInfo?.isActive ?? isActive)}
-        hasEnded={!Boolean(auctionInfo?.isActive ?? isActive)}
-      />
+      </div>
+      {/* 4. Bid count */}
+      <div className="text-center text-gray-500 text-sm mb-4 w-full">{bidsCount} bids placed</div>
+
+      {/* 9. Bottom row: bids and watching */}
+      <div className="flex justify-between items-center mt-2 pt-4 border-t border-gray-100 text-base text-gray-700 w-full">
+        <div className="flex flex-col items-center flex-1">
+          <FaGavel className="text-blue-700 mb-1" />
+          <span className="font-bold">{bidsCount}</span>
+          <span className="text-xs text-gray-500">Bids</span>
+        </div>
+        <div className="flex flex-col items-center flex-1">
+          <FaEye className="text-blue-700 mb-1" />
+          <span className="font-bold">{viewsCount}</span>
+          <span className="text-xs text-gray-500">Watching</span>
+        </div>
+      </div>
     </div>
   );
 };

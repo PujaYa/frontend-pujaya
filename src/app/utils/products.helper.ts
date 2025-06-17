@@ -1,5 +1,5 @@
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
-import { IProduct } from "../types/index";
+import { IProduct } from "../types";
 
 export async function getProductsDB(
   limit = 6,
@@ -11,7 +11,7 @@ export async function getProductsDB(
       `${APIURL}/products?limit=${limit}&page=${page}`
     );
     const data = await response.json();
-    // Espera que el backend devuelva { products: [...], total: ... }
+    // Wait for the backend to return { products: [...], total: ... }
     return {
       products: data.products || data,
       total: data.total || (data.products ? data.products.length : data.length),
@@ -23,7 +23,7 @@ export async function getProductsDB(
 
 export async function getProductById(id: string): Promise<IProduct> {
   try {
-    const { products } = await getProductsDB(1000, 1); // O ajusta según tu necesidad
+    const { products } = await getProductsDB(1000, 1); // Adjust to your needs
     const productFiltered = products.find(
       (product) => product.id.toString() === id
     );

@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 // Cambiar el tipo de prop para que Auction reciba una subasta (auction) y no un producto directamente
 interface AuctionProps {
@@ -22,14 +23,17 @@ const Auction: React.FC<{ auction: AuctionProps }> = ({ auction }) => {
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col transition hover:scale-105 duration-200">
       {/* Imagen del producto */}
       <div className="bg-gray-100 h-48 flex items-center justify-center">
-        <img
+        <Image
           src={
             auction.product.imgProduct && auction.product.imgProduct.length > 0
               ? auction.product.imgProduct[0]
               : '/no-image.png'
           }
+          width={400}
+          height={300}
+          priority
           alt={auction.product.name}
-          className="object-contain h-full w-full"
+          className="w-full h-48 object-cover rounded-t-lg"
         />
       </div>
       {/* Info */}

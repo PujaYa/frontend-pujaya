@@ -1,10 +1,13 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/app/context/AuthContext";
-import { useAuctionForm } from "@/app/context/AuctionFormContext";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { createProduct, uploadImages } from "@/app/products/actions";
+import { useAuth } from '@/app/context/AuthContext';
+import { useAuctionForm } from '@/app/context/AuctionFormContext';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { createProduct, uploadImages } from '@/app/products/actions';
+import Image from 'next/image';
+import { ICategory } from '@/app/types/index';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 interface Category {
   id: string;
@@ -24,9 +27,7 @@ interface FormProductProps {
   returnPath?: string;
 }
 
-export default function FormProduct({
-  returnPath = "/auctions/create",
-}: FormProductProps) {
+export default function FormProduct({ returnPath = '/auctions/create' }: FormProductProps) {
   const { userData } = useAuth();
   const { setAuctionForm } = useAuctionForm();
   const router = useRouter();
@@ -41,72 +42,71 @@ export default function FormProduct({
 
   useEffect(() => {
     // Cargar categorías
-    fetch("http://localhost:3001/api/category")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`)
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to load categories");
+          throw new Error('Failed to load categories');
         }
         return response.json();
       })
       .then((data) => {
         if (Array.isArray(data.items)) {
           setCategories(
-            data.items.map((cat: any) => ({
+            data.items.map((cat: ICategory) => ({
               id: cat.id,
               name: cat.categoryName,
             }))
           );
         } else {
           // console.error("Unexpected categories format:", data);
-          throw new Error("Invalid categories data format");
+          throw new Error('Invalid categories data format');
         }
         setIsLoadingCategories(false);
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
+        console.error('Error loading categories:', error);
         // console.error("Error loading categories:", error);
-        setError("Failed to load categories. Please try again later.");
+        setError('Failed to load categories. Please try again later.');
         setIsLoadingCategories(false);
       });
   }, []);
 
   const validateForm = (formData: FormData): FormErrors => {
     const errors: FormErrors = {};
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const initialPrice = formData.get("initialPrice") as string;
-    const finalPrice = formData.get("finalPrice") as string;
-    const categoryId = formData.get("categoryId") as string;
+    const name = formData.get('name') as string;
+    const description = formData.get('description') as string;
+    const initialPrice = formData.get('initialPrice') as string;
+    const finalPrice = formData.get('finalPrice') as string;
+    const categoryId = formData.get('categoryId') as string;
 
     if (!name || name.length < 3) {
-      errors.name = "Name must be at least 3 characters long";
+      errors.name = 'Name must be at least 3 characters long';
     }
 
     if (!description || description.length < 10) {
-      errors.description = "Description must be at least 10 characters long";
+      errors.description = 'Description must be at least 10 characters long';
     }
 
     if (!initialPrice || Number(initialPrice) <= 0) {
-      errors.initialPrice = "Initial price must be greater than 0";
+      errors.initialPrice = 'Initial price must be greater than 0';
     }
 
     if (!finalPrice || Number(finalPrice) <= Number(initialPrice)) {
-      errors.finalPrice = "Final price must be greater than initial price";
+      errors.finalPrice = 'Final price must be greater than initial price';
     }
 
     if (!categoryId) {
-      errors.categoryId = "Category is required";
+      errors.categoryId = 'Category is required';
     }
 
     if (uploadedImages.length === 0) {
-      errors.images = "At least one image is required";
+      errors.images = 'At least one image is required';
     }
 
     return errors;
   };
 
-  const handleImageUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
@@ -115,14 +115,14 @@ export default function FormProduct({
     setFormErrors({});
 
     try {
-      const urls = await uploadImages(Array.from(files), userData?.token || "");
+      const urls = await uploadImages(Array.from(files), userData?.token || '');
       setUploadedImages((prev) => [...prev, ...urls]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       // console.error("Error uploading images:", error);
-      setFormErrors({ images: error.message });
+      setFormErrors({ images: (error as Error).message || 'Error uploading images' });
     } finally {
       setIsUploadingImages(false);
-      event.target.value = "";
+      event.target.value = '';
     }
   };
 
@@ -146,58 +146,92 @@ export default function FormProduct({
 
       // Añadir las imágenes al FormData
       uploadedImages.forEach((url) => {
-        formData.append("imgProduct", url);
+        formData.append('imgProduct', url);
       });
 
       // Create product
-      formData.append("token", userData?.token || "");
+      formData.append('token', userData?.token || '');
       const result = await createProduct(formData);
 
       if (result && result.id) {
         // Guardar el nombre del producto en el contexto de subasta
         setAuctionForm({
           productId: result.id,
-          productName: formData.get("name") as string,
+          productName: formData.get('name') as string,
         });
         // Limpiar el contexto después de crear el producto
         setTimeout(() => setAuctionForm({}), 0);
         // Redirigir de vuelta al formulario de subasta con el ID del producto
         const returnUrl = new URL(returnPath, window.location.origin);
-        returnUrl.searchParams.set("productId", result.id);
-        returnUrl.searchParams.set(
-          "productName",
-          formData.get("name") as string
-        );
+        returnUrl.searchParams.set('productId', result.id);
+        returnUrl.searchParams.set('productName', formData.get('name') as string);
         router.push(returnUrl.toString());
       } else {
-        throw new Error("Failed to get product ID from response");
+        throw new Error('Failed to get product ID from response');
       }
     } catch (error) {
       // console.error("Error:", error);
-      setError(
-        (error as Error).message ||
-          "An error occurred while creating the product"
-      );
+      setError((error as Error).message || 'An error occurred while creating the product');
     } finally {
       setIsSubmitting(false);
     }
   }
 
+  // Live validation for each field
+  const liveValidateField = (field: string, value: string) => {
+    const errors: FormErrors = { ...formErrors };
+    switch (field) {
+      case 'name':
+        if (!value || value.length < 3) {
+          errors.name = 'Name must be at least 3 characters long';
+        } else {
+          delete errors.name;
+        }
+        break;
+      case 'description':
+        if (!value || value.length < 10) {
+          errors.description = 'Description must be at least 10 characters long';
+        } else {
+          delete errors.description;
+        }
+        break;
+      case 'initialPrice':
+        if (!value || Number(value) <= 0) {
+          errors.initialPrice = 'Initial price must be greater than 0';
+        } else {
+          delete errors.initialPrice;
+        }
+        break;
+      case 'finalPrice':
+        const initial = Number(
+          (document.getElementById('initialPrice') as HTMLInputElement)?.value || 0
+        );
+        if (!value || Number(value) <= initial) {
+          errors.finalPrice = 'Final price must be greater than initial price';
+        } else {
+          delete errors.finalPrice;
+        }
+        break;
+      case 'categoryId':
+        if (!value) {
+          errors.categoryId = 'Category is required';
+        } else {
+          delete errors.categoryId;
+        }
+        break;
+      default:
+        break;
+    }
+    setFormErrors(errors);
+  };
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-8 bg-white shadow-sm rounded-lg p-6">
-      {error && (
-        <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-md">
-          {error}
-        </div>
-      )}
+    <form onSubmit={handleSubmit} className="space-y-8 bg-white shadow-sm rounded-lg p-6">
+      {error && <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-md">{error}</div>}
 
       <div className="space-y-6">
         <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
             Product Name <span className="text-red-500">*</span>
           </label>
           <input
@@ -206,16 +240,13 @@ export default function FormProduct({
             name="name"
             required
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            onChange={(e) => liveValidateField('name', e.target.value)}
           />
-          {formErrors.name && (
-            <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>
-          )}
+          {formErrors.name && <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>}
         </div>
 
         <div>
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-700">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
             Product Description <span className="text-red-500">*</span>
           </label>
           <textarea
@@ -224,19 +255,16 @@ export default function FormProduct({
             rows={4}
             required
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            onChange={(e) => liveValidateField('description', e.target.value)}
           />
           {formErrors.description && (
-            <p className="mt-1 text-sm text-red-600">
-              {formErrors.description}
-            </p>
+            <p className="mt-1 text-sm text-red-600">{formErrors.description}</p>
           )}
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <label
-              htmlFor="initialPrice"
-              className="block text-sm font-medium text-gray-700">
+            <label htmlFor="initialPrice" className="block text-sm font-medium text-gray-700">
               Initial Price <span className="text-red-500">*</span>
             </label>
             <input
@@ -247,20 +275,16 @@ export default function FormProduct({
               min="0"
               step="0.01"
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              onChange={(e) => liveValidateField('initialPrice', e.target.value)}
             />
             {formErrors.initialPrice && (
-              <p className="mt-1 text-sm text-red-600">
-                {formErrors.initialPrice}
-              </p>
+              <p className="mt-1 text-sm text-red-600">{formErrors.initialPrice}</p>
             )}
           </div>
 
           <div>
-            <label
-              htmlFor="finalPrice"
-              className="block text-sm font-medium text-gray-700">
-              Final Price (Reserve Price){" "}
-              <span className="text-red-500">*</span>
+            <label htmlFor="finalPrice" className="block text-sm font-medium text-gray-700">
+              Final Price (Reserve Price) <span className="text-red-500">*</span>
             </label>
             <input
               type="number"
@@ -270,19 +294,16 @@ export default function FormProduct({
               min="0"
               step="0.01"
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              onChange={(e) => liveValidateField('finalPrice', e.target.value)}
             />
             {formErrors.finalPrice && (
-              <p className="mt-1 text-sm text-red-600">
-                {formErrors.finalPrice}
-              </p>
+              <p className="mt-1 text-sm text-red-600">{formErrors.finalPrice}</p>
             )}
           </div>
         </div>
 
         <div>
-          <label
-            htmlFor="categoryId"
-            className="block text-sm font-medium text-gray-700">
+          <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700">
             Category <span className="text-red-500">*</span>
           </label>
           <select
@@ -290,7 +311,9 @@ export default function FormProduct({
             name="categoryId"
             required
             disabled={isLoadingCategories}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            onChange={(e) => liveValidateField('categoryId', e.target.value)}
+          >
             <option value="">Select a category</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
@@ -314,7 +337,8 @@ export default function FormProduct({
                 stroke="currentColor"
                 fill="none"
                 viewBox="0 0 48 48"
-                aria-hidden="true">
+                aria-hidden="true"
+              >
                 <path
                   d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
                   strokeWidth={2}
@@ -325,7 +349,8 @@ export default function FormProduct({
               <div className="flex text-sm text-gray-600">
                 <label
                   htmlFor="file-upload"
-                  className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                  className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
+                >
                   <span>Upload files</span>
                   <input
                     id="file-upload"
@@ -348,36 +373,38 @@ export default function FormProduct({
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div
                   className="bg-blue-600 h-2.5 rounded-full"
-                  style={{ width: `${uploadProgress}%` }}></div>
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
               </div>
               <p className="text-sm text-gray-500 mt-1">
-                Uploading... {Math.round(uploadProgress)}%
+                {isUploadingImages ? (
+                  <>Uploading... {Math.round(uploadProgress)}%</>
+                ) : (
+                  <LoadingSpinner />
+                )}
               </p>
             </div>
           )}
-          {formErrors.images && (
-            <p className="mt-1 text-sm text-red-600">{formErrors.images}</p>
-          )}
+          {formErrors.images && <p className="mt-1 text-sm text-red-600">{formErrors.images}</p>}
         </div>
 
         {uploadedImages.length > 0 && (
           <div className="grid grid-cols-3 gap-4">
             {uploadedImages.map((url, index) => (
               <div key={index} className="relative">
-                <img
+                <Image
                   src={url}
                   alt={`Uploaded ${index + 1}`}
+                  width={400}
+                  height={128}
                   className="w-full h-32 object-cover rounded-lg"
                 />
                 <button
                   type="button"
                   onClick={() => removeImage(index)}
-                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -395,15 +422,17 @@ export default function FormProduct({
           <button
             type="button"
             onClick={() => router.back()}
-            className="flex-1 bg-gray-500 text-white py-3 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+            className="flex-1 bg-gray-500 text-white py-3 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+          >
             Cancel
           </button>
 
           <button
             type="submit"
             disabled={isSubmitting || isUploadingImages}
-            className="flex-1 bg-blue-700 text-white py-3 px-4 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50">
-            {isSubmitting ? "Creating Product..." : "Create Product"}
+            className="flex-1 bg-blue-700 text-white py-3 px-4 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50"
+          >
+            {isSubmitting ? 'Creating Product...' : 'Create Product'}
           </button>
         </div>
       </div>

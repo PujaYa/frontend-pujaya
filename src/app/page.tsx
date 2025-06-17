@@ -1,45 +1,43 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import AuctionList from "@/components/AuctionList";
-import { getProductsDB } from "@/app/utils/products.helper";
-import Image from "next/image";
-import { IProduct } from "@/app/types/index";
+'use client';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import AuctionList from '@/components/AuctionList';
+import Image from 'next/image';
+import { IAuction } from '@/app/types/index';
 
-// El featured debe ser un producto completo para tener el id
+// The featured auction must be a complete product to have the id
 export default function Home() {
-  // Estado para búsqueda
-  const [search, setSearch] = useState("");
+  // State for search input
+  const [search, setSearch] = useState('');
   const router = useRouter();
 
-  // Estado y carga de featured
-  const [featured, setFeatured] = useState<IProduct | null>(null);
+  // State and fetch for featured auction
+  const [featured, setFeatured] = useState<IAuction | null>(null);
   const [showZoom, setShowZoom] = useState(false);
   useEffect(() => {
-    getProductsDB().then(({ products }) => {
-      if (products.length > 0) {
-        const min = products.reduce(
-          (min, p) => (p.initialPrice < min.initialPrice ? p : min),
-          products[0]
-        );
-        setFeatured(min);
-      }
-    });
+    // Fetch the active auction ending soonest
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auctions?limit=1&sort=ending`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.auctions && data.auctions.length > 0) {
+          setFeatured(data.auctions[0]);
+        }
+      });
   }, []);
 
-  // Handler para buscar
+  // Handler for search form
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (search.trim()) {
       router.push(`/auctions?search=${encodeURIComponent(search)}`);
     } else {
-      router.push("/auctions");
+      router.push('/auctions');
     }
   };
 
-  // Handler para el botón
+  // Handler for explore button
   const handleExplore = () => {
-    router.push("/auctions");
+    router.push('/auctions');
   };
 
   return (
@@ -50,20 +48,21 @@ export default function Home() {
           {/* Main Text */}
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Discover Treasures on{" "}
-              <span className="text-yellow-400">Pujaya</span>
+              Discover Treasures on <span className="text-yellow-400">Pujaya</span>
             </h1>
             <p className="text-white text-lg mb-8">
-              The most reliable auction platform where you will find unique
-              items, exclusive art, and extraordinary collectibles.
+              The most reliable auction platform where you will find unique items, exclusive art,
+              and extraordinary collectibles.
             </p>
             <form
               className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
-              onSubmit={handleSearch}>
+              onSubmit={handleSearch}
+            >
               <button
                 type="button"
                 className="bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-semibold px-6 py-2 rounded transition"
-                onClick={handleExplore}>
+                onClick={handleExplore}
+              >
                 Explore Auctions
               </button>
               <input
@@ -75,7 +74,8 @@ export default function Home() {
               />
               <button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition"
+              >
                 Search
               </button>
             </form>
@@ -97,32 +97,29 @@ export default function Home() {
           </div>
           {/* Featured Auction */}
           <div className="flex-1 flex justify-center">
-            {featured ? (
+            {featured && featured.product ? (
               <div className="bg-white bg-opacity-90 rounded-xl shadow-lg p-6 w-80 flex flex-col gap-4 transition-transform hover:scale-105 hover:shadow-2xl duration-200">
                 <span className="text-gray-500 text-sm">Featured Auction</span>
-                {/* Imagen del producto destacado con zoom modal */}
+                {/* Featured product image with zoom modal */}
                 <div
                   className="bg-gray-100 h-40 flex items-center justify-center rounded-lg overflow-hidden mb-2 cursor-zoom-in"
-                  onClick={() => setShowZoom(true)}>
+                  onClick={() => setShowZoom(true)}
+                >
                   <Image
-                    src={featured.imgProduct[0]}
-                    alt={featured.name}
+                    src={featured.product.imgProduct[0]}
+                    alt={featured.product.name}
                     width={320}
                     height={160}
                     className="object-contain h-full w-full"
-                    style={{ height: "auto" }}
+                    style={{ height: 'auto' }}
                     priority
                   />
                 </div>
-                <h2 className="font-bold text-xl text-gray-800">
-                  {featured.name}
-                </h2>
+                <h2 className="font-bold text-xl text-gray-800">{featured.product.name}</h2>
                 <span className="text-blue-700 text-3xl font-bold">
-                  ${featured.initialPrice}
+                  ${featured.product.initialPrice}
                 </span>
-                <span className="text-gray-600 text-sm">
-                  {featured.description}
-                </span>
+                <span className="text-gray-600 text-sm">{featured.product.description}</span>
                 <div className="flex justify-between items-center">
                   <span className="bg-red-100 text-red-500 px-2 py-1 rounded text-xs">
                     Ends soon
@@ -130,29 +127,33 @@ export default function Home() {
                 </div>
                 <button
                   className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded mt-2 transition"
-                  onClick={() => router.push(`/auctions/${featured.id || 1}`)}>
+                  onClick={() => router.push(`/auctions/${featured.id}`)}
+                >
                   Bid Now
                 </button>
-                {/* Modal de zoom */}
+                {/* Zoom modal */}
                 {showZoom && (
                   <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
-                    onClick={() => setShowZoom(false)}>
+                    onClick={() => setShowZoom(false)}
+                  >
                     <div
                       className="bg-white rounded-lg p-4 max-w-2xl max-h-[80vh] flex flex-col items-center relative"
-                      onClick={(e) => e.stopPropagation()}>
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <button
                         className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-2xl"
-                        onClick={() => setShowZoom(false)}>
+                        onClick={() => setShowZoom(false)}
+                      >
                         &times;
                       </button>
                       <Image
-                        src={featured.imgProduct[0]}
-                        alt={featured.name}
+                        src={featured.product.imgProduct[0]}
+                        alt={featured.product.name}
                         width={800}
                         height={600}
                         className="object-contain max-h-[70vh] w-auto"
-                        style={{ maxWidth: "100%" }}
+                        style={{ maxWidth: '100%' }}
                         priority
                       />
                     </div>
@@ -167,9 +168,7 @@ export default function Home() {
       </section>
       {/* Featured Auctions */}
       <section className="w-full max-w-6xl mx-auto mt-12 px-4">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          Featured Auctions
-        </h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Featured Auctions</h2>
         <AuctionList />
       </section>
     </main>

@@ -1,25 +1,28 @@
-"use client";
+'use client';
 
-import { IUserSession } from "@/app/types/index";
-import { auth } from "@/components/lib/firebaseConfig";
-import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
-import Cookies from "js-cookie";
-import { createContext, useContext, useEffect, useState } from "react";
+import { IUserSession } from '@/app/types/index';
+import { auth } from '@/components/lib/firebaseConfig';
+import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
+import Cookies from 'js-cookie';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 export interface AuthContextProps {
-    userData: IUserSession | null;
-    user: User | null;
-    setUser: (user: User | null) => void;
-    setUserData: (userData: IUserSession | null) => void
-    logout: () => void
+  userData: IUserSession | null;
+  user: User | null;
+  setUser: (user: User | null) => void;
+  setUserData: (userData: IUserSession | null) => void
+  updateUserRole: (newRole: "regular" | "admin" | "premium") => void;
+  logout: () => void
 }
 
 export const AuthContext = createContext<AuthContextProps>({
-    userData: null,
-    user: null,
-    setUser: () => { },
-    setUserData: () => { },
-    logout: () => { },
+  userData: null,
+  user: null,
+  setUser: () => { },
+  setUserData: () => { },
+  updateUserRole: () => { },
+  logout: () => { },
 })
 
 export interface AuthProviderProps {
@@ -31,47 +34,46 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true); // NUEVO: estado de carga
 
-    useEffect(() => {
-        if (userData) {
-            localStorage.setItem("userSession", JSON.stringify({ token: userData.token, user: userData.user }))
-            Cookies.set("userSession", JSON.stringify({ token: userData.token, user: userData.user }))
-        }
-    }, [userData])
-
-    useEffect(() => {
-        const userData = JSON.parse(localStorage.getItem("userSession")!)
-        setUserData(userData)
-    }, [])
-
-    useEffect(()=>{
-        const auth = getAuth();
-        const unsuscribe = onAuthStateChanged(auth, (currentUser) =>{
-            setUser(currentUser);
-        });
-        return () => unsuscribe();
-    })
-  // Guardar sesión en localStorage y cookies cuando userData cambia
   useEffect(() => {
     if (userData) {
       localStorage.setItem(
-        "userSession",
+        'userSession',
+        JSON.stringify({ token: userData.token, user: userData.user })
+      );
+      Cookies.set('userSession', JSON.stringify({ token: userData.token, user: userData.user }));
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('userSession')!);
+    setUserData(userData);
+  }, []);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsuscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsuscribe();
+  });
+  // save session in localStorage and cookies when userData changes
+  useEffect(() => {
+    if (userData) {
+      localStorage.setItem(
+        'userSession',
         JSON.stringify({
           token: userData.token,
           user: userData.user,
         })
       );
-      Cookies.set(
-        "userSession",
-        JSON.stringify({ token: userData.token, user: userData.user })
-      );
+      Cookies.set('userSession', JSON.stringify({ token: userData.token, user: userData.user }));
     }
   }, [userData]);
 
   useEffect(() => {
-    // Recuperar sesión desde localStorage SOLO una vez al montar
+    // Recover session from localStorage ONLY once when mounting
     if (!userData) {
-      const session = localStorage.getItem("userSession");
-      let restored = false;
+      const session = localStorage.getItem('userSession');
       if (session) {
         try {
           const parsed = JSON.parse(session);
@@ -80,22 +82,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               parsed.user.firebaseUid = parsed.user.firebase_uid;
             }
             setUserData(parsed);
-            restored = true;
+            // restored = true;
+
+            // console.log(restored)
           }
         } catch {
-          localStorage.removeItem("userSession");
+          localStorage.removeItem('userSession');
         }
       }
-      // loading debe terminar siempre, haya o no usuario
+      // loading must always end, whether there is a user or not
       setLoading(false);
     } else {
-      // Si ya hay userData, loading termina igual
+      // If there is already userData, loading ends the same
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // SOLO al montar
 
-  // Mantener actualizado el usuario de Firebase
+  // Keep the Firebase user updated
   useEffect(() => {
     const auth = getAuth();
     const unsuscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -107,29 +111,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async () => {
     try {
       await signOut(auth);
-      localStorage.removeItem("userSession");
+      localStorage.removeItem('userSession');
       setUserData(null);
       Cookies.remove("userSession");
-    } catch (error) {
-      // console.error("Error al cerrar sesión: ", error); // Quitado
+    } catch (error: unknown) {
+      console.error("Fail to close session: ", error);
     }
   };
 
-  const getFreshToken = async () => {
-    const auth = getAuth();
-    if (auth.currentUser) {
-      return await auth.currentUser.getIdToken();
+  const updateUserRole = (newRole: "regular" | "admin" | "premium") => {
+    if (userData) {
+      const updatedUserData: IUserSession = {
+        ...userData,
+        user: {
+          ...userData.user,
+          role: newRole,
+        },
+      };
+      setUserData(updatedUserData);
     }
-    return null;
   };
 
   return (
-    <AuthContext.Provider value={{ userData, user, setUserData, setUser, logout }}>
-      {/* Loader global de sesión */}
+    <AuthContext.Provider value={{ userData, user, setUserData, setUser, updateUserRole, logout }}>
+      {/* Global session loader */}
       {loading ? (
         <div className="flex justify-center items-center min-h-[300px]">
           <span className="text-blue-700 font-semibold text-lg animate-pulse">
-            Cargando usuario...
+            <LoadingSpinner />
           </span>
         </div>
       ) : (

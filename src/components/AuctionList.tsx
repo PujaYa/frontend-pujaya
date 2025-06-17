@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import Auction from './Auction';
 import Link from 'next/link';
+import { IAuction } from '@/app/types';
+import { LoadingSpinner } from './LoadingSpinner';
 
 const PAGE_SIZE = 6;
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -11,6 +13,8 @@ interface AuctionListProps {
   category?: string;
   sort?: string;
   sellerId?: string;
+  page?: number;
+  setPage?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 // Definir un tipo mínimo para Auction (puedes reemplazarlo por el tipo real si lo tienes)
@@ -25,13 +29,12 @@ type AuctionType = {
 };
 
 // Subcomponente para la tarjeta de subasta
-function AuctionCard({ auction }: { auction: any }) {
+function AuctionCard({ auction }: { auction: IAuction }) {
   return (
     <Link
       key={auction.id}
       href={`/auctions/${auction.id}`}
-      className="block transition hover:scale-105"
-    >
+      className="block transition hover:scale-105">
       <Auction auction={auction} />
     </Link>
   );
@@ -42,11 +45,17 @@ const AuctionList: React.FC<AuctionListProps> = ({
   category = '',
   sort = 'ending',
   sellerId = '',
+  page: controlledPage,
+  setPage: controlledSetPage,
 }) => {
   const [products, setProducts] = useState<AuctionType[]>([]);
-  const [page, setPage] = useState(1);
+  const [internalPage, internalSetPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // Usar page/setPage controlados si vienen del padre, si no usar internos
+  const page = controlledPage !== undefined ? controlledPage : internalPage;
+  const setPage = controlledSetPage !== undefined ? controlledSetPage : internalSetPage;
 
   useEffect(() => {
     setLoading(true);
@@ -61,8 +70,12 @@ const AuctionList: React.FC<AuctionListProps> = ({
     fetch(`${API_URL}/auctions?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data.auctions || []);
-        setTotal(data.total || 0);
+        // Filtrar solo subastas activas
+        const filtered = (data.auctions || []).filter(
+          (auction: { isActive?: boolean }) => auction.isActive !== false
+        );
+        setProducts(filtered);
+        setTotal(data.total || filtered.length); // Usar total real si viene del backend
         setLoading(false);
       })
       .catch(() => {
@@ -75,13 +88,14 @@ const AuctionList: React.FC<AuctionListProps> = ({
   return (
     <div>
       {loading ? (
-        <div className="text-center text-gray-500 py-10">Loading auctions...</div>
+        <LoadingSpinner />
+
       ) : products && products.length === 0 ? (
         <div className="text-center text-gray-500 py-10">No auctions found.</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
           {products &&
-            products.map((auction) => <AuctionCard key={auction.id} auction={auction} />)}
+            products.map((auction) => <AuctionCard key={auction.id} auction={auction as IAuction} />)}
         </div>
       )}
       {/* Paginación */}

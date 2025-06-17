@@ -35,6 +35,11 @@ public initialPrice: number;
 })
 public finalPrice: number; */
 
+export interface ICategory {
+  id: string;
+  categoryName: string;
+}
+
 export interface IProduct {
   id: string;
   name: string;
@@ -116,13 +121,12 @@ export interface IUserSession {
     email: string;
     phone: string;
     address: string;
-    role: "regular" | "admin" | "premium";
+    role: 'regular' | 'admin' | 'premium';
     imgProfile?: string;
     country: string;
+    createdAt: string;
     // Puedes agregar aquí otros campos opcionales si los necesitas
   };
-
-
 }
 
 export interface IUserFormData {
@@ -144,12 +148,14 @@ export interface IBid {
   userId: string;
   auctionId: string;
   createdAt: string;
+  user: IUser;
 }
 
 export interface IAuction {
   id: string;
   name: string;
   endDate: string;
+  startDate: string;
   description: string;
   isActive: boolean;
   deactivateAt: string;
@@ -165,7 +171,7 @@ export interface IProduct {
   name: string;
   initialPrice: number;
   finalPrice: number;
-  startDate: string;
+  // startDate: string;
   endDate: string;
   isActive: boolean;
   imgProduct: string[];
@@ -189,6 +195,8 @@ export interface IUser {
   country: string;
   address: string;
   createdAt: string;
+  imgProfile?: string;
+  isActive: boolean;
 }
 
 // Definir tipo para la subasta y el producto

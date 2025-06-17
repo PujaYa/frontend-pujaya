@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface AuctionModalProps {
   isOpen: boolean;
@@ -49,18 +50,20 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
     }
   }, [auction]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: name === 'initialPrice' ? Number(value) : value
+      [name]: name === 'initialPrice' ? Number(value) : value,
     }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData(prev => ({ ...prev, image: file }));
+      setFormData((prev) => ({ ...prev, image: file }));
       setImagePreview(URL.createObjectURL(file));
     }
   };
@@ -76,11 +79,8 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium">{auction ? 'Editar' : 'Crear'} Subasta</h3>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-500"
-          >
+          <h3 className="text-lg font-medium">{auction ? 'Edit' : 'Create'} Auction</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
             ×
           </button>
         </div>
@@ -88,7 +88,7 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Nombre del Artículo</label>
+              <label className="block text-sm font-medium text-gray-700">Item Name</label>
               <input
                 type="text"
                 name="name"
@@ -100,7 +100,7 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Precio Inicial</label>
+              <label className="block text-sm font-medium text-gray-700">Initial Price</label>
               <input
                 type="number"
                 name="initialPrice"
@@ -114,7 +114,7 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Fecha de Finalización</label>
+              <label className="block text-sm font-medium text-gray-700">End Date</label>
               <input
                 type="datetime-local"
                 name="endDate"
@@ -127,7 +127,7 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Categoría</label>
+              <label className="block text-sm font-medium text-gray-700">Category</label>
               <select
                 name="category"
                 value={formData.category}
@@ -135,19 +135,19 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 required
               >
-                <option value="">Seleccionar categoría</option>
-                <option value="art">Arte</option>
-                <option value="collectibles">Coleccionables</option>
-                <option value="electronics">Electrónicos</option>
-                <option value="fashion">Moda</option>
-                <option value="jewelry">Joyería</option>
-                <option value="sports">Deportes</option>
-                <option value="other">Otros</option>
+                <option value="">Select category</option>
+                <option value="art">Art</option>
+                <option value="collectibles">Collectibles</option>
+                <option value="electronics">Electronics</option>
+                <option value="fashion">Fashion</option>
+                <option value="jewelry">Jewelry</option>
+                <option value="sports">Sports</option>
+                <option value="other">Other</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Descripción</label>
+              <label className="block text-sm font-medium text-gray-700">Description</label>
               <textarea
                 name="description"
                 value={formData.description}
@@ -159,7 +159,7 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Imagen del Artículo</label>
+              <label className="block text-sm font-medium text-gray-700">Item Image</label>
               <input
                 type="file"
                 onChange={handleImageChange}
@@ -167,10 +167,12 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
                 className="mt-1 block w-full"
               />
               {imagePreview && (
-                <img
+                <Image
                   src={imagePreview}
                   alt="Preview"
-                  className="mt-2 h-20 w-20 object-cover rounded"
+                  width={400}
+                  height={300}
+                  className="mt-2 w-full h-32 object-cover rounded-lg"
                 />
               )}
             </div>
@@ -182,17 +184,17 @@ export default function AuctionModal({ isOpen, onClose, onSubmit, auction }: Auc
               onClick={onClose}
               className="px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-50"
             >
-              Cancelar
+              Cancel
             </button>
             <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
-              {auction ? 'Actualizar' : 'Crear'} Subasta
+              {auction ? 'Update' : 'Create'} Auction
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-} 
+}

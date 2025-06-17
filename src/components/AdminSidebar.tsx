@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useMenuContext } from '@/context/MenuContext';
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const { setSidebarOpen } = useMenuContext();
 
   const menuItems = [
     {
@@ -17,18 +19,10 @@ export default function AdminSidebar() {
       href: '/dashboard/auctions',
       title: 'Auctions',
     },
-    // {
-    //   href: '/dashboard/sales',
-    //   title: 'Sales',
-    // },
-    // {
-    //   href: '/dashboard/settings',
-    //   title: 'Settings',
-    // },
   ];
 
   return (
-    <div className="flex flex-col h-3/4 bg-white  w-60 rounded-b-lg">
+    <div className="flex flex-col h-3/4 bg-white  w-60 rounded-lg">
       <div className="flex items-center justify-center h-17 ">
         <span className="text-lg font-bold">Admin Panel</span>
       </div>
@@ -38,8 +32,8 @@ export default function AdminSidebar() {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className={`flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 ${pathname === item.href ? 'bg-gray-100 border-l-4 border-blue-500 border-r-4 border-blue-500' : ''
-                  }`}
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 ${pathname === item.href ? 'bg-gray-100 border-l-4 border-blue-500 border-r-4 border-blue-500' : ''}`}
               >
                 {item.title}
               </Link>
@@ -50,6 +44,7 @@ export default function AdminSidebar() {
       <div className=" p-4">
         <Link
           href="/"
+          onClick={() => setSidebarOpen(false)}
           className="flex items-center text-gray-700 hover:text-gray-900 text-red-500"
         >
           <span>Back to Site</span>
@@ -57,4 +52,4 @@ export default function AdminSidebar() {
       </div>
     </div>
   );
-} 
+}
