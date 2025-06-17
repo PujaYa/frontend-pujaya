@@ -16,7 +16,6 @@ const TABS = ['Active Bids'];
 const ProfileComponent = () => {
   const { user, userData, setUserData } = useAuth();
 
-
   async function handleImageChange(file: File | undefined) {
     if (!file) return;
     const formData = new FormData();
@@ -131,8 +130,8 @@ const ProfileComponent = () => {
   return (
     <main className="flex flex-col items-center px-2 sm:px-4 py-4 min-h-screen bg-blue-50">
       {/* Card de perfil separada */}
-      <div className="w-full max-w-6xl">
-        <div className="bg-white p-2 sm:p-4 md:p-6 rounded-xl shadow-xl flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+      <div className="w-full max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-6xl mx-auto">
+        <div className="bg-white p-2 sm:p-4 md:p-6 rounded-xl shadow-xl flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 w-full">
           <ProfileHeader
             userData={userData!}
             showPhotoMenu={showPhotoMenu}
@@ -146,13 +145,11 @@ const ProfileComponent = () => {
         <ProfileStats activeTime={getActiveTime()} />
       </div>
       {/* Tabs y cards fuera de la card de perfil */}
-      <div className="w-full max-w-6xl mt-4">
+      <div className="w-full max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-6xl mx-auto mt-4">
         <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={['Active Bids']} />
-        {loadingAuctions ? (
-          <LoadingSpinner />
-        ) : (
-          <ProfileAuctions auctions={auctions} />
-        )}
+        <div className="overflow-x-auto w-full">
+          {loadingAuctions ? <LoadingSpinner /> : <ProfileAuctions auctions={auctions} />}
+        </div>
       </div>
       {/* Edit modal */}
       {isModalOpen && (

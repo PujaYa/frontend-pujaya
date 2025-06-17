@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
-import {  UpdateUserProps } from '@/app/types/index';
+import { UpdateUserProps } from '@/app/types/index';
 import { IUserFormData } from '@/app/types/index';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
@@ -22,6 +22,10 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
     country: '',
     address: '',
   });
+  const [nameError, setNameError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [countryError, setCountryError] = useState('');
+  const [addressError, setAddressError] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -62,6 +66,44 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
       ...prev,
       [name]: value,
     }));
+
+    // Live validation for each field
+    liveValidateField(name, value);
+  };
+
+  const liveValidateField = (field: string, value: string) => {
+    switch (field) {
+      case 'name':
+        if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value) || value.length < 2) {
+          setNameError('Invalid name');
+        } else {
+          setNameError('');
+        }
+        break;
+      case 'phone':
+        if (!/^[0-9]+$/.test(value)) {
+          setPhoneError('Invalid phone number');
+        } else {
+          setPhoneError('');
+        }
+        break;
+      case 'country':
+        if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+          setCountryError('Invalid country');
+        } else {
+          setCountryError('');
+        }
+        break;
+      case 'address':
+        if (!/^[a-zA-Z0-9\s,.'-]{5,}$/.test(value)) {
+          setAddressError('Invalid address');
+        } else {
+          setAddressError('');
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -87,12 +129,12 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
       toast.error('Invalid country');
       return;
     }
-    const addressRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    // Address: letras, números, comas, puntos y espacios, mínimo 5 caracteres
+    const addressRegex = /^[a-zA-Z0-9\s,.'-]{5,}$/;
     if (!addressRegex.test(formData.address)) {
       toast.error('Invalid address');
       return;
     }
-    
 
     try {
       const token = userData?.token;
@@ -198,6 +240,7 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
                       className="pl-10 pr-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
+                  {nameError && <p className="text-red-500 text-xs mt-1">{nameError}</p>}
                 </div>
                 <div className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -218,8 +261,8 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
                       type="email"
                       name="email"
                       value={formData.email}
-                      onChange={handleInputChange}
-                      className="pl-10 pr-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      disabled
+                      className="pl-10 pr-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-100 cursor-not-allowed"
                     />
                   </div>
                 </div>
@@ -246,6 +289,7 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
                       className="pl-10 pr-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
+                  {phoneError && <p className="text-red-500 text-xs mt-1">{phoneError}</p>}
                 </div>
                 <div className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
@@ -271,6 +315,7 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
                       className="pl-10 pr-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
+                  {countryError && <p className="text-red-500 text-xs mt-1">{countryError}</p>}
                 </div>
                 <div className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
@@ -295,6 +340,7 @@ export default function UpdateUser({ user, onUpdateSuccess, isOpen, onClose }: P
                       className="pl-10 pr-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
+                  {addressError && <p className="text-red-500 text-xs mt-1">{addressError}</p>}
                 </div>
                 <div className="flex justify-end space-x-3 mt-6">
                   <button

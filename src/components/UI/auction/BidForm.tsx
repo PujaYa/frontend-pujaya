@@ -10,6 +10,7 @@ interface BidFormProps {
   onSubmit: (e: React.FormEvent) => void;
   showLoginPrompt: boolean;
   showUpgradePrompt: boolean;
+  minBid: number;
 }
 
 const BidForm: React.FC<BidFormProps> = ({
@@ -22,7 +23,10 @@ const BidForm: React.FC<BidFormProps> = ({
   onSubmit,
   showLoginPrompt,
   showUpgradePrompt,
+  minBid,
 }) => {
+  const isBidValid = bidAmount === '' || Number(bidAmount) >= minBid;
+
   if (showLoginPrompt) {
     return (
       <div className="mb-4 flex flex-col gap-2 bg-blue-50 border border-blue-200 rounded p-4 text-center">
@@ -42,7 +46,8 @@ const BidForm: React.FC<BidFormProps> = ({
         <span className="font-semibold text-yellow-700">Only premium users can place bids.</span>
         <button
           className="mt-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded font-bold transition"
-          onClick={() => (window.location.href = "/payment")}>
+          onClick={() => (window.location.href = '/payment')}
+        >
           Upgrade to Premium
         </button>
       </div>
@@ -60,18 +65,24 @@ const BidForm: React.FC<BidFormProps> = ({
         Place your bid
       </label>
       <div className="flex gap-2 items-center w-full justify-center mb-2">
+        <span className="text-lg font-semibold">$</span>
         <input
           id="bidAmount"
           type="number"
-          min="0"
+          min={minBid}
           step="0.01"
-          className="border rounded px-3 py-2 w-full text-lg font-semibold text-center"
+          className={`border rounded px-3 py-2 w-full text-lg font-semibold text-center ${!isBidValid && bidAmount !== '' ? 'border-red-500' : ''}`}
           value={bidAmount}
           onChange={(e) => setBidAmount(e.target.value)}
           required
-          placeholder="Enter your bid"
+          placeholder={`Minimum: $${minBid}`}
         />
       </div>
+      {!isBidValid && bidAmount !== '' && (
+        <div className="text-red-600 text-sm w-full text-center mb-2">
+          The minimum bid is ${minBid}.
+        </div>
+      )}
       <div className="flex gap-2 w-full justify-center mb-2">
         {[10, 50, 100].map((inc) => (
           <button
@@ -87,7 +98,7 @@ const BidForm: React.FC<BidFormProps> = ({
       <button
         type="submit"
         className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl p-3 font-bold text-base mb-2 transition disabled:opacity-60"
-        disabled={bidLoading}
+        disabled={bidLoading || !isBidValid}
       >
         {bidLoading ? 'Bidding...' : 'Place Bid'}
       </button>

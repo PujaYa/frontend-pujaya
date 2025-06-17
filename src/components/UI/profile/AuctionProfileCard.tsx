@@ -25,8 +25,8 @@ const AuctionProfileCard: React.FC<AuctionProfileCardProps> = ({
 }) => {
   // Envolver la card en un Link si auctionId está presente
   const cardContent = (
-    <div className="bg-white rounded-xl shadow flex flex-col p-4 min-w-[220px] max-w-xs w-full cursor-pointer hover:shadow-lg transition-shadow">
-      <div className="relative flex items-center justify-center h-32 bg-gray-100 rounded-lg mb-3">
+    <div className="bg-white rounded-xl shadow flex flex-col p-4 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-xs cursor-pointer hover:shadow-lg transition-shadow min-w-0">
+      <div className="relative flex items-center justify-center h-32 bg-gray-100 rounded-lg mb-3 w-full overflow-hidden">
         {image ? (
           <Image
             src={image}
@@ -44,8 +44,10 @@ const AuctionProfileCard: React.FC<AuctionProfileCardProps> = ({
           </span>
         )}
       </div>
-      <span className="text-xs text-gray-500 mb-1">{category}</span>
-      <span className="font-semibold text-gray-800 mb-2 line-clamp-2 min-h-[40px]">{title}</span>
+      <span className="text-xs text-gray-500 mb-1 break-words w-full">{category}</span>
+      <span className="font-semibold text-gray-800 mb-2 line-clamp-2 min-h-[40px] break-words w-full">
+        {title}
+      </span>
       <div className="flex flex-col gap-1 text-sm mb-2">
         {myBid !== undefined && (
           <span>
