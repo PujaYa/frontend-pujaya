@@ -3,7 +3,7 @@ import { getAuctionById } from '@/app/auctions/actions';
 import { notFound } from 'next/navigation';
 
 export default async function EditAuctionPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+  const { id } = await params;
   const auction = await getAuctionById(id);
   if (!auction) return notFound();
 
