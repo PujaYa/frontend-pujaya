@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { updateAuction } from "@/app/auctions/actions";
 import { useAuth } from "@/app/context/AuthContext";
@@ -7,49 +7,35 @@ import { IEditAuctionErrors, IEditAuctionFormProps, IEditAuctionFormValues } fro
 import { validateEditAuctionForm } from "@/components/lib/validate";
 import { toast } from "react-toastify";
 
-
 export default function EditAuctionForm({ auction }: IEditAuctionFormProps) {
   const router = useRouter();
   const { userData } = useAuth();
-  /*   // Type assertion for initialData
-    const data = initialData as {
-      
-    };
-    const [name, setName] = useState(data?.name || "");
-    const [description, setDescription] = useState(data?.description || "");
-    const [endDate, setEndDate] = useState(data?.endDate?.slice(0, 16) || ""); */
+
   const initialValues = {
     name: auction.name,
     description: auction.description,
     endDate: auction.endDate.slice(0, 16),
   };
 
-
-  // Estado del formulario
   const [form, setForm] = useState<IEditAuctionFormValues>(initialValues);
-  const [errors, setErrors] = useState<IEditAuctionErrors>(initialValues);
+  const [errors, setErrors] = useState<IEditAuctionErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
+    const updatedForm = { ...form, [name]: value };
+    setForm(updatedForm);
+    setErrors(validateEditAuctionForm(updatedForm)); // validación en tiempo real
+  };
 
-    setForm({
-      ...form,
-      [name]: value /* Lo que hace es que busca dentro de Form por cada objeto por su nombre */
-    });
-  }
-
-  useEffect(() => {
-    setErrors(validateEditAuctionForm(form));
-  }, [form]);
-
-  // Envío del formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Si hay errores, no continuamos con el envío
-    if (Object.keys(errors).length > 0) {
+    const validationErrors = validateEditAuctionForm(form);
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
       toast.error("Please fix the errors before submitting");
       setIsSubmitting(false);
       return;
@@ -63,10 +49,11 @@ export default function EditAuctionForm({ auction }: IEditAuctionFormProps) {
       formData.append("token", userData?.token || "");
 
       await updateAuction(auction.id, formData);
+      toast.success("Auction updated successfully");
       router.push(`/auctions/${auction.id}`);
     } catch (err: unknown) {
-      console.log(err);
-      toast.error("Error updating auction");
+      const errorMessage = err instanceof Error ? err.message : "Error updating auction";
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -74,11 +61,6 @@ export default function EditAuctionForm({ auction }: IEditAuctionFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-white shadow rounded-lg p-6">
-      {/* Muestra los errores */}
-      {Object.values(errors).map((error, index) => (
-        error && <div key={index} className="text-red-600">{error}</div>
-      ))}
-
       <div>
         <label className="block font-medium">Auction name</label>
         <input
@@ -89,7 +71,9 @@ export default function EditAuctionForm({ auction }: IEditAuctionFormProps) {
           className="w-full border rounded px-3 py-2"
           required
         />
+        {errors.name && <p className="text-red-600 text-sm">{errors.name}</p>}
       </div>
+
       <div>
         <label className="block font-medium">Description</label>
         <textarea
@@ -99,7 +83,9 @@ export default function EditAuctionForm({ auction }: IEditAuctionFormProps) {
           className="w-full border rounded px-3 py-2"
           required
         />
+        {errors.description && <p className="text-red-600 text-sm">{errors.description}</p>}
       </div>
+
       <div>
         <label className="block font-medium">End date</label>
         <input
@@ -110,7 +96,9 @@ export default function EditAuctionForm({ auction }: IEditAuctionFormProps) {
           className="w-full border rounded px-3 py-2"
           required
         />
+        {errors.endDate && <p className="text-red-600 text-sm">{errors.endDate}</p>}
       </div>
+
       <div className="flex gap-4">
         <button
           type="button"
