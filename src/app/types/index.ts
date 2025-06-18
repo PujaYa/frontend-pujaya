@@ -226,3 +226,26 @@ export interface IAuctionDetailType {
     };
   };
 }
+
+export interface IEditAuctionFormValues {
+  name: string;
+  description: string;
+  endDate: string;
+}
+
+export interface IEditAuctionFormProps {
+  auction: {
+    id: string;
+    name: string;
+    description: string;
+    endDate: string;
+  };
+}
+
+
+export interface IEditAuctionErrors {
+  name?: string;
+  description?: string;
+  endDate?: string;
+  id?: string;
+}
