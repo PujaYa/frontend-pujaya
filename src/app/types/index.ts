@@ -35,6 +35,12 @@ public initialPrice: number;
 })
 public finalPrice: number; */
 
+export interface IContactUsProps {
+  name: string;
+  email: string;
+  message: string;
+}
+
 export interface ICategory {
   id: string;
   categoryName: string;

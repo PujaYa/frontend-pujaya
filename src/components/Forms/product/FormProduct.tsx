@@ -3,7 +3,7 @@
 import { useAuth } from '@/app/context/AuthContext';
 import { useAuctionForm } from '@/app/context/AuctionFormContext';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createProduct, uploadImages } from '@/app/products/actions';
 import Image from 'next/image';
 import { ICategory } from '@/app/types/index';
@@ -78,7 +78,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
   }, []);
 
   // Validar un campo individualmente
-  const validateField = (field: keyof FormErrors, value: string) => {
+  const validateField = useCallback((field: keyof FormErrors, value: string) => {
     let errorMsg = '';
 
     switch (field) {
@@ -120,7 +120,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
     }
 
     setFormErrors((prev) => ({ ...prev, [field]: errorMsg || undefined }));
-  };
+  }, [initialPrice, uploadedImages.length]);
 
   // Validar todas las campos antes de submit
   const validateAll = (): boolean => {
@@ -149,7 +149,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
   useEffect(() => {
     // Validar imágenes cada vez que cambian
     validateField('images', '');
-  }, [uploadedImages]);
+  }, [uploadedImages, validateField]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -227,52 +227,52 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
   }
 
   // Live validation for each field
-  const liveValidateField = (field: string, value: string) => {
-    const errors: FormErrors = { ...formErrors };
-    switch (field) {
-      case 'name':
-        if (!value || value.length < 3) {
-          errors.name = 'Name must be at least 3 characters long';
-        } else {
-          delete errors.name;
-        }
-        break;
-      case 'description':
-        if (!value || value.length < 10) {
-          errors.description = 'Description must be at least 10 characters long';
-        } else {
-          delete errors.description;
-        }
-        break;
-      case 'initialPrice':
-        if (!value || Number(value) <= 0) {
-          errors.initialPrice = 'Initial price must be greater than 0';
-        } else {
-          delete errors.initialPrice;
-        }
-        break;
-      case 'finalPrice':
-        const initial = Number(
-          (document.getElementById('initialPrice') as HTMLInputElement)?.value || 0
-        );
-        if (!value || Number(value) <= initial) {
-          errors.finalPrice = 'Final price must be greater than initial price';
-        } else {
-          delete errors.finalPrice;
-        }
-        break;
-      case 'categoryId':
-        if (!value) {
-          errors.categoryId = 'Category is required';
-        } else {
-          delete errors.categoryId;
-        }
-        break;
-      default:
-        break;
-    }
-    setFormErrors(errors);
-  };
+  // const liveValidateField = (field: string, value: string) => {
+  //   const errors: FormErrors = { ...formErrors };
+  //   switch (field) {
+  //     case 'name':
+  //       if (!value || value.length < 3) {
+  //         errors.name = 'Name must be at least 3 characters long';
+  //       } else {
+  //         delete errors.name;
+  //       }
+  //       break;
+  //     case 'description':
+  //       if (!value || value.length < 10) {
+  //         errors.description = 'Description must be at least 10 characters long';
+  //       } else {
+  //         delete errors.description;
+  //       }
+  //       break;
+  //     case 'initialPrice':
+  //       if (!value || Number(value) <= 0) {
+  //         errors.initialPrice = 'Initial price must be greater than 0';
+  //       } else {
+  //         delete errors.initialPrice;
+  //       }
+  //       break;
+  //     case 'finalPrice':
+  //       const initial = Number(
+  //         (document.getElementById('initialPrice') as HTMLInputElement)?.value || 0
+  //       );
+  //       if (!value || Number(value) <= initial) {
+  //         errors.finalPrice = 'Final price must be greater than initial price';
+  //       } else {
+  //         delete errors.finalPrice;
+  //       }
+  //       break;
+  //     case 'categoryId':
+  //       if (!value) {
+  //         errors.categoryId = 'Category is required';
+  //       } else {
+  //         delete errors.categoryId;
+  //       }
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  //   setFormErrors(errors);
+  // };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 bg-white shadow-sm rounded-lg p-6" noValidate>

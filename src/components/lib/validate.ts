@@ -1,4 +1,4 @@
-import { IEditAuctionErrors, IEditAuctionFormProps, ILoginErrors, ILoginProps, IRegisterErrors, IRegisterProps } from "../../app/types/index";
+import { IContactUsProps, IEditAuctionErrors, ILoginErrors, ILoginProps, IRegisterErrors, IRegisterProps } from "../../app/types/index";
 
 
 export function validateLoginForm(values: ILoginProps) {
@@ -86,4 +86,32 @@ export function validateEditAuctionForm(values: IEditAuctionErrors) {
   }
 
   return errors;
+}
+
+export function validateContactUsForm(values: IContactUsProps) {
+    const errors: IContactUsProps = {
+        name: '',
+        email: '',
+        message: '',
+    };
+
+    if (!values.name) { 
+        errors.name = 'Name is required';
+    } else if (!/^[a-zA-ZÀ-ÿ\s]{2,}$/i.test(values.name)) {
+        errors.name = 'Invalid name';
+    }
+
+    if (!values.email) {
+        errors.email = 'Email is required';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+        errors.email = 'Invalid email address';
+    }
+
+    if (!values.message) {
+        errors.message = 'Message is required';
+    } else if (values.message.length < 10) {
+        errors.message = 'Message must be at least 10 characters long';
+    }
+
+    return errors;
 }

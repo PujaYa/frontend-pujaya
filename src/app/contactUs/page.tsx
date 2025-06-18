@@ -1,10 +1,40 @@
 "use client";
 
 import { useState } from "react";
+import { IContactUsProps } from "../types/index";
 
 export default function ContactUs() {
   const [status, setStatus] = useState("");
+  const [errors, setErrors] = useState<IContactUsProps>({
+    name: "",
+    email: "",
+    message: "",
+  });
 
+  const validateField = (
+    name: string,
+    value: string,
+  ) =>{
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const textRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    const messageRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{10,}$/;
+
+   let error = "";
+
+   if (name === "email" && !emailRegex.test(value)) {
+    error = "Invalid email address";
+   } else if (name === "name" && !textRegex.test(value)) {
+    error = "Invalid name";
+   } else if (name === "message" && !messageRegex.test(value)) {
+    error = "Invalid message";
+   }
+    setErrors((prev) => ({ ...prev, [name]: error })); 
+  }
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    validateField(name, value);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -78,7 +108,9 @@ export default function ContactUs() {
             name="name"
             placeholder="Your name"
             required
+            onChange={handleOnChange}
           />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
         </div>
         <div>
           <label
@@ -93,7 +125,9 @@ export default function ContactUs() {
             name="email"
             placeholder="your@email.com"
             required
+            onChange={handleOnChange}
           />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
         </div>
         <div>
           <label
@@ -108,7 +142,9 @@ export default function ContactUs() {
             rows={4}
             placeholder="Write your message here..."
             required
+            onChange={handleOnChange}
           />
+          {errors.message && <p className="text-red-500 text-sm">{errors.message}</p>}
         </div>
         <button
           type="submit"

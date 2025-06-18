@@ -64,7 +64,8 @@ export default function EditAuctionForm({ auction }: IEditAuctionFormProps) {
 
       await updateAuction(auction.id, formData);
       router.push(`/auctions/${auction.id}`);
-    } catch (err) {
+    } catch (err: unknown) {
+      console.log(err);
       toast.error("Error updating auction");
     } finally {
       setIsSubmitting(false);

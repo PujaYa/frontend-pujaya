@@ -58,16 +58,16 @@ export default function AuctionModal({
     }
   }, [auction]);
 
-  const validateField = (name: string, value: any) => {
+  const validateField = (name: string, value: string | number | Date) => {
     let message = '';
 
-    if (name === 'name' && value.trim() === '') message = 'Item name is required.';
-    if (name === 'initialPrice' && (value <= 0 || isNaN(value)))
+    if (name === 'name' && (value as string).trim() === '') message = 'Item name is required.';
+    if (name === 'initialPrice' && (value as number <= 0 || isNaN(value as number)))
       message = 'Initial price must be greater than 0.';
     if (name === 'endDate' && (!value || new Date(value) <= new Date()))
       message = 'End date must be in the future.';
     if (name === 'category' && value === '') message = 'Category is required.';
-    if (name === 'description' && value.trim() === '')
+    if (name === 'description' && (value as string).trim() === '')
       message = 'Description is required.';
 
     setErrors((prev) => ({ ...prev, [name]: message }));
@@ -99,14 +99,14 @@ export default function AuctionModal({
     let valid = true;
 
     fields.forEach((field) => {
-      const value = (formData as any)[field];
-      validateField(field, value);
+      const value = (formData as AuctionFormData)[field as keyof AuctionFormData]; 
+      validateField(field, value as string | number | Date);
       if (
-        (field === 'name' && value.trim() === '') ||
-        (field === 'initialPrice' && (value <= 0 || isNaN(value))) ||
-        (field === 'endDate' && (!value || new Date(value) <= new Date())) ||
-        (field === 'category' && value === '') ||
-        (field === 'description' && value.trim() === '')
+        (field === 'name' && (value as string).trim() === '') ||
+        (field === 'initialPrice' && (value as number <= 0 || isNaN(value as number))) ||
+        (field === 'endDate' && (!value || new Date(value as string) <= new Date())) ||
+        (field === 'category' && (value as string) === '') ||
+        (field === 'description' && (value as string).trim() === '')
       ) {
         valid = false;
       }
