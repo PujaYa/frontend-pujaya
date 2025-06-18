@@ -8,6 +8,8 @@ interface ICreateAuction {
   description: string;
   endDate: string;
   productId: string;
+  latitude: number;
+  longitude: number;
 }
 
 export async function createAuction(formData: FormData) {
@@ -22,11 +24,13 @@ export async function createAuction(formData: FormData) {
     description: formData.get('description') as string,
     endDate: formData.get('endDate') as string,
     productId: formData.get('productId') as string,
+    latitude: Number(formData.get('latitude')),
+    longitude: Number(formData.get('longitude')),
   };
 
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auctions`, {
-      method: "POST",
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
@@ -42,7 +46,7 @@ export async function createAuction(formData: FormData) {
 
     return response.json();
   } catch (error: unknown) {
-    throw new Error((error as Error).message || "Failed to create auction");
+    throw new Error((error as Error).message || 'Failed to create auction');
   }
 }
 
@@ -64,7 +68,7 @@ export async function createProduct(formData: FormData, auctionId: string) {
   };
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
-    method: "POST",
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -92,7 +96,7 @@ export async function uploadImages(files: File[]) {
     formData.append('file', file);
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/upload`, {
-      method: "POST",
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -112,9 +116,9 @@ export async function uploadImages(files: File[]) {
 
 export async function getAuctionById(id: string) {
   const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
+  const token = cookieStore.get('token')?.value;
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auctions/${id}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -138,7 +142,7 @@ export async function updateAuction(id: string, formData: FormData) {
     productId: formData.get('productId') as string,
   };
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auctions/${id}`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -151,7 +155,7 @@ export async function updateAuction(id: string, formData: FormData) {
 }
 
 export async function endAuction(auctionId: string) {
-  console.log("endAuction", auctionId);
+  console.log('endAuction', auctionId);
   // This method must be called from a server action, not from a client component
   throw new Error(
     'endAuction must be called from a server action, not directly from a client component'
