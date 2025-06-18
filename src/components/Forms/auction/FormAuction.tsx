@@ -1,10 +1,10 @@
 'use client';
 
-import { useAuth } from "@/app/context/AuthContext";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { createAuction, updateAuction } from "@/app/auctions/actions";
-import { useAuctionForm } from "@/app/context/AuctionFormContext";
+import { useAuth } from '@/app/context/AuthContext';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { createAuction, updateAuction } from '@/app/auctions/actions';
+import { useAuctionForm } from '@/app/context/AuctionFormContext';
 
 interface FormErrors {
   name?: string;
@@ -102,6 +102,43 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
     return errors;
   };
 
+  // Añadir validación en vivo para cada campo
+  const liveValidateField = (field: string, value: string) => {
+    const errors: FormErrors = { ...formErrors };
+    switch (field) {
+      case 'name':
+        if (!value || value.length < 3) {
+          errors.name = 'Name must be at least 3 characters long';
+        } else {
+          delete errors.name;
+        }
+        break;
+      case 'description':
+        if (!value || value.length < 10) {
+          errors.description = 'Description must be at least 10 characters long';
+        } else {
+          delete errors.description;
+        }
+        break;
+      case 'endDate':
+        if (!value) {
+          errors.endDate = 'End date is required';
+        } else {
+          const selectedDate = new Date(value);
+          const now = new Date();
+          if (selectedDate <= now) {
+            errors.endDate = 'End date must be in the future';
+          } else {
+            delete errors.endDate;
+          }
+        }
+        break;
+      default:
+        break;
+    }
+    setFormErrors(errors);
+  };
+
   const handleFieldChange = (field: string, value: string) => {
     setAuctionForm({ [field]: value });
 
@@ -151,6 +188,11 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
   const handleAddProduct = () => {
     const currentUrl = window.location.pathname;
     router.push(`/products/create?returnTo=${encodeURIComponent(currentUrl)}`);
+  };
+
+  const handleEditProduct = () => {
+    const currentUrl = window.location.pathname;
+    router.push(`/products/${productId}/edit?url=${currentUrl}?productId=${productId}`);
   };
 
   return (
@@ -233,13 +275,24 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
                 className="block w-full rounded-md border border-gray-300 px-3 py-2 bg-gray-50 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
-            <button
-              type="button"
-              onClick={handleAddProduct}
-              className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
-            >
-              Add Product
-            </button>
+            {!productId && (
+              <button
+                type="button"
+                onClick={handleAddProduct}
+                className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
+              >
+                Add Product
+              </button>
+            )}
+            {productId && (
+              <button
+                type="button"
+                onClick={handleEditProduct}
+                className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
+              >
+                Edit Product
+              </button>
+            )}
           </div>
           {formErrors.productId && (
             <p className="mt-1 text-sm text-red-600 transition-opacity duration-200">{formErrors.productId}</p>

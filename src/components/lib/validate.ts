@@ -58,9 +58,6 @@ export function validateRegisterForm(values: IRegisterProps) {
 
 export function validateEditAuctionForm(values: IEditAuctionErrors) {
   const errors: IEditAuctionErrors = {}; // Usamos un objeto de tipo clave-valor con valores string | undefined
-  if (!values.id) {
-    errors.id = 'Id is required';
-  }
 
   // Validación del nombre de la subasta
   if (!values.name) {

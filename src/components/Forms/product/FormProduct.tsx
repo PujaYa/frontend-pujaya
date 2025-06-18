@@ -1,13 +1,13 @@
 'use client';
 
-import { useAuth } from "@/app/context/AuthContext";
-import { useAuctionForm } from "@/app/context/AuctionFormContext";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { createProduct, uploadImages } from "@/app/products/actions";
-import Image from "next/image";
-import { ICategory } from "@/app/types/index";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { useAuth } from '@/app/context/AuthContext';
+import { useAuctionForm } from '@/app/context/AuctionFormContext';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { createProduct, uploadImages } from '@/app/products/actions';
+import Image from 'next/image';
+import { ICategory } from '@/app/types/index';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 interface Category {
   id: string;
@@ -226,6 +226,54 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
     }
   }
 
+  // Live validation for each field
+  const liveValidateField = (field: string, value: string) => {
+    const errors: FormErrors = { ...formErrors };
+    switch (field) {
+      case 'name':
+        if (!value || value.length < 3) {
+          errors.name = 'Name must be at least 3 characters long';
+        } else {
+          delete errors.name;
+        }
+        break;
+      case 'description':
+        if (!value || value.length < 10) {
+          errors.description = 'Description must be at least 10 characters long';
+        } else {
+          delete errors.description;
+        }
+        break;
+      case 'initialPrice':
+        if (!value || Number(value) <= 0) {
+          errors.initialPrice = 'Initial price must be greater than 0';
+        } else {
+          delete errors.initialPrice;
+        }
+        break;
+      case 'finalPrice':
+        const initial = Number(
+          (document.getElementById('initialPrice') as HTMLInputElement)?.value || 0
+        );
+        if (!value || Number(value) <= initial) {
+          errors.finalPrice = 'Final price must be greater than initial price';
+        } else {
+          delete errors.finalPrice;
+        }
+        break;
+      case 'categoryId':
+        if (!value) {
+          errors.categoryId = 'Category is required';
+        } else {
+          delete errors.categoryId;
+        }
+        break;
+      default:
+        break;
+    }
+    setFormErrors(errors);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-8 bg-white shadow-sm rounded-lg p-6" noValidate>
       {error && <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-md">{error}</div>}
@@ -246,6 +294,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
             }}
             required
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          /*             onChange={(e) => liveValidateField('name', e.target.value)} */
           />
           {formErrors.name && <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>}
         </div>
@@ -265,6 +314,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
             }}
             required
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          /*             onChange={(e) => liveValidateField('description', e.target.value)} */
           />
           {formErrors.description && (
             <p className="mt-1 text-sm text-red-600">{formErrors.description}</p>
@@ -291,6 +341,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
               min="0"
               step="0.01"
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            /*               onChange={(e) => liveValidateField('initialPrice', e.target.value)} */
             />
             {formErrors.initialPrice && (
               <p className="mt-1 text-sm text-red-600">{formErrors.initialPrice}</p>
@@ -314,6 +365,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
               min="0"
               step="0.01"
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            /*               onChange={(e) => liveValidateField('finalPrice', e.target.value)} */
             />
             {formErrors.finalPrice && (
               <p className="mt-1 text-sm text-red-600">{formErrors.finalPrice}</p>
@@ -404,7 +456,13 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
-              <p className="text-sm text-gray-600 mt-1">Uploading images...</p>
+              <p className="text-sm text-gray-500 mt-1">
+                {isUploadingImages ? (
+                  <>Uploading... {Math.round(uploadProgress)}%</>
+                ) : (
+                  <LoadingSpinner />
+                )}
+              </p>
             </div>
           )}
 

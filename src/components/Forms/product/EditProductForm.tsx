@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { updateProduct, uploadImages } from "@/app/products/actions";
 import { useAuth } from "@/app/context/AuthContext";
 import Image from "next/image";
@@ -50,7 +50,8 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-
+  
+  const url = useSearchParams().get('url');
   // Populate state if initialData is valid
   useEffect(() => {
     if (isValidProduct(initialData)) {
@@ -62,7 +63,7 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
       setUploadedImages(Array.isArray(initialData.imgProduct) ? initialData.imgProduct : []);
     }
   }, [initialData]);
-
+  
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`)
       .then((response) => {
@@ -86,14 +87,14 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
         setError('Failed to load categories. Please try again later.');
         setIsLoadingCategories(false);
       });
-  }, []);
+    }, []);
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
-    setIsUploadingImages(true);
-    setFormErrors({});
-    try {
+    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+      setIsUploadingImages(true);
+      setFormErrors({});
+      try {
       const urls = await uploadImages(Array.from(files), userData?.token || '');
       setUploadedImages((prev) => [...prev, ...urls]);
     } catch (error) {
@@ -103,11 +104,11 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
       event.target.value = '';
     }
   };
-
+  
   const removeImage = (index: number) => {
     setUploadedImages((prev) => prev.filter((_, i) => i !== index));
   };
-
+  
   const validateForm = () => {
     const errors: Record<string, string> = {};
     if (!name || name.length < 3) errors.name = 'Name must be at least 3 characters long';
@@ -121,7 +122,7 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
     if (uploadedImages.length === 0) errors.images = 'At least one image is required';
     return errors;
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -144,10 +145,13 @@ export default function EditProductForm({ initialData }: EditProductFormProps) {
       await updateProduct((initialData as { id: string }).id, formData);
       // Redirect to auction detail page instead of product detail
       const auctionId =
-        (initialData as { auctionId?: string; auction?: { id?: string } }).auctionId ||
-        (initialData as { auction?: { id?: string } }).auction?.id;
-      if (auctionId) {
+      (initialData as { auctionId?: string; auction?: { id?: string } }).auctionId ||
+      (initialData as { auction?: { id?: string } }).auction?.id;
+      console.log(url); 
+      if (auctionId && !url) {
         router.push(`/auctions/${auctionId}`);
+      } else if (url) {
+        router.push(`${url}&productName=${formData.get('name')}`);
       } else {
         setError('Could not determine the auction for this product. Please contact support.');
       }

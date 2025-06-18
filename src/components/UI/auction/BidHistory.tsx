@@ -32,7 +32,6 @@ const BidHistory: React.FC<BidHistoryProps> = ({ bids, bidsLoading, bidsError })
           {bids.map((bid, idx) => {
             let timeAgo = '';
             if (bid.createdAt) {
-              // Forzar a nunca mostrar futuro
               const bidDate = new Date(bid.createdAt);
               const now = new Date();
               timeAgo = formatDistanceToNow(bidDate > now ? now : bidDate, {
@@ -63,6 +62,7 @@ const BidHistory: React.FC<BidHistoryProps> = ({ bids, bidsLoading, bidsError })
                       Winning
                     </span>
                   )}
+                  {/* Chat button removed for all users */}
                 </div>
               </li>
             );
