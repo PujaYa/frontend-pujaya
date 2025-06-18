@@ -2,8 +2,13 @@ import EditAuctionForm from '@/components/Forms/auction/EditAuctionForm';
 import { getAuctionById } from '@/app/auctions/actions';
 import { notFound } from 'next/navigation';
 
-export default async function EditAuctionPage({ params }: { params: { id: string } }) {
-  const { id } = await params;
+export interface PageProps {
+  params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default async function EditAuctionPage({ params }: PageProps) {
+  const { id } = params;
   const auction = await getAuctionById(id);
   if (!auction) return notFound();
 

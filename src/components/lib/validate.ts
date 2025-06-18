@@ -1,4 +1,4 @@
-import { IEditAuctionErrors, IEditAuctionFormProps, ILoginErrors, ILoginProps, IRegisterErrors, IRegisterProps } from "../../app/types/index";
+import { IEditAuctionErrors, ILoginErrors, ILoginProps, IRegisterErrors, IRegisterProps } from "../../app/types/index";
 
 
 export function validateLoginForm(values: ILoginProps) {

@@ -226,7 +226,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
     }
   }
 
-  // Live validation for each field
+  /* // Live validation for each field
   const liveValidateField = (field: string, value: string) => {
     const errors: FormErrors = { ...formErrors };
     switch (field) {
@@ -273,7 +273,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
     }
     setFormErrors(errors);
   };
-
+ */
   return (
     <form onSubmit={handleSubmit} className="space-y-8 bg-white shadow-sm rounded-lg p-6" noValidate>
       {error && <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-md">{error}</div>}

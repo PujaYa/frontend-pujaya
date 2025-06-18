@@ -58,20 +58,27 @@ export default function AuctionModal({
     }
   }, [auction]);
 
-  const validateField = (name: string, value: any) => {
+  const validateField = (name: keyof AuctionFormData, value: AuctionFormData[keyof AuctionFormData]) => {
     let message = '';
 
-    if (name === 'name' && value.trim() === '') message = 'Item name is required.';
-    if (name === 'initialPrice' && (value <= 0 || isNaN(value)))
+    if (name === 'name' && typeof value === 'string' && value.trim() === '')
+      message = 'Item name is required.';
+
+    if (name === 'initialPrice' && (typeof value !== 'number' || value <= 0 || isNaN(value)))
       message = 'Initial price must be greater than 0.';
-    if (name === 'endDate' && (!value || new Date(value) <= new Date()))
+
+    if (name === 'endDate' && (typeof value !== 'string' || new Date(value) <= new Date()))
       message = 'End date must be in the future.';
-    if (name === 'category' && value === '') message = 'Category is required.';
-    if (name === 'description' && value.trim() === '')
+
+    if (name === 'category' && typeof value === 'string' && value === '')
+      message = 'Category is required.';
+
+    if (name === 'description' && typeof value === 'string' && value.trim() === '')
       message = 'Description is required.';
 
     setErrors((prev) => ({ ...prev, [name]: message }));
   };
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -83,7 +90,7 @@ export default function AuctionModal({
       [name]: name === 'initialPrice' ? Number(value) : value,
     }));
 
-    validateField(name, name === 'initialPrice' ? Number(value) : value);
+    validateField(name as keyof AuctionFormData, name === 'initialPrice' ? Number(value) : value);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,21 +102,21 @@ export default function AuctionModal({
   };
 
   const validateForm = () => {
-    const fields = ['name', 'initialPrice', 'endDate', 'category', 'description'];
+    const fields: (keyof AuctionFormData)[] = ['name', 'initialPrice', 'endDate', 'category', 'description'];
     let valid = true;
 
     fields.forEach((field) => {
-      const value = (formData as any)[field];
+      const value = formData[field];
       validateField(field, value);
-      if (
-        (field === 'name' && value.trim() === '') ||
-        (field === 'initialPrice' && (value <= 0 || isNaN(value))) ||
-        (field === 'endDate' && (!value || new Date(value) <= new Date())) ||
-        (field === 'category' && value === '') ||
-        (field === 'description' && value.trim() === '')
-      ) {
-        valid = false;
-      }
+
+      const isInvalid =
+        (field === 'name' && typeof value === 'string' && value.trim() === '') ||
+        (field === 'initialPrice' && (typeof value !== 'number' || value <= 0 || isNaN(value))) ||
+        (field === 'endDate' && (typeof value !== 'string' || new Date(value) <= new Date())) ||
+        (field === 'category' && typeof value === 'string' && value === '') ||
+        (field === 'description' && typeof value === 'string' && value.trim() === '');
+
+      if (isInvalid) valid = false;
     });
 
     return valid;
