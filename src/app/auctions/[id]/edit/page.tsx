@@ -3,12 +3,12 @@ import { getAuctionById } from '@/app/auctions/actions';
 import { notFound } from 'next/navigation';
 
 export interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>,
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-export default async function EditAuctionPage({ params }: PageProps) {
-  const { id } = params;
+export default async function EditAuctionPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const auction = await getAuctionById(id);
   if (!auction) return notFound();
 

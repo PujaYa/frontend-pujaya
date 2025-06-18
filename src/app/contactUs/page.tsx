@@ -4,7 +4,6 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { time } from "console";
 
 interface ContactFormValues {
   name: string;
@@ -55,8 +54,9 @@ export default function ContactUs() {
         toast.error("Error sending the message.");
         setStatus("Error sending the message.");
       }
-    } catch (error) {
+    } catch (error: unknown) {
       setStatus("Error sending the message.");
+      console.log(error);
       toast.error("Error sending the message.");
     } finally {
       setSubmitting(false);

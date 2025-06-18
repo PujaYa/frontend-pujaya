@@ -3,7 +3,7 @@
 import { useAuth } from '@/app/context/AuthContext';
 import { useAuctionForm } from '@/app/context/AuctionFormContext';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createProduct, uploadImages } from '@/app/products/actions';
 import Image from 'next/image';
 import { ICategory } from '@/app/types/index';
@@ -78,7 +78,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
   }, []);
 
   // Validar un campo individualmente
-  const validateField = (field: keyof FormErrors, value: string) => {
+  const validateField = useCallback((field: keyof FormErrors, value: string) => {
     let errorMsg = '';
 
     switch (field) {
@@ -120,7 +120,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
     }
 
     setFormErrors((prev) => ({ ...prev, [field]: errorMsg || undefined }));
-  };
+  }, [initialPrice, uploadedImages.length]);
 
   // Validar todas las campos antes de submit
   const validateAll = (): boolean => {
@@ -149,7 +149,7 @@ export default function FormProduct({ returnPath = '/auctions/create' }: FormPro
   useEffect(() => {
     // Validar imágenes cada vez que cambian
     validateField('images', '');
-  }, [uploadedImages]);
+  }, [uploadedImages, validateField]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
