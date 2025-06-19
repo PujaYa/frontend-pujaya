@@ -4,6 +4,9 @@ import { useRouter } from 'next/navigation';
 import { updateAuction } from '@/app/auctions/actions';
 import { useAuth } from '@/app/context/AuthContext';
 import MapLibreMap from '@/components/MapLibreMap';
+import { IEditAuctionFormValues, IEditAuctionErrors } from '@/app/types/index';
+import { validateEditAuctionForm } from '@/components/lib/validate';
+import { toast } from 'react-toastify';
 
 interface EditAuctionFormProps {
   initialData: {
@@ -20,7 +23,7 @@ interface EditAuctionFormProps {
   };
 }
 
-export default function EditAuctionForm({ auction }: IEditAuctionFormProps) {
+export default function EditAuctionForm({ initialData }: EditAuctionFormProps) {
   const router = useRouter();
   const { userData } = useAuth();
   const [name, setName] = useState(initialData?.name || '');
@@ -34,6 +37,13 @@ export default function EditAuctionForm({ auction }: IEditAuctionFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [minEndDate, setMinEndDate] = useState('');
 
+  const [form, setForm] = useState<IEditAuctionFormValues>({
+    name: initialData?.name || '',
+    description: initialData?.description || '',
+    endDate: initialData?.endDate?.slice(0, 16) || '',
+  });
+  const [errors, setErrors] = useState<IEditAuctionErrors>({});
+
   useEffect(() => {
     const now = new Date();
     setMinEndDate(now.toISOString().slice(0, 16));
@@ -42,6 +52,13 @@ export default function EditAuctionForm({ auction }: IEditAuctionFormProps) {
   const handleMapClick = (lngLat: { lng: number; lat: number }) => {
     setLatitude(lngLat.lat);
     setLongitude(lngLat.lng);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    const updatedForm = { ...form, [name]: value };
+    setForm(updatedForm);
+    setErrors(validateEditAuctionForm(updatedForm)); // validación en tiempo real
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
