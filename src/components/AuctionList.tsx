@@ -15,6 +15,9 @@ interface AuctionListProps {
   sellerId?: string;
   page?: number;
   setPage?: React.Dispatch<React.SetStateAction<number>>;
+  latitude?: number | null;
+  longitude?: number | null;
+  radius?: number;
 }
 
 // Definir un tipo mínimo para Auction (puedes reemplazarlo por el tipo real si lo tienes)
@@ -34,7 +37,8 @@ function AuctionCard({ auction }: { auction: IAuction }) {
     <Link
       key={auction.id}
       href={`/auctions/${auction.id}`}
-      className="block transition hover:scale-105">
+      className="block transition hover:scale-105"
+    >
       <Auction auction={auction} />
     </Link>
   );
@@ -47,6 +51,9 @@ const AuctionList: React.FC<AuctionListProps> = ({
   sellerId = '',
   page: controlledPage,
   setPage: controlledSetPage,
+  latitude = null,
+  longitude = null,
+  radius = 10,
 }) => {
   const [products, setProducts] = useState<AuctionType[]>([]);
   const [internalPage, internalSetPage] = useState(1);
@@ -67,6 +74,11 @@ const AuctionList: React.FC<AuctionListProps> = ({
     if (category) params.append('category', category);
     if (sort) params.append('sort', sort);
     if (sellerId) params.append('seller', sellerId);
+    if (latitude !== null && longitude !== null) {
+      params.append('lat', String(latitude));
+      params.append('lng', String(longitude));
+      params.append('radius', String(radius));
+    }
     fetch(`${API_URL}/auctions?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
@@ -81,7 +93,7 @@ const AuctionList: React.FC<AuctionListProps> = ({
       .catch(() => {
         setLoading(false);
       });
-  }, [page, search, category, sort, sellerId]);
+  }, [page, search, category, sort, sellerId, latitude, longitude, radius]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
@@ -89,19 +101,20 @@ const AuctionList: React.FC<AuctionListProps> = ({
     <div>
       {loading ? (
         <LoadingSpinner />
-
       ) : products && products.length === 0 ? (
         <div className="text-center text-gray-500 py-10">No auctions found.</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
           {products &&
-            products.map((auction) => <AuctionCard key={auction.id} auction={auction as IAuction} />)}
+            products.map((auction) => (
+              <AuctionCard key={auction.id} auction={auction as IAuction} />
+            ))}
         </div>
       )}
       {/* Paginación */}
       <div className="flex justify-center items-center gap-2 mt-10">
         <button
-          className="px-3 py-1 rounded bg-gray-200 text-gray-500"
+          className={`px-3 py-1 rounded bg-gray-200 ${page === 1 ? 'text-gray-400' : 'text-gray-700'}`}
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
         >
@@ -119,7 +132,7 @@ const AuctionList: React.FC<AuctionListProps> = ({
           </button>
         ))}
         <button
-          className="px-3 py-1 rounded bg-gray-200 text-gray-700"
+          className={`px-3 py-1 rounded bg-gray-200 ${page === totalPages ? 'text-gray-400' : 'text-gray-700'}`}
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
         >

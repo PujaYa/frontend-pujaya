@@ -11,7 +11,20 @@ import ProfileHeader from './profile/ProfileHeader';
 import { IUser } from '@/app/types/index';
 import { LoadingSpinner } from '../LoadingSpinner';
 
-const TABS = ['Active Bids'];
+const TABS = ['Active Bids', 'My Auctions'];
+
+// Tipo para subasta recibida del backend
+interface BackendAuction {
+  id: string;
+  name?: string;
+  title?: string;
+  category?: { categoryName?: string } | string;
+  image?: string;
+  product?: { imgProduct?: string[]; initialPrice?: number };
+  currentHighestBid?: number;
+  bids?: { amount: number }[];
+  endDate?: string;
+}
 
 const ProfileComponent = () => {
   const { user, userData, setUserData } = useAuth();
@@ -36,7 +49,6 @@ const ProfileComponent = () => {
       );
 
       const data = await res.json();
-      console.log('Response data:', data);
 
       if (res.ok) {
         setUserData({
@@ -87,33 +99,86 @@ const ProfileComponent = () => {
   const [auctions, setAuctions] = useState<AuctionProfile[]>([]);
   const [loadingAuctions, setLoadingAuctions] = useState(false);
 
+  // Estado para mis subastas
+  const [myAuctions, setMyAuctions] = useState<AuctionProfile[]>([]);
+  const [loadingMyAuctions, setLoadingMyAuctions] = useState(false);
+
   // Obtener auctions reales según el tab activo
   useEffect(() => {
     async function fetchAuctions() {
       if (!userData?.user?.id) return;
-      setLoadingAuctions(true);
-      try {
-        const token = userData.token;
-        let url = '';
-        // Solo hay un tab: Active Bids
-        url = `${process.env.NEXT_PUBLIC_API_URL}/bids?userId=${userData.user.id}&onlyActive=true`;
-        const res = await fetch(url, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setAuctions(data);
-        } else {
+      if (activeTab === 'Active Bids') {
+        setLoadingAuctions(true);
+        try {
+          const token = userData.token;
+          const url = `${process.env.NEXT_PUBLIC_API_URL}/bids?userId=${userData.user.id}&onlyActive=true`;
+          const res = await fetch(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            // Mapear para agregar endDate para el timer en vivo
+            const mapped = Array.isArray(data)
+              ? data.map((a) => ({
+                  ...a,
+                  endDate: a.endDate,
+                }))
+              : [];
+            setAuctions(mapped);
+          } else {
+            setAuctions([]);
+          }
+        } catch {
           setAuctions([]);
+        } finally {
+          setLoadingAuctions(false);
         }
-      } catch {
-        setAuctions([]);
-      } finally {
-        setLoadingAuctions(false);
+      } else if (activeTab === 'My Auctions') {
+        setLoadingMyAuctions(true);
+        try {
+          const token = userData.token;
+          const url = `${process.env.NEXT_PUBLIC_API_URL}/auctions?seller=${userData.user.id}`;
+          const res = await fetch(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            // Mapear las subastas para asegurar campos mínimos y correctos
+            const mappedAuctions = Array.isArray(data.auctions)
+              ? data.auctions.map((a: BackendAuction) => {
+                  return {
+                    id: a.id,
+                    title: a.name || a.title || 'Sin título',
+                    category:
+                      typeof a.category === 'object' && a.category !== null
+                        ? a.category.categoryName || ''
+                        : a.category || '',
+                    image:
+                      a.image ||
+                      (a.product && a.product.imgProduct && a.product.imgProduct[0]) ||
+                      '',
+                    currentBid:
+                      a.currentHighestBid ||
+                      (a.bids && a.bids.length > 0
+                        ? Math.max(...a.bids.map((b) => Number(b.amount)))
+                        : a.product?.initialPrice || 0),
+                    endDate: a.endDate,
+                  };
+                })
+              : [];
+            setMyAuctions(mappedAuctions);
+          } else {
+            setMyAuctions([]);
+          }
+        } catch {
+          setMyAuctions([]);
+        } finally {
+          setLoadingMyAuctions(false);
+        }
       }
     }
     fetchAuctions();
-  }, [userData]); // Ya no depende de activeTab
+  }, [userData, activeTab]);
 
   // Verificar si userData está cargado antes de renderizar
   if (!user) {
@@ -140,15 +205,31 @@ const ProfileComponent = () => {
             handleImageChange={handleImageChange}
             onEditProfile={() => setIsModalOpen(true)}
           />
-        </div >
+        </div>
         {/* Stats row */}
         <ProfileStats activeTime={getActiveTime()} />
       </div>
       {/* Tabs y cards fuera de la card de perfil */}
       <div className="w-full max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-6xl mx-auto mt-4">
-        <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={['Active Bids']} />
+        <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={TABS} />
         <div className="overflow-x-auto w-full">
-          {loadingAuctions ? <LoadingSpinner /> : <ProfileAuctions auctions={auctions} />}
+          {activeTab === 'Active Bids' &&
+            (loadingAuctions ? (
+              <LoadingSpinner />
+            ) : (
+              <ProfileAuctions auctions={Array.isArray(auctions) ? auctions : []} />
+            ))}
+          {activeTab === 'My Auctions' && (
+            <>
+              {loadingMyAuctions ? (
+                <LoadingSpinner />
+              ) : Array.isArray(myAuctions) && myAuctions.length > 0 ? (
+                <ProfileAuctions auctions={myAuctions} />
+              ) : (
+                <div className="text-center text-gray-500 py-8">No tienes subastas creadas.</div>
+              )}
+            </>
+          )}
         </div>
       </div>
       {/* Edit modal */}

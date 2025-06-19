@@ -92,7 +92,7 @@ const AuctionGallery: React.FC<AuctionGalleryProps> = ({
         <div className="bg-[#F3F4F6] rounded-2xl w-full flex flex-col items-center justify-center p-0 md:p-6 min-h-[340px] shadow-sm relative">
           <div className="flex-1 flex items-center justify-center w-full min-h-[260px] relative">
             {/* Timer sobre la imagen principal */}
-            {endDate && (
+            {endDate && timeLeft && (
               <div className="absolute top-1 left-1 z-10 bg-[#EF4444] border-0 rounded-full px-2.5 py-0.5 flex items-center gap-2 font-bold text-white text-xs select-none shadow-none min-h-[22px] min-w-[80px]">
                 <svg
                   width="14"

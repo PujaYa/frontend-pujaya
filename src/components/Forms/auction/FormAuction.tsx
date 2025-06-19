@@ -5,12 +5,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { createAuction, updateAuction } from '@/app/auctions/actions';
 import { useAuctionForm } from '@/app/context/AuctionFormContext';
+import MapLibreMap from '@/components/MapLibreMap';
 
 interface FormErrors {
   name?: string;
   description?: string;
   endDate?: string;
   productId?: string;
+  location?: string;
 }
 
 interface AuctionFormInitialData {
@@ -22,6 +24,8 @@ interface AuctionFormInitialData {
     id?: string;
     name?: string;
   };
+  latitude?: number;
+  longitude?: number;
 }
 
 interface FormAuctionProps {
@@ -52,12 +56,16 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
   );
 
   const [minEndDate, setMinEndDate] = useState('');
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
 
   useEffect(() => {
     if (initialData) {
       setName(initialData.name || '');
       setDescription(initialData.description || '');
       setEndDate(initialData.endDate ? initialData.endDate.slice(0, 16) : '');
+      setLatitude(initialData.latitude || null);
+      setLongitude(initialData.longitude || null);
     }
   }, [initialData]);
 
@@ -98,6 +106,10 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
       if (selectedDate <= now) errors.endDate = 'End date must be in the future';
     }
     if (!productId) errors.productId = 'Product is required';
+
+    if (latitude === null || longitude === null) {
+      errors.location = 'Location is required';
+    }
 
     return errors;
   };
@@ -153,6 +165,12 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
     }));
   };
 
+  // Adaptar el handler para maplibre-gl y tipar correctamente
+  const handleMapClick = (lngLat: { lng: number; lat: number }) => {
+    setLatitude(lngLat.lat);
+    setLongitude(lngLat.lng);
+  };
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setAuctionForm({ name, description, endDate, productId, productName });
@@ -169,7 +187,10 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
       setIsSubmitting(true);
       formData.append('productId', productId || '');
       formData.append('token', userData?.token || '');
-
+      if (latitude !== null && longitude !== null) {
+        formData.append('latitude', String(latitude));
+        formData.append('longitude', String(longitude));
+      }
       if (mode === 'edit' && initialData?.id) {
         await updateAuction(initialData.id, formData);
       } else {
@@ -299,7 +320,34 @@ export default function FormAuction({ initialData, mode = 'create' }: FormAuctio
           )}
         </div>
 
-        {/* Submit */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Location <span className="text-red-500">*</span>
+          </label>
+          <div className="h-64 w-full rounded-md overflow-hidden mb-2">
+            <MapLibreMap
+              lng={longitude || -58.3816}
+              lat={latitude || -34.6037}
+              zoom={10}
+              style={{ width: '100%', height: '100%' }}
+              radius={1} // Radio de 1 km, puedes ajustar este valor
+              onClick={handleMapClick}
+              onUserLocation={(coords) => {
+                setLatitude(coords.lat);
+                setLongitude(coords.lng);
+              }}
+            />
+          </div>
+          {formErrors.location && (
+            <p className="mt-1 text-sm text-red-600">{formErrors.location}</p>
+          )}
+          {latitude && longitude && (
+            <p className="text-xs text-gray-500">
+              Lat: {latitude}, Lng: {longitude}
+            </p>
+          )}
+        </div>
+
         <div className="flex gap-4">
           <button
             type="submit"

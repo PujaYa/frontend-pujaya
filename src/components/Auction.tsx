@@ -38,8 +38,12 @@ const Auction: React.FC<{ auction: AuctionProps }> = ({ auction }) => {
       </div>
       {/* Info */}
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-bold text-lg text-gray-900 mb-2">{auction.product.name}</h3>
-        <p className="text-gray-500 text-sm mb-2 line-clamp-2">{auction.product.description}</p>
+        <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 min-h-[48px]">
+          {auction.product.name}
+        </h3>
+        <p className="text-gray-500 text-sm mb-2 line-clamp-3 min-h-[60px]">
+          {auction.product.description}
+        </p>
         <span className="text-blue-700 text-xl font-bold mb-2">${price} USD</span>
         <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold mt-auto transition">
           Bid Now
