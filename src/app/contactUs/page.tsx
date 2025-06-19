@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
 import { toast } from "react-toastify";
+// import { IContactUsProps } from "../types/index";
 
 interface ContactFormValues {
   name: string;
@@ -13,6 +14,11 @@ interface ContactFormValues {
 
 export default function ContactUs() {
   const [status, setStatus] = useState("");
+  // const [errors, setErrors] = useState<IContactUsProps>({
+  //   name: "",
+  //   email: "",
+  //   message: "",
+  // });
 
   const initialValues: ContactFormValues = {
     name: "",

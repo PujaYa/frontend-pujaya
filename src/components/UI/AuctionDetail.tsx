@@ -205,6 +205,25 @@ const AuctionDetail: React.FC<AuctionDetailProps> = ({
     userData && bids.some((bid) => String(bid.user?.id) === String(userData.user?.id))
   );
 
+  // Mostrar botón de login si el usuario NO está logueado
+  if (!userData) {
+    return (
+      <div className="min-h-screen w-full bg-[#F6F8FA] pb-12 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-md p-8 text-center max-w-md w-full">
+          <span className="font-semibold text-blue-700 text-lg block mb-4">
+            Log in for more options.
+          </span>
+          <button
+            className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded font-bold transition w-full"
+            onClick={() => (window.location.href = '/login')}
+          >
+            Log in
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen w-full bg-[#F6F8FA] pb-12">
       <div className="max-w-7xl mx-auto pt-8 px-2 md:px-8">
