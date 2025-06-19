@@ -27,7 +27,8 @@
     "react-map-gl": "^8.0.4",
     "react-toastify": "^11.0.5",
     "socket.io-client": "^4.8.1",
-    "stripe": "^18.2.1"
+    "stripe": "^18.2.1",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
