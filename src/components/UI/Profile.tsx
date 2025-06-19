@@ -10,10 +10,11 @@ import ProfileAuctions from './profile/ProfileAuctions';
 import ProfileHeader from './profile/ProfileHeader';
 import { IUser } from '@/app/types/index';
 import { LoadingSpinner } from '../LoadingSpinner';
+import Link from 'next/link';
 
 const TABS = ['Active Bids', 'My Auctions'];
 
-// Tipo para subasta recibida del backend
+// Type for auction received from backend
 interface BackendAuction {
   id: string;
   name?: string;
@@ -24,6 +25,17 @@ interface BackendAuction {
   currentHighestBid?: number;
   bids?: { amount: number }[];
   endDate?: string;
+}
+
+// Type for active bid received from backend
+interface ActiveBid {
+  auctionId: string;
+  title: string;
+  category?: string;
+  image?: string;
+  currentBid?: number;
+  endDate?: string;
+  // other fields if needed
 }
 
 const ProfileComponent = () => {
@@ -80,7 +92,7 @@ const ProfileComponent = () => {
   const [showPhotoMenu, setShowPhotoMenu] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>;
 
-  // Calcular tiempo activo
+  // Calculate active time
   function getActiveTime() {
     if (!userData?.user?.createdAt) return '';
     const created = new Date(userData.user.createdAt);
@@ -117,11 +129,18 @@ const ProfileComponent = () => {
           });
           if (res.ok) {
             const data = await res.json();
-            // Mapear para agregar endDate para el timer en vivo
+            console.log('Active Bids data:', data); // <-- Para depurar la estructura
+            // Mapear para asegurar que cada subasta tenga un id válido
             const mapped = Array.isArray(data)
-              ? data.map((a) => ({
-                  ...a,
+              ? data.map((a: ActiveBid) => ({
+                  id: a.auctionId,
+                  title: a.title || 'Sin título',
+                  category: a.category || '',
+                  image: a.image || '',
+                  currentBid: a.currentBid || 0,
                   endDate: a.endDate,
+                  myBid: 0, // Valor por defecto, puedes reemplazarlo si tienes el dato
+                  timeLeft: '', // Valor por defecto, puedes calcularlo si tienes el dato
                 }))
               : [];
             setAuctions(mapped);
@@ -194,7 +213,7 @@ const ProfileComponent = () => {
 
   return (
     <main className="flex flex-col items-center px-2 sm:px-4 py-4 min-h-screen bg-blue-50">
-      {/* Card de perfil separada */}
+      {/* Profile card separated */}
       <div className="w-full max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-6xl mx-auto">
         <div className="bg-white p-2 sm:p-4 md:p-6 rounded-xl shadow-xl flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 w-full">
           <ProfileHeader
@@ -209,7 +228,7 @@ const ProfileComponent = () => {
         {/* Stats row */}
         <ProfileStats activeTime={getActiveTime()} />
       </div>
-      {/* Tabs y cards fuera de la card de perfil */}
+      {/* Tabs and cards outside the profile card */}
       <div className="w-full max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-6xl mx-auto mt-4">
         <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={TABS} />
         <div className="overflow-x-auto w-full">
@@ -224,9 +243,33 @@ const ProfileComponent = () => {
               {loadingMyAuctions ? (
                 <LoadingSpinner />
               ) : Array.isArray(myAuctions) && myAuctions.length > 0 ? (
-                <ProfileAuctions auctions={myAuctions} />
+                <>
+                  <ProfileAuctions auctions={myAuctions} />
+                  <div className="flex items-center justify-center w-full col-span-1 sm:col-span-2 lg:col-span-3 mt-4">
+                    <Link
+                      href="/auctions/create"
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition text-lg"
+                      style={{ minWidth: 220, textAlign: 'center' }}
+                    >
+                      + Create auction
+                    </Link>
+                  </div>
+                </>
               ) : (
-                <div className="text-center text-gray-500 py-8">No tienes subastas creadas.</div>
+                <>
+                  <div className="text-center text-gray-500 py-8">
+                    You have no created auctions.
+                  </div>
+                  <div className="flex items-center justify-center w-full col-span-1 sm:col-span-2 lg:col-span-3 mt-4">
+                    <Link
+                      href="/auctions/create"
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition text-lg"
+                      style={{ minWidth: 220, textAlign: 'center' }}
+                    >
+                      + Create auction
+                    </Link>
+                  </div>
+                </>
               )}
             </>
           )}

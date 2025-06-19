@@ -23,6 +23,7 @@ const AuctionInfoBox: React.FC<AuctionInfoBoxProps> = ({
   initialPrice,
 }) => {
   const currentPrice = auctionInfo?.currentHighestBid ?? auctionInfo?.initialPrice ?? initialPrice;
+  const formattedCurrentPrice = currentPrice?.toLocaleString('en-US');
   return (
     <div className="bg-white rounded-2xl shadow p-6 mb-2 flex flex-col items-center">
       {/* 1. Auction name */}
@@ -38,7 +39,7 @@ const AuctionInfoBox: React.FC<AuctionInfoBoxProps> = ({
       {/* 3. Current price (blue box) */}
       <div className="mb-2 w-full flex justify-center">
         <div className="bg-blue-50 text-blue-700 text-3xl font-bold rounded-xl px-4 py-3 border border-blue-100 shadow-sm text-center w-full">
-          ${currentPrice} <span className="text-base font-medium">USD</span>
+          ${formattedCurrentPrice} <span className="text-base font-medium">USD</span>
         </div>
       </div>
       {/* 4. Bid count */}
