@@ -56,31 +56,58 @@ const BidForm: React.FC<BidFormProps> = ({
   if (!canBid) return null;
   // Helper for quick bid buttons
   const handleQuickBid = (inc: number) => {
-    const current = Number(bidAmount) || 0;
-    setBidAmount((current + inc).toString());
+    const current = Number(bidAmount);
+    if (!bidAmount || current < minBid) {
+      setBidAmount((minBid + inc).toString());
+    } else {
+      setBidAmount((current + inc).toString());
+    }
   };
   return (
     <form onSubmit={onSubmit} className="mb-4 flex flex-col items-center gap-2 w-full">
       <label htmlFor="bidAmount" className="font-semibold text-gray-700 w-full text-center mb-1">
         Place your bid
       </label>
-      <div className="flex gap-2 items-center w-full justify-center mb-2">
-        <span className="text-lg font-semibold">$</span>
-        <input
-          id="bidAmount"
-          type="number"
-          min={minBid}
-          step="0.01"
-          className={`border rounded px-3 py-2 w-full text-lg font-semibold text-center ${!isBidValid && bidAmount !== '' ? 'border-red-500' : ''}`}
-          value={bidAmount}
-          onChange={(e) => setBidAmount(e.target.value)}
-          required
-          placeholder={`Minimum: $${minBid}`}
-        />
+      {/* Formatted bid amount for better readability */}
+      {/* {bidAmount && !isNaN(Number(bidAmount)) && (
+        <div className="text-xl font-bold text-blue-700 mb-1">
+          {Number(bidAmount).toLocaleString('en-US')}
+        </div>
+      )} */}
+      <div className="w-full mb-2">
+        <div className="relative w-full">
+          <input
+            id="bidAmount"
+            type="text"
+            inputMode="numeric"
+            min={minBid}
+            step="1"
+            className={`border rounded px-3 py-2 w-full text-lg font-semibold text-center pl-8 ${!isBidValid && bidAmount !== '' ? 'border-red-500' : ''}`}
+            value={
+              bidAmount
+                ? Number(bidAmount).toLocaleString('en-US', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })
+                : ''
+            }
+            onChange={(e) => {
+              // Remove all non-numeric characters
+              const raw = e.target.value.replace(/[^\d]/g, '');
+              setBidAmount(raw);
+            }}
+            required
+            placeholder={`Minimum: ${minBid.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
+          />
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 select-none pointer-events-none text-lg font-semibold">
+            $
+          </span>
+        </div>
       </div>
       {!isBidValid && bidAmount !== '' && (
         <div className="text-red-600 text-sm w-full text-center mb-2">
-          The minimum bid is ${minBid}.
+          The minimum bid is $
+          {minBid.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
         </div>
       )}
       <div className="flex gap-2 w-full justify-center mb-2">
